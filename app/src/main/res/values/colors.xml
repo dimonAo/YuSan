@@ -7,8 +7,22 @@
     <color name="transparent">#00000000</color>
     <color name="index_bg">#f6f7f9</color>
 
+    <color name="recycler_line">#e2e2e2</color>
     <color name="line_bg">#e5e5e5</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
+
+    <color name="colorTask">#fd598e</color>
+    <color name="colorUnselectedText">#a1a1a2</color>
+    <color name="colorTaskerNick">#262626</color>
+    <color name="colorTaskContent">#666666</color>
+    <color name="colorMoneyUnit">#fd1b00</color>
+    <color name="color_33">#333333</color>
+    <color name="colorTaskBtn">#ff72a0</color>
+    <color name="colorTaskBtn_5">#7fff72a0</color>
+    <color name="color_grey">#cccbcb</color>
+
+    <color name="startColorTask">#ff709e</color>
+
 
 </resources>

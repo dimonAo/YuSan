@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.util.Utils;
 
@@ -28,10 +29,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final int PURE_PICTURE_TITLE = 1;
     public static final int SOLID_COLOR_TITLE = 2;
 
-    public Toolbar tool_bar;
-    public ImageView img_tool_bar_left;
-    public ImageView img_tool_bar_right;
-    public TextView text_tool_bar_title;
+//    public Toolbar tool_bar;
+//    public ImageView img_tool_bar_left;
+//    public ImageView img_tool_bar_right;
+//    public TextView text_tool_bar_title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,15 +43,15 @@ public abstract class BaseActivity extends AppCompatActivity {
             throw new IllegalArgumentException("You must return a right contentView layout resource Id");
         }
 
-        tool_bar = (Toolbar) findViewById(R.id.tool_bar);
-        img_tool_bar_right = (ImageView) findViewById(R.id.img_tool_bar_right);
-        text_tool_bar_title = (TextView) findViewById(R.id.text_tool_bar_title);
-        initToolBar(tool_bar);
+//        tool_bar = (Toolbar) findViewById(R.id.tool_bar);
+//        img_tool_bar_right = (ImageView) findViewById(R.id.img_tool_bar_right);
+//        text_tool_bar_title = (TextView) findViewById(R.id.text_tool_bar_title);
+//        initToolBar(tool_bar);
 //        changeTitleBarColor();
         onCreateView(savedInstanceState);
     }
 
-    public abstract void initToolBar(Toolbar toolbar);
+//    public abstract void initToolBar(Toolbar toolbar);
 
     public abstract int getLayoutResourceId();
 
@@ -99,7 +100,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return snackbar;
     }
 
-    public void setTitleToolbarStyle(int type, int colorId) {
+    public void setTitleToolbarStyle(int type, int colorId, Toolbar tool_bar) {
 
         if (type == PURE_PICTURE_TITLE) {
             changeTitleBarColor();
@@ -109,7 +110,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             Utils.setStatusBarColor(this, colorId);
         }
         Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(this), 0, 0);
-        Utils.StatusBarLightMode(this);
+        Utils.transparencyBar(this);
+//        Utils.StatusBarLightMode(this);
     }
 
 
