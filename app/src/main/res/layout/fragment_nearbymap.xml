@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/common_44"
+        />
+    <ImageView
+        android:id="@+id/img_location"
+        android:layout_width="@dimen/common_36"
+        android:layout_height="@dimen/common_36"
+        android:layout_marginLeft="@dimen/common_6"
+        android:layout_marginBottom="@dimen/common_66"
+        android:layout_alignParentBottom="true"
+        android:src="@mipmap/nearby_map_location"/>
+    <ImageView
+        android:layout_width="@dimen/common_114"
+        android:layout_height="@dimen/common_114"
+        android:layout_marginBottom="@dimen/common_48"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/nearby_map_shang"
+        />
+    <LinearLayout
+        android:layout_width="@dimen/common_32"
+        android:layout_height="@dimen/common_32"
+        android:background="@drawable/lin_map_corners_btn"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/common_74"
+        android:layout_marginRight="@dimen/common_8">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/nearby_map_menu"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/common_60"
+        android:layout_height="@dimen/common_24"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/common_70"
+        android:layout_marginRight="@dimen/common_8"
+        android:background="@drawable/lin_map_corners_btn"
+        android:id="@+id/linearLayout">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/common_8"
+            android:layout_marginRight="@dimen/common_6"
+            android:src="@mipmap/nearby_map_invisible" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_14"
+            android:text="隐身"/>
+    </LinearLayout>
+
+</RelativeLayout>
