@@ -22,21 +22,21 @@ import com.wtwd.yusan.util.Utils;
  */
 
 public abstract class BaseFragment extends Fragment {
-    public Toolbar tool_bar;
-    public ImageView img_tool_bar_left;
-    public ImageView img_tool_bar_right;
-    public TextView text_tool_bar_title;
+//    public Toolbar tool_bar;
+//    public ImageView img_tool_bar_left;
+//    public ImageView img_tool_bar_right;
+//    public TextView text_tool_bar_title;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getLayoutResourceId() != 0) {
-            changeTitleBarColor();
+//            changeTitleBarColor();
             View mView = inflater.inflate(getLayoutResourceId(), container, false);
-            tool_bar = (Toolbar) mView.findViewById(R.id.tool_bar);
-            img_tool_bar_right = (ImageView) mView.findViewById(R.id.img_tool_bar_right);
-            text_tool_bar_title = (TextView) mView.findViewById(R.id.text_tool_bar_title);
-            Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(getActivity()), 0, 0);
+//            tool_bar = (Toolbar) mView.findViewById(R.id.tool_bar);
+//            img_tool_bar_right = (ImageView) mView.findViewById(R.id.img_tool_bar_right);
+//            text_tool_bar_title = (TextView) mView.findViewById(R.id.text_tool_bar_title);
+//            Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(getActivity()), 0, 0);
 
             initFragmentView(mView);
 
@@ -57,7 +57,7 @@ public abstract class BaseFragment extends Fragment {
             getActivity().getWindow().getDecorView().setSystemUiVisibility
                     (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
-        Utils.StatusBarLightMode(getActivity());
+//        Utils.StatusBarLightMode(getActivity());
     }
 
 
