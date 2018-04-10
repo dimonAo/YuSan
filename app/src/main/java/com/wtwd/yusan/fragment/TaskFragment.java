@@ -1,5 +1,6 @@
 package com.wtwd.yusan.fragment;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
@@ -49,7 +50,7 @@ public class TaskFragment extends BaseFragment {
     }
 
     @Override
-    public void initFragmentView(View mView) {
+    public void initFragmentView(Bundle savedInstanceState,View mView) {
         easy_layout = (EasyRefreshLayout) mView.findViewById(R.id.easy_layout);
         recycler_task = (RecyclerView) mView.findViewById(R.id.recycler_task);
         recycler_task.setLayoutManager(new LinearLayoutManager(getActivity()));

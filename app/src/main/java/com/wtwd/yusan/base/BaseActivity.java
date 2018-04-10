@@ -114,6 +114,20 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        Utils.StatusBarLightMode(this);
     }
 
+    public void setTitleToolbarStyle(Toolbar tool_bar) {
+
+        changeTitleBarColor();
+        Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(this), 0, 0);
+        Utils.transparencyBar(this);
+//        if (type == PURE_PICTURE_TITLE) {
+//        } else if (type == SOLID_COLOR_TITLE) {
+//            tool_bar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
+//            Utils.setWindowStatusBarColor(this, colorId);
+//            Utils.setStatusBarColor(this, colorId);
+//        }
+//        Utils.StatusBarLightMode(this);
+    }
+
 
     private void changeTitleBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

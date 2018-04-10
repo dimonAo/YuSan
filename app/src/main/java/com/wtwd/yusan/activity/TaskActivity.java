@@ -49,7 +49,7 @@ public class TaskActivity extends BaseActivity {
                 finish();
             }
         });
-        setTitleToolbarStyle(PURE_PICTURE_TITLE, R.color.colorWhite, toolbar);
+        setTitleToolbarStyle(toolbar);
 
 
     }

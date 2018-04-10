@@ -140,9 +140,9 @@
 
         <View
             android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/common_8"
             android:layout_margin="@dimen/common_6"
-            android:background="@color/colorTaskContent"
+            android:background="@color/colorShortVerticalLine"
 
             />
 

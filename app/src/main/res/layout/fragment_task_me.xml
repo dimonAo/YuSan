@@ -4,6 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        layout="@layout/tool_bar"
+        android:visibility="gone" />
+
     <com.wtwd.yusan.widget.recycler.EasyRefreshLayout
         android:id="@+id/easy_layout"
         android:layout_width="match_parent"
@@ -13,8 +17,7 @@
             android:id="@+id/recycler_task"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            />
+            android:scrollbars="vertical" />
     </com.wtwd.yusan.widget.recycler.EasyRefreshLayout>
 
 </LinearLayout>

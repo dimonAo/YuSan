@@ -36,6 +36,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.util.ViewUtil;
 import com.wtwd.yusan.widget.view.CircleImageView;
 
@@ -47,7 +48,7 @@ import java.util.List;
  * time:2018/4/9
  * Created by w77996
  */
-public class NearbyMapFragment extends Fragment implements AMapLocationListener, LocationSource,View.OnClickListener {
+public class NearbyMapFragment extends BaseFragment implements AMapLocationListener, LocationSource, View.OnClickListener {
 
     private final static String TAG = "NearByMapFragment";
 
@@ -81,7 +82,7 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
      */
     private ImageView img_location;
 
-    BitmapDescriptor bitmapDescriptor ;
+    BitmapDescriptor bitmapDescriptor;
 
     /**
      * 实例化fragment
@@ -93,20 +94,24 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
         return nearbyMapFragment;
     }
 
-    public NearbyMapFragment(){
+    public NearbyMapFragment() {
 
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_nearbymap, container, false);
-        initView(savedInstanceState, view);
+    public int getLayoutResourceId() {
+        return R.layout.fragment_nearbymap;
+    }
+
+    @Override
+    public void initFragmentView(Bundle savedInstanceState, View mView) {
+        initView(savedInstanceState, mView);
         addListener();
-        return view;
     }
 
     /**
@@ -120,7 +125,7 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
         // LatLng centerBJPoint= new LatLng(22.381754,114.055235);//地图默认中心店
         // AMapOptions mapOptions = new AMapOptions(); // 定义了一个配置 AMap 对象的参数类
         //  mapOptions.camera(new CameraPosition(centerBJPoint, 15f, 0, 0));
-
+        text_tool_bar_title.setText("附近");
         img_location = (ImageView) view.findViewById(R.id.img_location);
         mMapView = view.findViewById(R.id.map);
         // mMapView = new MapView(getActivity(),mapOptions);
@@ -176,12 +181,12 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
     /******** AMapLocationListener 定位回调监听器*************/
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        Log.e(TAG,"onLocationChanged ----------------------- :");
+        Log.e(TAG, "onLocationChanged ----------------------- :");
         if (null != mOnLocationChangedListener && null != aMapLocation) {
             if (null != aMapLocation && aMapLocation.getErrorCode() == 0) {
                 Log.e(TAG, "onLocationChanged 定位成功 ----------------------- :" + "aMapLocation 信息 " + aMapLocation.getLongitude() + " " + aMapLocation.getLatitude());
                 mOnLocationChangedListener.onLocationChanged(aMapLocation);//显示定位
-                LatLng latLng = new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());//构造位置
+                LatLng latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//构造位置
                 MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
                         .position(latLng)
                         .draggable(false);
@@ -204,7 +209,7 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
      */
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
-        Log.e(TAG,"activate--------------- 激活定位");
+        Log.e(TAG, "activate--------------- 激活定位");
         mOnLocationChangedListener = onLocationChangedListener;
         location();
     }
@@ -214,7 +219,7 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
      */
     @Override
     public void deactivate() {
-        Log.e(TAG,"deactivate--------------- 停止定位");
+        Log.e(TAG, "deactivate--------------- 停止定位");
         mOnLocationChangedListener = null;
         if (null != mAMapLocationClient) {
             mAMapLocationClient = null;
@@ -227,7 +232,7 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
      * 必须重写以下方法
      */
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mMapView.onResume();
     }
@@ -248,14 +253,14 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-        if(null != mAMapLocationClient){
+        if (null != mAMapLocationClient) {
             mAMapLocationClient.onDestroy();
         }
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.img_location:
                 location();
                 break;
@@ -266,7 +271,7 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
      * 定位
      */
     private void location() {
-        Log.e(TAG,"location--------------- 开始定位");
+        Log.e(TAG, "location--------------- 开始定位");
         mAMap.clear();
         if (mAMapLocationClient == null) {
             mAMapLocationClient = new AMapLocationClient(getActivity());//初始化定位
@@ -277,13 +282,14 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
             mAMapLocationClientOption.setOnceLocationLatest(true);//设置单次精确定位
             mAMapLocationClient.setLocationOption(mAMapLocationClientOption);
             mAMapLocationClient.startLocation();//开始定位
-        }else{
+        } else {
             mAMapLocationClient.startLocation();//开始定位
         }
     }
 
     /**
      * 移动地图视角到某个精确位置
+     *
      * @param latLng 坐标
      */
     private void moveMapToPosition(LatLng latLng) {
@@ -311,13 +317,13 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
     /**
      * 添加附近的人标记
      */
-    private void addMarker(final LatLng latLng,final MarkerBean markerBean){
+    private void addMarker(final LatLng latLng, final MarkerBean markerBean) {
         String url = "http://ucardstorevideo.b0.upaiyun.com/test/e8c8472c-d16d-4f0a-8a7b-46416a79f4c6.png";
         final MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.setFlat(true);
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.position(new LatLng(latLng.latitude, latLng.longitude));
-        customizeMarkerIcon(url,markerBean ,new OnMarkerIconLoadListener() {
+        customizeMarkerIcon(url, markerBean, new OnMarkerIconLoadListener() {
             @Override
             public void markerIconLoadingFinished(View view) {
                 //bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
@@ -342,13 +348,14 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
 
     /**
      * 从网络上下载imgUrl的图标
+     *
      * @return
      */
-    private void customizeMarkerIcon(String url,MarkerBean markerBean, final OnMarkerIconLoadListener listener) {
+    private void customizeMarkerIcon(String url, MarkerBean markerBean, final OnMarkerIconLoadListener listener) {
         final View markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
-                .load(url +"!/format/webp")
+                .load(url + "!/format/webp")
                 .thumbnail(0.2f)
                 .into(new SimpleTarget<Drawable>() {
                     @Override
@@ -364,11 +371,11 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
     /**
      * 自定义监听接口,用来marker的icon加载完毕后回调添加marker属性
      */
-    public interface OnMarkerIconLoadListener{
+    public interface OnMarkerIconLoadListener {
         void markerIconLoadingFinished(View view);
     }
 
-    public class MarkerBean{
+    public class MarkerBean {
         private int markerId;
 
         public MarkerBean(int markerId) {
@@ -386,18 +393,19 @@ public class NearbyMapFragment extends Fragment implements AMapLocationListener,
 
     /**
      * 模拟获取网络上的marker数据
+     *
      * @param centerPoint
      * @param num
      * @param offset
      * @return
      */
-    private List<LatLng> addSimulatedData(LatLng centerPoint, int num, double offset){
+    private List<LatLng> addSimulatedData(LatLng centerPoint, int num, double offset) {
         List<LatLng> data = new ArrayList<>();
-        if(num>0){
-            for(int i=0;i<num;i++){
-                double lat = centerPoint.latitude + (Math.random()-0.5)*offset;
-                double lon = centerPoint.longitude + (Math.random()-0.5)*offset;
-                LatLng latlng = new LatLng(lat,lon);
+        if (num > 0) {
+            for (int i = 0; i < num; i++) {
+                double lat = centerPoint.latitude + (Math.random() - 0.5) * offset;
+                double lon = centerPoint.longitude + (Math.random() - 0.5) * offset;
+                LatLng latlng = new LatLng(lat, lon);
                 data.add(latlng);
             }
         }

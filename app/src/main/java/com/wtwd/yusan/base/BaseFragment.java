@@ -22,10 +22,10 @@ import com.wtwd.yusan.util.Utils;
  */
 
 public abstract class BaseFragment extends Fragment {
-//    public Toolbar tool_bar;
-//    public ImageView img_tool_bar_left;
-//    public ImageView img_tool_bar_right;
-//    public TextView text_tool_bar_title;
+    public Toolbar tool_bar;
+    //    public ImageView img_tool_bar_left;
+    public ImageView img_tool_bar_right;
+    public TextView text_tool_bar_title;
 
     @Nullable
     @Override
@@ -33,12 +33,14 @@ public abstract class BaseFragment extends Fragment {
         if (getLayoutResourceId() != 0) {
 //            changeTitleBarColor();
             View mView = inflater.inflate(getLayoutResourceId(), container, false);
-//            tool_bar = (Toolbar) mView.findViewById(R.id.tool_bar);
-//            img_tool_bar_right = (ImageView) mView.findViewById(R.id.img_tool_bar_right);
-//            text_tool_bar_title = (TextView) mView.findViewById(R.id.text_tool_bar_title);
-//            Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(getActivity()), 0, 0);
+            tool_bar = (Toolbar) mView.findViewById(R.id.tool_bar);
+            img_tool_bar_right = (ImageView) mView.findViewById(R.id.img_tool_bar_right);
+            text_tool_bar_title = (TextView) mView.findViewById(R.id.text_tool_bar_title);
+            img_tool_bar_right.setVisibility(View.GONE);
+            Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(getActivity()), 0, 0);
+            setTitleToolbarStyle(tool_bar);
 
-            initFragmentView(mView);
+            initFragmentView(savedInstanceState, mView);
 
             return mView;
         } else {
@@ -48,7 +50,7 @@ public abstract class BaseFragment extends Fragment {
 
     public abstract int getLayoutResourceId();
 
-    public abstract void initFragmentView(View mView);
+    public abstract void initFragmentView(Bundle savedInstanceState, View mView);
 
 
     private void changeTitleBarColor() {
@@ -58,6 +60,20 @@ public abstract class BaseFragment extends Fragment {
                     (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
 //        Utils.StatusBarLightMode(getActivity());
+    }
+
+    public void setTitleToolbarStyle(Toolbar tool_bar) {
+
+        changeTitleBarColor();
+        Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(getActivity()), 0, 0);
+        Utils.transparencyBar(getActivity());
+//        if (type == PURE_PICTURE_TITLE) {
+//        } else if (type == SOLID_COLOR_TITLE) {
+//            tool_bar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
+//            Utils.setWindowStatusBarColor(this, colorId);
+//            Utils.setStatusBarColor(this, colorId);
+//        }
+//        Utils.StatusBarLightMode(this);
     }
 
 
