@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -50,11 +55,7 @@ dependencies {
     implementation("com.github.ybq:Android-SpinKit:1.0.2", {
         exclude group: 'com.github.ybq', module: 'Android-SpinKit'
     })
-
-//    implementation 'com.google.code.gson:gson:2.8.2'
-//    implementation 'com.github.bumptech.glide:glide:4.6.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
-//    implementation 'com.github.ybq:Android-SpinKit:1.0.2'
+    compile 'com.amap.api:location:3.8.0'
 
 
 }

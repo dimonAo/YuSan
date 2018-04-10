@@ -1,0 +1,406 @@
+package com.wtwd.yusan.fragment;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdate;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.MyLocationStyle;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.wtwd.yusan.R;
+import com.wtwd.yusan.util.ViewUtil;
+import com.wtwd.yusan.widget.view.CircleImageView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 附近的人
+ * time:2018/4/9
+ * Created by w77996
+ */
+public class NearbyMapFragment extends Fragment implements AMapLocationListener, LocationSource,View.OnClickListener {
+
+    private final static String TAG = "NearByMapFragment";
+
+    /**
+     * 地图界面view
+     */
+    private MapView mMapView;
+    /**
+     * 地图对象
+     */
+    private AMap mAMap;
+    /**
+     * 定位图标style
+     */
+    private MyLocationStyle mMyLocationStyle;
+    /**
+     * 声明AMapLocationClient类对象
+     */
+    private AMapLocationClient mAMapLocationClient;
+    /**
+     * 声明AMapLocationClienOptiont类对象
+     */
+    private AMapLocationClientOption mAMapLocationClientOption;
+    /**
+     * 声明定位改变监听器对象
+     */
+    private OnLocationChangedListener mOnLocationChangedListener;
+
+    /**
+     * 定位按钮
+     */
+    private ImageView img_location;
+
+    BitmapDescriptor bitmapDescriptor ;
+
+    /**
+     * 实例化fragment
+     *
+     * @return
+     */
+    public static NearbyMapFragment newInstance() {
+        NearbyMapFragment nearbyMapFragment = new NearbyMapFragment();
+        return nearbyMapFragment;
+    }
+
+    public NearbyMapFragment(){
+
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_nearbymap, container, false);
+        initView(savedInstanceState, view);
+        addListener();
+        return view;
+    }
+
+    /**
+     * 初始化地图界面及定位
+     *
+     * @param savedInstanceState
+     * @param view
+     */
+    private void initView(Bundle savedInstanceState, View view) {
+        Log.e(TAG, "initView-------------------- 初始化界面");
+        // LatLng centerBJPoint= new LatLng(22.381754,114.055235);//地图默认中心店
+        // AMapOptions mapOptions = new AMapOptions(); // 定义了一个配置 AMap 对象的参数类
+        //  mapOptions.camera(new CameraPosition(centerBJPoint, 15f, 0, 0));
+
+        img_location = (ImageView) view.findViewById(R.id.img_location);
+        mMapView = view.findViewById(R.id.map);
+        // mMapView = new MapView(getActivity(),mapOptions);
+        mMapView.onCreate(savedInstanceState);
+        if (mAMap == null) {
+            mAMap = mMapView.getMap();
+        }
+        mMyLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);
+        // mMyLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.location_point));//设置定位图标
+        mMyLocationStyle.myLocationIcon(null);
+        mMyLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
+        mMyLocationStyle.anchor(0.5f, 1f);//偏移
+        mMyLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
+        mMyLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
+        mAMap.setMinZoomLevel(13);
+        mAMap.setMaxZoomLevel(18);
+        mAMap.setMyLocationStyle(mMyLocationStyle);
+        mAMap.getUiSettings().setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
+        mAMap.getUiSettings().setZoomControlsEnabled(false);
+        mAMap.getUiSettings().setLogoBottomMargin(-50);
+        mAMap.setLocationSource(this);
+        mAMap.setMyLocationEnabled(true);
+        mAMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (marker.getObject().getClass().equals(MarkerBean.class)) {
+                    MarkerBean markerBean = (MarkerBean) marker.getObject();
+                    Toast.makeText(getActivity(), "这是自定义marker，代号" + markerBean.getMarkerId(), Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+        mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+
+            }
+
+            @Override
+            public void onCameraChangeFinish(CameraPosition cameraPosition) {
+
+            }
+        });
+    }
+
+    /**
+     * 添加监听器
+     */
+    private void addListener() {
+        img_location.setOnClickListener(this);
+    }
+
+    /******** AMapLocationListener 定位回调监听器*************/
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        Log.e(TAG,"onLocationChanged ----------------------- :");
+        if (null != mOnLocationChangedListener && null != aMapLocation) {
+            if (null != aMapLocation && aMapLocation.getErrorCode() == 0) {
+                Log.e(TAG, "onLocationChanged 定位成功 ----------------------- :" + "aMapLocation 信息 " + aMapLocation.getLongitude() + " " + aMapLocation.getLatitude());
+                mOnLocationChangedListener.onLocationChanged(aMapLocation);//显示定位
+                LatLng latLng = new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());//构造位置
+                MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
+                        .position(latLng)
+                        .draggable(false);
+                mAMap.addMarker(markerOption);
+               /* mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));*/
+                moveMapToPosition(latLng);
+                addCustomMarkersToMap(latLng);
+            } else {
+                Log.e(TAG, "onLocationChanged 定位失败----------------------- :" + "aMapLocation 信息 " + aMapLocation.getErrorCode() + " " + aMapLocation.getErrorInfo());
+            }
+        }
+
+    }
+    /******* LocationSource 回调*************/
+
+    /**
+     * 激活定位
+     *
+     * @param onLocationChangedListener
+     */
+    @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
+        Log.e(TAG,"activate--------------- 激活定位");
+        mOnLocationChangedListener = onLocationChangedListener;
+        location();
+    }
+
+    /**
+     * 停止定位
+     */
+    @Override
+    public void deactivate() {
+        Log.e(TAG,"deactivate--------------- 停止定位");
+        mOnLocationChangedListener = null;
+        if (null != mAMapLocationClient) {
+            mAMapLocationClient = null;
+            mAMapLocationClient.onDestroy();
+        }
+        mAMapLocationClient = null;
+    }
+
+    /**
+     * 必须重写以下方法
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+        if(null != mAMapLocationClient){
+            mAMapLocationClient.onDestroy();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.img_location:
+                location();
+                break;
+        }
+    }
+
+    /**
+     * 定位
+     */
+    private void location() {
+        Log.e(TAG,"location--------------- 开始定位");
+        mAMap.clear();
+        if (mAMapLocationClient == null) {
+            mAMapLocationClient = new AMapLocationClient(getActivity());//初始化定位
+            mAMapLocationClientOption = new AMapLocationClientOption();//初始化AMapLocationClientOption对象
+            mAMapLocationClient.setLocationListener(this);
+            mAMapLocationClientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//高精度定位
+            mAMapLocationClientOption.setOnceLocation(true);
+            mAMapLocationClientOption.setOnceLocationLatest(true);//设置单次精确定位
+            mAMapLocationClient.setLocationOption(mAMapLocationClientOption);
+            mAMapLocationClient.startLocation();//开始定位
+        }else{
+            mAMapLocationClient.startLocation();//开始定位
+        }
+    }
+
+    /**
+     * 移动地图视角到某个精确位置
+     * @param latLng 坐标
+     */
+    private void moveMapToPosition(LatLng latLng) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(
+                        latLng,//新的中心点坐标
+                        16,    //新的缩放级别
+                        0,     //俯仰角0°~45°（垂直与地图时为0）
+                        0      //偏航角 0~360° (正北方为0)
+                ));
+        mAMap.animateCamera(cameraUpdate, 300, new AMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+    }
+
+    /**
+     * 添加附近的人标记
+     */
+    private void addMarker(final LatLng latLng,final MarkerBean markerBean){
+        String url = "http://ucardstorevideo.b0.upaiyun.com/test/e8c8472c-d16d-4f0a-8a7b-46416a79f4c6.png";
+        final MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.setFlat(true);
+        markerOptions.anchor(0.5f, 0.5f);
+        markerOptions.position(new LatLng(latLng.latitude, latLng.longitude));
+        customizeMarkerIcon(url,markerBean ,new OnMarkerIconLoadListener() {
+            @Override
+            public void markerIconLoadingFinished(View view) {
+                //bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
+                Marker marker;
+                markerOptions.icon(bitmapDescriptor);
+                marker = mAMap.addMarker(markerOptions);
+                marker.setObject(markerBean);
+            }
+        });
+
+    }
+
+    private void addCustomMarkersToMap(LatLng latLng) {
+
+        List<LatLng> locations = new ArrayList<>();
+        locations = addSimulatedData(latLng, 20, 0.02);
+        for (int i = 0; i < locations.size(); i++) {
+            addMarker(locations.get(i), new MarkerBean(i));
+        }
+    }
+
+
+    /**
+     * 从网络上下载imgUrl的图标
+     * @return
+     */
+    private void customizeMarkerIcon(String url,MarkerBean markerBean, final OnMarkerIconLoadListener listener) {
+        final View markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+        final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
+        Glide.with(this)
+                .load(url +"!/format/webp")
+                .thumbnail(0.2f)
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        //待图片加载完毕后再设置bitmapDes
+                        icon.setImageDrawable(resource);
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(ViewUtil.convertViewToBitmap(markerView));
+                        listener.markerIconLoadingFinished(markerView);
+                    }
+                });
+    }
+
+    /**
+     * 自定义监听接口,用来marker的icon加载完毕后回调添加marker属性
+     */
+    public interface OnMarkerIconLoadListener{
+        void markerIconLoadingFinished(View view);
+    }
+
+    public class MarkerBean{
+        private int markerId;
+
+        public MarkerBean(int markerId) {
+            this.markerId = markerId;
+        }
+
+        public int getMarkerId() {
+            return markerId;
+        }
+
+        public void setMarkerId(int markerId) {
+            this.markerId = markerId;
+        }
+    }
+
+    /**
+     * 模拟获取网络上的marker数据
+     * @param centerPoint
+     * @param num
+     * @param offset
+     * @return
+     */
+    private List<LatLng> addSimulatedData(LatLng centerPoint, int num, double offset){
+        List<LatLng> data = new ArrayList<>();
+        if(num>0){
+            for(int i=0;i<num;i++){
+                double lat = centerPoint.latitude + (Math.random()-0.5)*offset;
+                double lon = centerPoint.longitude + (Math.random()-0.5)*offset;
+                LatLng latlng = new LatLng(lat,lon);
+                data.add(latlng);
+            }
+        }
+        return data;
+    }
+}
