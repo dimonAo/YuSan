@@ -38,7 +38,10 @@
         <activity
             android:name=".activity.TaskActivity"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".activity.FeedBackActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.NearByListActivity"
+            android:screenOrientation="portrait" />
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="6072b710f29cb4bd5e0d60843bbee090" />

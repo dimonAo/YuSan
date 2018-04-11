@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:paddingLeft="1dp">
-            <com.wtwd.yusan.view.CircleImageView
+            <com.wtwd.yusan.widget.view.CircleImageView
                 android:id="@+id/marker_item_icon"
                 android:layout_width="@dimen/common_36"
                 android:layout_height="@dimen/common_36"
