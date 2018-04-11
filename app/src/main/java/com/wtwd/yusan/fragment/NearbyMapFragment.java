@@ -1,5 +1,6 @@
 package com.wtwd.yusan.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -33,9 +34,10 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.NearbyListActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.util.ViewUtil;
 import com.wtwd.yusan.widget.view.CircleImageView;
@@ -81,17 +83,27 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 定位按钮
      */
     private ImageView img_location;
+    /**
+     * 奖赏按钮
+     */
+    private ImageView img_shang;
+
+    private ImageView img_nearbymap_list;
 
     BitmapDescriptor bitmapDescriptor;
 
+    private static NearbyMapFragment mNearbyMapFragment;
     /**
      * 实例化fragment
      *
      * @return
      */
     public static NearbyMapFragment newInstance() {
-        NearbyMapFragment nearbyMapFragment = new NearbyMapFragment();
-        return nearbyMapFragment;
+        if(null == mNearbyMapFragment){
+            mNearbyMapFragment = new NearbyMapFragment();
+        }
+
+        return mNearbyMapFragment;
     }
 
     public NearbyMapFragment() {
@@ -127,6 +139,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         //  mapOptions.camera(new CameraPosition(centerBJPoint, 15f, 0, 0));
         text_tool_bar_title.setText("附近");
         img_location = (ImageView) view.findViewById(R.id.img_location);
+        img_shang = (ImageView)view.findViewById(R.id.img_shang);
+        img_nearbymap_list = (ImageView)view.findViewById(R.id.img_nearbymap_list);
         mMapView = view.findViewById(R.id.map);
         // mMapView = new MapView(getActivity(),mapOptions);
         mMapView.onCreate(savedInstanceState);
@@ -134,8 +148,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             mAMap = mMapView.getMap();
         }
         mMyLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);
-        // mMyLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.location_point));//设置定位图标
-        mMyLocationStyle.myLocationIcon(null);
+         mMyLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point));//设置定位图标
+       // mMyLocationStyle.myLocationIcon(null);
         mMyLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
         mMyLocationStyle.anchor(0.5f, 1f);//偏移
         mMyLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
@@ -144,7 +158,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         mAMap.setMaxZoomLevel(18);
         mAMap.setMyLocationStyle(mMyLocationStyle);
         mAMap.getUiSettings().setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
-        mAMap.getUiSettings().setZoomControlsEnabled(false);
+        mAMap.getUiSettings().setRotateGesturesEnabled(false);//禁止地图旋转手势
+        mAMap.getUiSettings().setTiltGesturesEnabled(false);//禁止倾斜手势
         mAMap.getUiSettings().setLogoBottomMargin(-50);
         mAMap.setLocationSource(this);
         mAMap.setMyLocationEnabled(true);
@@ -161,12 +176,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-
+                Log.e(TAG,"onCameraChange-----");
             }
 
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
-
+                Log.e(TAG,"onCameraChangeFinish-----"+cameraPosition.target.longitude+" "+cameraPosition.target.latitude+" "+cameraPosition.zoom);
             }
         });
     }
@@ -176,6 +191,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void addListener() {
         img_location.setOnClickListener(this);
+        img_shang.setOnClickListener(this);
+        img_nearbymap_list.setOnClickListener(this);
     }
 
     /******** AMapLocationListener 定位回调监听器*************/
@@ -187,10 +204,10 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 Log.e(TAG, "onLocationChanged 定位成功 ----------------------- :" + "aMapLocation 信息 " + aMapLocation.getLongitude() + " " + aMapLocation.getLatitude());
                 mOnLocationChangedListener.onLocationChanged(aMapLocation);//显示定位
                 LatLng latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//构造位置
-                MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
+               /* MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
                         .position(latLng)
                         .draggable(false);
-                mAMap.addMarker(markerOption);
+                mAMap.addMarker(markerOption);*/
                /* mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));*/
                 moveMapToPosition(latLng);
                 addCustomMarkersToMap(latLng);
@@ -264,6 +281,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             case R.id.img_location:
                 location();
                 break;
+            case R.id.img_shang:
+
+                break;
+            case R.id.img_nearbymap_list:
+                Intent nearbyListIntent = new Intent(getActivity(), NearbyListActivity.class);
+                startActivity(nearbyListIntent);
+                break;
         }
     }
 
@@ -272,7 +296,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void location() {
         Log.e(TAG, "location--------------- 开始定位");
-        mAMap.clear();
+        clearMarkers();
         if (mAMapLocationClient == null) {
             mAMapLocationClient = new AMapLocationClient(getActivity());//初始化定位
             mAMapLocationClientOption = new AMapLocationClientOption();//初始化AMapLocationClientOption对象
@@ -296,7 +320,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(
                 new CameraPosition(
                         latLng,//新的中心点坐标
-                        16,    //新的缩放级别
+                        15,    //新的缩放级别
                         0,     //俯仰角0°~45°（垂直与地图时为0）
                         0      //偏航角 0~360° (正北方为0)
                 ));
@@ -355,13 +379,16 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         final View markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
-                .load(url + "!/format/webp")
+                .load(url +"!/format/webp")
+                .asBitmap()
                 .thumbnail(0.2f)
-                .into(new SimpleTarget<Drawable>() {
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
                         //待图片加载完毕后再设置bitmapDes
-                        icon.setImageDrawable(resource);
+                        icon.setImageBitmap(bitmap);
                         bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(ViewUtil.convertViewToBitmap(markerView));
                         listener.markerIconLoadingFinished(markerView);
                     }
@@ -410,5 +437,21 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             }
         }
         return data;
+    }
+
+    /**
+     * 删除marker
+     */
+    //删除指定Marker
+    private void clearMarkers() {
+        //获取地图上所有Marker
+        List<Marker> mapScreenMarkers = mAMap.getMapScreenMarkers();
+        for (int i = 0; i < mapScreenMarkers.size(); i++) {
+            Marker marker = mapScreenMarkers.get(i);
+            if (marker.getObject() instanceof MarkerBean) {
+                marker.remove();//移除当前Marker
+            }
+        }
+        mAMap.reloadMap();//刷新地图
     }
 }

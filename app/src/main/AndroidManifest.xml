@@ -28,16 +28,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme">
-        <activity android:name=".activity.TaskActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.MainActivity"
-            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -45,7 +35,26 @@
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name=".activity.PublishTaskActivity"></activity>
+        <activity android:name=".activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.TaskActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.FeedBackActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.NearbyListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.AboutUsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.PublishTaskActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

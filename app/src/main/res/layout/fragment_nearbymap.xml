@@ -26,28 +26,30 @@
         android:layout_width="@dimen/common_36"
         android:layout_height="@dimen/common_36"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/common_66"
+        android:layout_marginBottom="@dimen/common_24"
         android:layout_marginLeft="@dimen/common_6"
         android:src="@mipmap/nearby_map_location" />
 
     <ImageView
+        android:id="@+id/img_shang"
         android:layout_width="@dimen/common_114"
         android:layout_height="@dimen/common_114"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/common_48"
         android:src="@mipmap/nearby_map_shang" />
 
     <LinearLayout
+        android:layout_below="@id/lin_map"
         android:layout_width="@dimen/common_32"
         android:layout_height="@dimen/common_32"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/common_8"
-        android:layout_marginTop="@dimen/common_74"
+        android:layout_marginTop="@dimen/common_26"
         android:background="@drawable/lin_map_corners_btn"
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/img_nearbymap_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -56,11 +58,12 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
+
         android:layout_width="@dimen/common_60"
         android:layout_height="@dimen/common_24"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/common_70"
+        android:layout_marginBottom="@dimen/common_26"
         android:layout_marginRight="@dimen/common_8"
         android:background="@drawable/lin_map_corners_btn"
         android:orientation="horizontal">
