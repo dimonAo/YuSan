@@ -33,8 +33,8 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.util.ViewUtil;
@@ -81,17 +81,24 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 定位按钮
      */
     private ImageView img_location;
-
+    /**
+     * 奖赏按钮
+     */
+    private ImageView img_shang;
     BitmapDescriptor bitmapDescriptor;
 
+    private static NearbyMapFragment mNearbyMapFragment;
     /**
      * 实例化fragment
      *
      * @return
      */
     public static NearbyMapFragment newInstance() {
-        NearbyMapFragment nearbyMapFragment = new NearbyMapFragment();
-        return nearbyMapFragment;
+        if(null == mNearbyMapFragment){
+            mNearbyMapFragment = new NearbyMapFragment();
+        }
+
+        return mNearbyMapFragment;
     }
 
     public NearbyMapFragment() {
@@ -127,6 +134,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         //  mapOptions.camera(new CameraPosition(centerBJPoint, 15f, 0, 0));
         text_tool_bar_title.setText("附近");
         img_location = (ImageView) view.findViewById(R.id.img_location);
+        img_shang = (ImageView)view.findViewById(R.id.img_shang);
         mMapView = view.findViewById(R.id.map);
         // mMapView = new MapView(getActivity(),mapOptions);
         mMapView.onCreate(savedInstanceState);
@@ -161,12 +169,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-
+                Log.e(TAG,"onCameraChange-----");
             }
 
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
-
+                Log.e(TAG,"onCameraChangeFinish-----"+cameraPosition.target.longitude+" "+cameraPosition.target.latitude+" "+cameraPosition.zoom);
             }
         });
     }
@@ -176,6 +184,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void addListener() {
         img_location.setOnClickListener(this);
+        img_shang.setOnClickListener(this);
     }
 
     /******** AMapLocationListener 定位回调监听器*************/
@@ -263,6 +272,9 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         switch (view.getId()) {
             case R.id.img_location:
                 location();
+                break;
+            case R.id.img_shang:
+
                 break;
         }
     }
@@ -355,13 +367,16 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         final View markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
-                .load(url + "!/format/webp")
+                .load(url +"!/format/webp")
+                .asBitmap()
                 .thumbnail(0.2f)
-                .into(new SimpleTarget<Drawable>() {
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
                         //待图片加载完毕后再设置bitmapDes
-                        icon.setImageDrawable(resource);
+                        icon.setImageBitmap(bitmap);
                         bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(ViewUtil.convertViewToBitmap(markerView));
                         listener.markerIconLoadingFinished(markerView);
                     }
