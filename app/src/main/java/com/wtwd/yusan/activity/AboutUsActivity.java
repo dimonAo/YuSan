@@ -11,10 +11,10 @@ import com.wtwd.yusan.base.BaseActivity;
  * Created by w77996
  */
 
-public class NearByListActivity extends BaseActivity {
+public class AboutUsActivity extends BaseActivity {
     @Override
     public int getLayoutResourceId() {
-        return R.layout.activity_nearbylist;
+        return R.layout.acitvity_aboutus;
     }
 
     @Override
