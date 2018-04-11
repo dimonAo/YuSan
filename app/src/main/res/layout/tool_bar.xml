@@ -6,6 +6,7 @@
     android:layout_height="?attr/actionBarSize"
     app:background="@color/transparent">
 
+
     <TextView
         android:id="@+id/text_tool_bar_title"
         android:layout_width="wrap_content"
@@ -13,7 +14,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_14" />
+        android:textSize="@dimen/text_16" />
 
     <ImageView
         android:id="@+id/img_tool_bar_right"

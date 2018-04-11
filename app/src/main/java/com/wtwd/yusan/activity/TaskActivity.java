@@ -64,6 +64,13 @@ public class TaskActivity extends BaseActivity {
         viewpager_task.setAdapter(mAdapter);
         tab_layout_task.setupWithViewPager(viewpager_task);
 
+        text_publish_task.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readyGo(PublishTaskActivity.class);
+            }
+        });
+
     }
 
     private void addFragment() {

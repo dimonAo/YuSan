@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_42"
+        android:background="@color/dialogTitleBg"
+        android:gravity="center_vertical|right">
+
+        <TextView
+            android:id="@+id/text_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/common_14"
+            android:text="完成"
+            android:textColor="@color/colorTaskerNick"
+            android:textSize="@dimen/text_14" />
+
+    </LinearLayout>
+
+    <com.wtwd.yusan.widget.hscorll.StringScrollPicker
+        android:id="@+id/string_picker_sex"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dialogContentBg"
+        app:spv_alignment="center"
+        app:spv_center_item_background="@drawable/shape_dialog_center_bg"
+        app:spv_is_circulation="false"
+        app:spv_max_text_size="@dimen/text_16"
+        app:spv_min_text_size="@dimen/text_14"
+        app:spv_orientation="vertical" />
+
+
+</LinearLayout>

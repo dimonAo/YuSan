@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@mipmap/task_bg"
-        >
+        android:background="@mipmap/task_bg">
+
         <include layout="@layout/tool_bar" />
     </LinearLayout>
 
@@ -19,9 +19,7 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/common_44"
-        android:layout_below="@id/lin_map"
-        />
+        android:layout_below="@id/lin_map" />
 
     <ImageView
         android:id="@+id/img_location"

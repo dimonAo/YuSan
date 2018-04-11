@@ -16,14 +16,23 @@
     <color name="colorUnselectedText">#a1a1a2</color>
     <color name="colorTaskerNick">#262626</color>
     <color name="colorTaskContent">#666666</color>
+    <color name="colorTaskContent_9">#999999</color>
     <color name="colorShortVerticalLine">#c3c1c1</color>
     <color name="colorMoneyUnit">#fd1b00</color>
     <color name="color_33">#333333</color>
     <color name="colorTaskBtn">#ff72a0</color>
     <color name="colorTaskBtn_5">#7fff72a0</color>
     <color name="color_grey">#cccbcb</color>
+    <color name="colorCountText">#ccccd0</color>
 
     <color name="startColorTask">#ff709e</color>
+    <color name="colorAlertTask">#fd1b00</color>
+
+    <color name="colorRectSolid">#fafafa</color>
+    <color name="colorRectStroke">#dddddd</color>
+
+    <color name="dialogTitleBg">#cccccc</color>
+    <color name="dialogContentBg">#eeeeee</color>
 
 
 </resources>
