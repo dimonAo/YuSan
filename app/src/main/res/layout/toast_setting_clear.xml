@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@drawable/lin_setting_clear_toast"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="@dimen/common_112"
+        android:id="@+id/tv_message_toast"
+        android:textColor="#fff"
+        android:textSize="@dimen/text_14"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_height="@dimen/common_34"
+        android:text="清除成功"/>
+</LinearLayout>
