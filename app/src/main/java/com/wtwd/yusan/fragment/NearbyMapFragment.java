@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -36,14 +37,24 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.gson.Gson;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.activity.NearbyListActivity;
 import com.wtwd.yusan.base.BaseFragment;
+import com.wtwd.yusan.entity.LastVersionEntity;
+import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.ViewUtil;
 import com.wtwd.yusan.widget.view.CircleImageView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * 附近的人
@@ -87,9 +98,14 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 奖赏按钮
      */
     private ImageView img_shang;
-
+    /**
+     * 附近的人列表
+     */
     private ImageView img_nearbymap_list;
-
+    /**
+     * 用户状态
+     */
+    LinearLayout lin_nearbymap_status;
     BitmapDescriptor bitmapDescriptor;
 
     private static NearbyMapFragment mNearbyMapFragment;
@@ -141,6 +157,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         img_location = (ImageView) view.findViewById(R.id.img_location);
         img_shang = (ImageView)view.findViewById(R.id.img_shang);
         img_nearbymap_list = (ImageView)view.findViewById(R.id.img_nearbymap_list);
+        lin_nearbymap_status= (LinearLayout)view.findViewById(R.id.lin_nearbymap_status);
         mMapView = view.findViewById(R.id.map);
         // mMapView = new MapView(getActivity(),mapOptions);
         mMapView.onCreate(savedInstanceState);
@@ -160,6 +177,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         mAMap.getUiSettings().setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
         mAMap.getUiSettings().setRotateGesturesEnabled(false);//禁止地图旋转手势
         mAMap.getUiSettings().setTiltGesturesEnabled(false);//禁止倾斜手势
+        mAMap.getUiSettings().setZoomControlsEnabled(false);
         mAMap.getUiSettings().setLogoBottomMargin(-50);
         mAMap.setLocationSource(this);
         mAMap.setMyLocationEnabled(true);
@@ -182,6 +200,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
                 Log.e(TAG,"onCameraChangeFinish-----"+cameraPosition.target.longitude+" "+cameraPosition.target.latitude+" "+cameraPosition.zoom);
+                // TODO: 2018/4/12 向后台请求数据并显示
+            }
+        });
+        mAMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
+            @Override
+            public void onMapLoaded() {
+                Log.e(TAG,"onMapLoaded--------------");
             }
         });
     }
@@ -193,6 +218,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         img_location.setOnClickListener(this);
         img_shang.setOnClickListener(this);
         img_nearbymap_list.setOnClickListener(this);
+        lin_nearbymap_status.setOnClickListener(this);
     }
 
     /******** AMapLocationListener 定位回调监听器*************/
@@ -208,9 +234,9 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                         .position(latLng)
                         .draggable(false);
                 mAMap.addMarker(markerOption);*/
-               /* mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));*/
+                mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                 moveMapToPosition(latLng);
-                addCustomMarkersToMap(latLng);
+                //addCustomMarkersToMap(latLng);
             } else {
                 Log.e(TAG, "onLocationChanged 定位失败----------------------- :" + "aMapLocation 信息 " + aMapLocation.getErrorCode() + " " + aMapLocation.getErrorInfo());
             }
@@ -288,15 +314,19 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 Intent nearbyListIntent = new Intent(getActivity(), NearbyListActivity.class);
                 startActivity(nearbyListIntent);
                 break;
+            case R.id.lin_nearbymap_status:
+                changeUserStatus();
+                break;
         }
     }
+
+
 
     /**
      * 定位
      */
     private void location() {
         Log.e(TAG, "location--------------- 开始定位");
-        clearMarkers();
         if (mAMapLocationClient == null) {
             mAMapLocationClient = new AMapLocationClient(getActivity());//初始化定位
             mAMapLocationClientOption = new AMapLocationClientOption();//初始化AMapLocationClientOption对象
@@ -336,6 +366,67 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
             }
         });
+    }
+
+    /**
+     * 改变用户状态
+     */
+    private void changeUserStatus() {
+        String url = "";
+        OkHttpUtils.get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
+    }
+
+    /**
+     * 获取附近的人数据
+     */
+    private void getNearbyUser(){
+        OkHttpUtils.get()
+                .url("")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            int status = json.getInt("status");
+                            int errCode = json.getInt("errCode");
+                            if(status == 1){
+                                String result = json.getString("object");
+                                List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(result,LastVersionEntity.class);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        addMarkerToMap();
+                    }
+                });
+
+    }
+
+    /**
+     * 添加marker到地图上
+     */
+    private void addMarkerToMap() {
+
+
     }
 
     /**

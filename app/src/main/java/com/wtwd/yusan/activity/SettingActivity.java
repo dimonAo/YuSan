@@ -1,13 +1,20 @@
 package com.wtwd.yusan.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.BaseActivity;
+import com.wtwd.yusan.util.GlideCacheUtil;
+import com.wtwd.yusan.util.Utils;
 
 /**
  * time:2018/4/11
@@ -15,6 +22,9 @@ import com.wtwd.yusan.base.BaseActivity;
  */
 
 public class SettingActivity extends BaseActivity implements  View.OnClickListener{
+
+    private static  final String TAG = "SettingActivity";
+
     /**
      * 清除缓存
      */
@@ -80,6 +90,8 @@ public class SettingActivity extends BaseActivity implements  View.OnClickListen
      */
     private void getTemp() {
         // TODO: 2018/4/11 获取缓存
+        Log.e(TAG, GlideCacheUtil.getInstance().getCacheSize(this)+"M");
+        Utils.showToast(this,"清除成功");
     }
 
     /**
@@ -95,6 +107,8 @@ public class SettingActivity extends BaseActivity implements  View.OnClickListen
     private void loginOut() {
 
     }
+
+
 
 
 }

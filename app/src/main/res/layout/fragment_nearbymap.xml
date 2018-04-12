@@ -57,7 +57,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/lin_nearbymap_status"
 
         android:layout_width="@dimen/common_60"
         android:layout_height="@dimen/common_24"
