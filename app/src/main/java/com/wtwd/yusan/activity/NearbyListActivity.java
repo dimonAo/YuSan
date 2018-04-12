@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.wtwd.yusan.R;
@@ -15,10 +16,14 @@ import com.wtwd.yusan.base.BaseActivity;
 import com.wtwd.yusan.entity.NearbyEntity;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import okhttp3.Call;
 
 /**
  * time:2018/4/11
@@ -58,9 +63,9 @@ public class NearbyListActivity extends BaseActivity {
         easy_layout = (EasyRefreshLayout) findViewById(R.id.easy_layout);
         recycler_nearbylist = (RecyclerView) findViewById(R.id.recycler_nearbylist);
         recycler_nearbylist.setLayoutManager(new LinearLayoutManager(this));
-        DividerItemDecoration mDi = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mDi.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_line));
-        recycler_nearbylist.addItemDecoration(mDi);
+       // DividerItemDecoration mDi = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+      //  mDi.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_line));
+       // recycler_nearbylist.addItemDecoration(mDi);
 
         mNearbyListAdapter = new NearbyListAdapter(R.layout.item_nearby_list, null);
         recycler_nearbylist.setAdapter(mNearbyListAdapter);
@@ -69,6 +74,21 @@ public class NearbyListActivity extends BaseActivity {
     }
 
     private void getData() {
+        OkHttpUtils.get()
+                .url("https://www.baidu.com/")
+                .build()
+                .connTimeOut(3000)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e("ff",response);
+                    }
+                });
         mNearbyEntitys.clear();
         for (int i = 0; i < 20; i++) {
             NearbyEntity mEn = new NearbyEntity();
