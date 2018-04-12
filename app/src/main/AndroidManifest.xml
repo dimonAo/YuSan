@@ -35,7 +35,7 @@
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.TaskActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,18 +43,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.TaskActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.FeedBackActivity"
+        <activity
+            android:name=".activity.FeedBackActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.NearbyListActivity"
+        <activity
+            android:name=".activity.NearbyListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.SettingActivity"
+        <activity
+            android:name=".activity.SettingActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.AboutUsActivity"
+        <activity
+            android:name=".activity.AboutUsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.PublishTaskActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.PublishTaskActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

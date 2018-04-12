@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,17 +25,18 @@
 
     </LinearLayout>
 
-    <com.wtwd.yusan.widget.hscorll.StringScrollPicker
-        android:id="@+id/string_picker_sex"
+    <com.aigestudio.wheelpicker.WheelPicker
+        android:id="@+id/wheel_picker_sex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dialogContentBg"
-        app:spv_alignment="center"
-        app:spv_center_item_background="@drawable/shape_dialog_center_bg"
-        app:spv_is_circulation="false"
-        app:spv_max_text_size="@dimen/text_16"
-        app:spv_min_text_size="@dimen/text_14"
-        app:spv_orientation="vertical" />
+        app:wheel_curved="true"
+        app:wheel_cyclic="false"
+        app:wheel_indicator="true"
+        app:wheel_indicator_size="1dp"
+        app:wheel_item_text_size="@dimen/text_14"
+        app:wheel_visible_item_count="5"
+
+        />
 
 
 </LinearLayout>

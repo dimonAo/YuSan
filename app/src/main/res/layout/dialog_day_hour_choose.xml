@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_42"
+        android:background="@color/dialogTitleBg"
+        android:gravity="center_vertical|right">
+
+        <TextView
+            android:id="@+id/text_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/common_14"
+            android:text="完成"
+            android:textColor="@color/colorTaskerNick"
+            android:textSize="@dimen/text_14" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorWhite"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/common_6"
+                android:paddingTop="@dimen/common_6"
+                android:text="日"
+                android:textColor="@color/colorTaskContent"
+                android:textSize="@dimen/text_12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/common_6"
+                android:paddingTop="@dimen/common_6"
+                android:text="时"
+                android:textColor="@color/colorTaskContent"
+                android:textSize="@dimen/text_12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/common_6"
+                android:paddingTop="@dimen/common_6"
+                android:text="分"
+                android:textColor="@color/colorTaskContent"
+                android:textSize="@dimen/text_12" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/recycler_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/colorWhite"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.aigestudio.wheelpicker.WheelPicker
+                android:id="@+id/wheel_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:wheel_curved="true"
+                app:wheel_cyclic="false"
+                app:wheel_data="@array/data_array"
+                app:wheel_indicator="true"
+                app:wheel_indicator_size="1dp"
+                app:wheel_item_text_size="@dimen/text_14"
+                app:wheel_visible_item_count="5" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.aigestudio.wheelpicker.WheelPicker
+                android:id="@+id/wheel_hour"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:wheel_curved="true"
+                app:wheel_cyclic="false"
+                app:wheel_indicator="true"
+                app:wheel_indicator_size="1dp"
+                app:wheel_item_text_size="@dimen/text_14"
+                app:wheel_visible_item_count="5" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.aigestudio.wheelpicker.WheelPicker
+                android:id="@+id/wheel_minute"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:wheel_curved="true"
+                app:wheel_cyclic="false"
+                app:wheel_indicator="true"
+                app:wheel_indicator_size="1dp"
+                app:wheel_item_text_size="@dimen/text_14"
+                app:wheel_visible_item_count="5" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

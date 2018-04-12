@@ -107,6 +107,7 @@ public class WheelAreaPicker extends LinearLayout implements IWheelAreaPicker {
         wheelPicker.setIndicator(true);
         wheelPicker.setIndicatorColor(R.color.line);
         wheelPicker.setCurved(true);
+        wheelPicker.setIndicatorSize(dip2px(mContext, 1));
 //        wheelPicker.setItemTextSize();
     }
 
@@ -147,11 +148,11 @@ public class WheelAreaPicker extends LinearLayout implements IWheelAreaPicker {
         for (City city : mCityList)
             mCityName.add(city.getName());
         mWPCity.setData(mCityName);
-        mWPCity.setSelectedItemPosition(0);
+//        mWPCity.setSelectedItemPosition(0);
         //获取第一个城市对应的城区的名字
         //重置先前的城区集合的数据
         mWPArea.setData(mCityList.get(0).getArea());
-        mWPArea.setSelectedItemPosition(0);
+//        mWPArea.setSelectedItemPosition(0);
     }
 
     @Override
