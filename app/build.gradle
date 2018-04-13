@@ -57,7 +57,7 @@ dependencies {
     })
 
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.amap.api:location:3.8.0'
-    compile 'com.zhy:okhttputils:2.6.2'
+    implementation 'com.amap.api:location:3.8.0'
+    implementation 'com.zhy:okhttputils:2.6.2'
     implementation project(':WheelPicker')
 }

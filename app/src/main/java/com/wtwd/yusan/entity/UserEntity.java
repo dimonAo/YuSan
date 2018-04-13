@@ -5,6 +5,7 @@ package com.wtwd.yusan.entity;
  * Created by w77996
  */
 
+
 public class UserEntity {
     private Long   user_id;                 //用户ID
 

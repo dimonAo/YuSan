@@ -24,18 +24,24 @@ import android.widget.Toast;
 import com.wtwd.yusan.R;
 
 import com.aigestudio.wheelpicker.WheelPicker;
+import com.wtwd.yusan.entity.ResultEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.transform.Result;
+
 
 public class Utils {
+
+    public static ResultEntity getResultEntity(String jsonString) {
+        return GsonUtils.GsonToBean(jsonString, ResultEntity.class);
+    }
 
 
     /**
@@ -381,7 +387,7 @@ public class Utils {
         return result;
     }
 
-    public static void setData(WheelPicker mHour, WheelPicker mMinute, int position,List<String> mHours,List<String> mMinutes) {
+    public static void setData(WheelPicker mHour, WheelPicker mMinute, int position, List<String> mHours, List<String> mMinutes) {
 
 //        List<String> mHours = new ArrayList<>();
 //        List<String> mMinutes = new ArrayList<>();
@@ -438,7 +444,7 @@ public class Utils {
     }
 
 
-    public static void setWheelHour(WheelPicker wheel_day, WheelPicker wheel_hour, WheelPicker wheel_minute, int position, List<String> mHours,List<String> mMinutes) {
+    public static void setWheelHour(WheelPicker wheel_day, WheelPicker wheel_hour, WheelPicker wheel_minute, int position, List<String> mHours, List<String> mMinutes) {
 //        List<String> mHours = new ArrayList<>();
 //        List<String> mMinutes = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
@@ -509,10 +515,11 @@ public class Utils {
 
     /**
      * 自定义toast
+     *
      * @param context
      * @param msg
      */
-    public static void showToast(Context context,String msg) {
+    public static void showToast(Context context, String msg) {
 
         Toast toast = new Toast(context);
         //设置Toast显示位置，居中，向 X、Y轴偏移量均为0

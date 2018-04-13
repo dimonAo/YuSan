@@ -13,6 +13,7 @@ import com.wtwd.yusan.R;
 import com.wtwd.yusan.adapter.NearbyListAdapter;
 import com.wtwd.yusan.adapter.TaskAdapter;
 import com.wtwd.yusan.base.BaseActivity;
+import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.NearbyEntity;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
@@ -20,6 +21,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -30,7 +32,7 @@ import okhttp3.Call;
  * Created by w77996
  */
 
-public class NearbyListActivity extends BaseActivity {
+public class NearbyListActivity extends CommonToolBarActivity {
 
     private EasyRefreshLayout easy_layout;
 
@@ -46,11 +48,12 @@ public class NearbyListActivity extends BaseActivity {
         return R.layout.activity_nearbylist;
     }
 
+
+
     @Override
-    public void onCreateView(Bundle saveInstanceState) {
+    public void onCreateCommonView(Bundle saveInstanceState) {
         initView();
     }
-
 
 
     @Override
@@ -60,6 +63,7 @@ public class NearbyListActivity extends BaseActivity {
 
 
     private void initView() {
+        text_tool_bar_title.setText("附近");
         easy_layout = (EasyRefreshLayout) findViewById(R.id.easy_layout);
         recycler_nearbylist = (RecyclerView) findViewById(R.id.recycler_nearbylist);
         recycler_nearbylist.setLayoutManager(new LinearLayoutManager(this));
@@ -74,6 +78,7 @@ public class NearbyListActivity extends BaseActivity {
     }
 
     private void getData() {
+
         OkHttpUtils.get()
                 .url("https://www.baidu.com/")
                 .build()

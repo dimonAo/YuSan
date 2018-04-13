@@ -6,166 +6,120 @@ package com.wtwd.yusan.entity;
 
 public class TaskEntity {
 
-    /**
-     * 数据库id
-     */
-    private int id;
-    /**
-     * 发布任务者头像URL
-     */
-    private String imgUrl;
-    /**
-     * 发布任务者名字
-     */
-    private String taskName;
-    /**
-     * 发布任务者性别
-     */
-    private String taskerSex;
-    /**
-     * 发布任务详情描述
-     */
-    private String taskContent;
-    /**
-     * 任务金额
-     */
-    private float taskCost;
-    /**
-     * 任务类型
-     */
-    private int taskType;
-    /**
-     * 任务开始时间
-     */
-    private String taskTime;
-    /**
-     * 任务开始日期
-     */
-    private String taskDate;
-    /**
-     * 任务性别条件
-     */
-    private String taskCondition;
-    /**
-     * 任务完成地点
-     */
-    private String taskLocation;
-    /**
-     * 任务状态
-     */
-    private String taskState;
+    private Long mission_id;                  //任务ID
 
-    public int getId() {
-        return id;
+    private String content;         //任务描述
+
+    private int type;               //任务类型
+
+    private int sex;          //限制接受者性别1是男，2是女，3是不限
+
+    private String address;          //地址
+
+    private double money;                 //任务金额
+
+    private UserEntity publisher;               //任务发布者
+
+    private String create_time;   //任务发布时间
+
+    private UserEntity accepter;     //任务接收者，可以为空
+
+    private int status;    //任务状态，0是待领取，1是进行中，2是确认完成，3是等待对方确认，4是已完成，5是已失效
+
+
+    public Long getMission_id() {
+        return mission_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMission_id(Long mission_id) {
+        this.mission_id = mission_id;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getContent() {
+        return content;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public int getType() {
+        return type;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public String getTaskerSex() {
-        return taskerSex;
+    public int getSex() {
+        return sex;
     }
 
-    public void setTaskerSex(String taskerSex) {
-        this.taskerSex = taskerSex;
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 
-    public String getTaskContent() {
-        return taskContent;
+    public String getAddress() {
+        return address;
     }
 
-    public void setTaskContent(String taskContent) {
-        this.taskContent = taskContent;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public float getTaskCost() {
-        return taskCost;
+    public double getMoney() {
+        return money;
     }
 
-    public void setTaskCost(float taskCost) {
-        this.taskCost = taskCost;
+    public void setMoney(double money) {
+        this.money = money;
     }
 
-    public int getTaskType() {
-        return taskType;
+    public UserEntity getPublisher() {
+        return publisher;
     }
 
-    public void setTaskType(int taskType) {
-        this.taskType = taskType;
+    public void setPublisher(UserEntity publisher) {
+        this.publisher = publisher;
     }
 
-    public String getTaskTime() {
-        return taskTime;
+    public String getCreate_time() {
+        return create_time;
     }
 
-    public void setTaskTime(String taskTime) {
-        this.taskTime = taskTime;
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
-    public String getTaskCondition() {
-        return taskCondition;
+    public UserEntity getAccepter() {
+        return accepter;
     }
 
-    public void setTaskCondition(String taskCondition) {
-        this.taskCondition = taskCondition;
+    public void setAccepter(UserEntity accepter) {
+        this.accepter = accepter;
     }
 
-    public String getTaskLocation() {
-        return taskLocation;
+    public int getStatus() {
+        return status;
     }
 
-    public void setTaskLocation(String taskLocation) {
-        this.taskLocation = taskLocation;
-    }
-
-    public String getTaskState() {
-        return taskState;
-    }
-
-    public void setTaskState(String taskState) {
-        this.taskState = taskState;
-    }
-
-    public String getTaskDate() {
-        return taskDate;
-    }
-
-    public void setTaskDate(String taskDate) {
-        this.taskDate = taskDate;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return "TaskEntity{" +
-                "id=" + id +
-                ", imgUrl='" + imgUrl + '\'' +
-                ", taskName='" + taskName + '\'' +
-                ", taskerSex='" + taskerSex + '\'' +
-                ", taskContent='" + taskContent + '\'' +
-                ", taskCost=" + taskCost +
-                ", taskType=" + taskType +
-                ", taskTime='" + taskTime + '\'' +
-                ", taskDate='" + taskDate + '\'' +
-                ", taskCondition='" + taskCondition + '\'' +
-                ", taskLocation='" + taskLocation + '\'' +
-                ", taskState='" + taskState + '\'' +
+                "mission_id=" + mission_id +
+                ", content='" + content + '\'' +
+                ", type=" + type +
+                ", sex=" + sex +
+                ", address='" + address + '\'' +
+                ", money=" + money +
+                ", publisher=" + publisher +
+                ", create_time='" + create_time + '\'' +
+                ", accepter=" + accepter +
+                ", status=" + status +
                 '}';
     }
 }
