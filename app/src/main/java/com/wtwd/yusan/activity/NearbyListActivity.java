@@ -1,7 +1,9 @@
 package com.wtwd.yusan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.amap.api.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.adapter.NearbyListAdapter;
 import com.wtwd.yusan.adapter.TaskAdapter;
@@ -41,6 +45,9 @@ import okhttp3.Call;
 
 public class NearbyListActivity extends CommonToolBarActivity {
 
+
+    private static final String TAG = "NearbyListActivity";
+
     private EasyRefreshLayout easy_layout;
 
     private RecyclerView recycler_nearbylist;
@@ -50,14 +57,24 @@ public class NearbyListActivity extends CommonToolBarActivity {
     private List<NearbyEntity> mNearbyEntitys = new ArrayList<>();
 
     private List<LastVersionEntity> mLastVersionEntityList = new ArrayList<>();
+
     private LatLng mMyLatLng;
+
+    private LatLng mMyLocation;
+
+    private Double mScale;
+
+    private int start = 0;
+
+    private static final int count = 20;
+
+    private Double mScaleTemp;
 
 
     @Override
     public int getLayoutResourceId() {
         return R.layout.activity_nearbylist;
     }
-
 
 
     @Override
@@ -73,6 +90,9 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
 
     private void initView() {
+
+
+
         text_tool_bar_title.setText("附近");
         easy_layout = (EasyRefreshLayout) findViewById(R.id.easy_layout);
         recycler_nearbylist = (RecyclerView) findViewById(R.id.recycler_nearbylist);
@@ -84,6 +104,10 @@ public class NearbyListActivity extends CommonToolBarActivity {
         mNearbyListAdapter = new NearbyListAdapter(R.layout.item_nearby_list, null);
         recycler_nearbylist.setAdapter(mNearbyListAdapter);
 
+        Bundle bundle = getIntent().getExtras();
+        mMyLocation = bundle.getParcelable("location");
+        mScale = bundle.getParcelable("scale");
+        Log.e(TAG,mMyLocation.latitude+"");
         //getData();
 
       //  getNearbyUser(1,20);
@@ -92,12 +116,9 @@ public class NearbyListActivity extends CommonToolBarActivity {
     /**
      * 获取附近的人列表
      */
-    private void getNearbyUser(int page,int size) {
-
-
+    private void getNearbyUser() {
+        String param = "?lat="+mMyLocation.latitude+"&lng="+mMyLocation.longitude+"&start="+start+"&count="+count;
         OkHttpUtils.get()
-                .addParams("start",page+"")
-                .addParams("count",size+"")
                 .url(Constans.REQUEST_URL+Constans.PORT)
                 .build()
                 .connTimeOut(3000)
@@ -110,7 +131,8 @@ public class NearbyListActivity extends CommonToolBarActivity {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e("ff",response);
-                       /* try {
+
+                        try {
                             JSONObject json = new JSONObject(response);
                             int status = json.getInt("status");
                             int errCode = json.getInt("errCode");
@@ -118,28 +140,27 @@ public class NearbyListActivity extends CommonToolBarActivity {
                                 String result = json.getString("object");
                                 mLastVersionEntityList = GsonUtils.getInstance().jsonToList(result, LastVersionEntity.class);
                                 if (!mLastVersionEntityList.isEmpty()) {
-
+                                    start+=count;
+                                    mLastVersionEntityList.clear();
+                                    mNearbyListAdapter.getData().addAll(mLastVersionEntityList);
+                                    mNearbyListAdapter.notifyDataSetChanged();
                                 }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                     }
                 });
 
     }
 
     private void loadNearbyUserRecycleList() {
-
-        //mNearbyEntitys.clear();
-        mNearbyListAdapter.getData().addAll(mLastVersionEntityList);
-        mNearbyListAdapter.notifyDataSetChanged();
-
         easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
         easy_layout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
             @Override
             public void onLoadMore() {
-
+                mScale = mScaleTemp + 1L;
+                getNearbyUser();
                 final List<NearbyEntity> list = new ArrayList<>();
                 for (int i = 0; i < 10; i++) {
                     NearbyEntity mEn = new NearbyEntity();
@@ -164,19 +185,21 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
             @Override
             public void onRefreshing() {
+                start = 0;
+                mScaleTemp = mScale;
+                getNearbyUser();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        List<NearbyEntity> list = new ArrayList<>();
+                        List<LastVersionEntity> list = new ArrayList<>();
                         for (int i = 0; i < 20; i++) {
-                            NearbyEntity mEn = new NearbyEntity();
-                            mEn.setSex(new Random().nextInt(1) + "");
-
-                            mEn.setName("张三" + i);
+                            LastVersionEntity mEn = new LastVersionEntity();
+                            mEn.getUser().setSex(new Random().nextInt(1) );
+                            mEn.getUser().setUser_name("张三" + i);
                             list.add(mEn);
                             list.add(mEn);
                         }
-                       // mNearbyListAdapter.setNewData(list);
+                        mNearbyListAdapter.setNewData(list);
                         easy_layout.refreshComplete();
 //                        Toast.makeText(getApplicationContext(), "refresh success", Toast.LENGTH_SHORT).show();
                     }

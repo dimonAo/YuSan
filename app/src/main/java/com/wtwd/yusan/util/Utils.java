@@ -513,29 +513,6 @@ public class Utils {
 
 //    public static void
 
-    /**
-     * 自定义toast
-     *
-     * @param context
-     * @param msg
-     */
-    public static void showToast(Context context, String msg) {
 
-        Toast toast = new Toast(context);
-        //设置Toast显示位置，居中，向 X、Y轴偏移量均为0
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        //获取自定义视图
-        View view = LayoutInflater.from(context).inflate(R.layout.toast_setting_clear, null);
-
-        TextView tvMessage = (TextView) view.findViewById(R.id.tv_message_toast);
-        //设置文本
-        tvMessage.setText(msg);
-        //设置视图
-        toast.setView(view);
-        //设置显示时长
-        toast.setDuration(Toast.LENGTH_SHORT);
-        //显示
-        toast.show();
-    }
 
 }

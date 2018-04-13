@@ -15,5 +15,5 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_height="@dimen/common_34"
-        android:text="清除成功"/>
+        />
 </LinearLayout>

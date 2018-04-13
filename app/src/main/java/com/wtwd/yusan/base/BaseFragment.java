@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.util.Utils;
@@ -26,6 +28,7 @@ public abstract class BaseFragment extends Fragment {
     //    public ImageView img_tool_bar_left;
     public ImageView img_tool_bar_right;
     public TextView text_tool_bar_title;
+    private Toast toast;
 
     @Nullable
     @Override
@@ -153,4 +156,35 @@ public abstract class BaseFragment extends Fragment {
         startActivityForResult(intent, requestCode);
     }
 
+    /**
+     * 自定义toast
+     *
+     * @param msg
+     */
+    public void showToast(String msg) {
+
+        cancelToast(toast);
+        toast = new Toast(getActivity());
+        //设置Toast显示位置，居中，向 X、Y轴偏移量均为0
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        //获取自定义视图
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.toast_setting_clear, null);
+
+        TextView tvMessage = (TextView) view.findViewById(R.id.tv_message_toast);
+        //设置文本
+        tvMessage.setText(msg);
+        //设置视图
+        toast.setView(view);
+        //设置显示时长
+        toast.setDuration(Toast.LENGTH_SHORT);
+        //显示
+        toast.show();
+    }
+
+    private void cancelToast(Toast toast) {
+        if (null != toast) {
+            toast.cancel();
+            toast = null;
+        }
+    }
 }

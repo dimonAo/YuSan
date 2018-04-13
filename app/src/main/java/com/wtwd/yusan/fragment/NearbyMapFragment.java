@@ -44,6 +44,7 @@ import com.wtwd.yusan.activity.TaskActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.ViewUtil;
 import com.wtwd.yusan.widget.view.CircleImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -53,6 +54,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
@@ -112,6 +114,11 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 我的位置
      */
     LatLng mMyLocation;
+
+    float mScale;
+
+    Boolean mIsInVisiable = false;
+
     BitmapDescriptor bitmapDescriptor;
 
     private static NearbyMapFragment mNearbyMapFragment;
@@ -209,6 +216,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 Log.e(TAG, "onCameraChangeFinish-----" + cameraPosition.target.longitude + " " + cameraPosition.target.latitude + " " + cameraPosition.zoom+" "+mAMap.getScalePerPixel());
                 // TODO: 2018/4/12 向后台请求数据并显示
                 float range = cameraPosition.zoom * mAMap.getScalePerPixel();
+
+                mScale = mAMap.getScalePerPixel();
                 Log.e(TAG,"range "+range);
                 int pixel = Math.round( range/ mAMap.getScalePerPixel());
                 //getNearbyUser();
@@ -324,8 +333,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 startActivity(taskIntent);
                 break;
             case R.id.img_nearbymap_list:
+                if(mIsInVisiable == false){
+                   showToast("隐身状态");
+                    return;
+                }
                 Intent nearbyListIntent = new Intent(getActivity(), NearbyListActivity.class);
                 nearbyListIntent.putExtra("location",mMyLocation);
+                nearbyListIntent.putExtra("scale",mScale);
                 startActivity(nearbyListIntent);
                 break;
             case R.id.lin_nearbymap_status:
@@ -385,6 +399,11 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 改变用户状态
      */
     private void changeUserStatus() {
+        if(mIsInVisiable == true){
+
+        }else if(mIsInVisiable == false){
+
+        }
         String url = "";
         OkHttpUtils.get()
                 .url(url)
@@ -407,6 +426,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private synchronized  void getNearbyUser() {
         clearMarkers();
+      /*  HashMap<String,Double> latMap = new HashMap<>();
+        latMap.put("lat",mMyLocation.latitude);
+        HashMap<String,Double> lngMap = new HashMap<>();
+        lngMap.put("lngMap",mMyLocation.longitude);
+        HashMap<String,Float> distanceMap = new HashMap<>();
+        distanceMap.put("distanceMap",mScale);*/
         OkHttpUtils.get()
                 .url("")
                 .build()

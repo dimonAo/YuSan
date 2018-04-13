@@ -2,6 +2,7 @@ package com.wtwd.yusan.base;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +22,16 @@ public abstract class CommonToolBarActivity extends BaseActivity {
         tool_bar = (Toolbar) findViewById(R.id.tool_bar);
         img_tool_bar_right = (ImageView) findViewById(R.id.img_tool_bar_right);
         text_tool_bar_title = (TextView) findViewById(R.id.text_tool_bar_title);
+        tool_bar.setNavigationIcon(R.mipmap.task_back);
+
         setTitleToolbarStyle(tool_bar);
+
+        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         onCreateCommonView(saveInstanceState);
     }
