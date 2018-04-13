@@ -21,9 +21,6 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.wtwd.yusan.R;
 
-/**
- * hei hei hei
- */
 public class SwitchView extends View {
 
     private static final int STATE_SWITCH_ON = 4;
@@ -477,7 +474,6 @@ public class SwitchView extends View {
             out.writeInt(isOpened ? 1 : 0);
         }
 
-        // fixed by Night99 https://github.com/g19980115
         @Override
         public int describeContents() {
             return 0;

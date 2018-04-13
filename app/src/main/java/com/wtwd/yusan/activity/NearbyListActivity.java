@@ -15,7 +15,9 @@ import com.wtwd.yusan.adapter.NearbyListAdapter;
 import com.wtwd.yusan.adapter.TaskAdapter;
 import com.wtwd.yusan.base.BaseActivity;
 import com.wtwd.yusan.entity.LastVersionEntity;
+import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.NearbyEntity;
+import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
@@ -26,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +39,7 @@ import okhttp3.Call;
  * Created by w77996
  */
 
-public class NearbyListActivity extends BaseActivity {
+public class NearbyListActivity extends CommonToolBarActivity {
 
     private EasyRefreshLayout easy_layout;
 
@@ -55,11 +58,12 @@ public class NearbyListActivity extends BaseActivity {
         return R.layout.activity_nearbylist;
     }
 
+
+
     @Override
-    public void onCreateView(Bundle saveInstanceState) {
+    public void onCreateCommonView(Bundle saveInstanceState) {
         initView();
     }
-
 
 
     @Override
@@ -69,6 +73,7 @@ public class NearbyListActivity extends BaseActivity {
 
 
     private void initView() {
+        text_tool_bar_title.setText("附近");
         easy_layout = (EasyRefreshLayout) findViewById(R.id.easy_layout);
         recycler_nearbylist = (RecyclerView) findViewById(R.id.recycler_nearbylist);
         recycler_nearbylist.setLayoutManager(new LinearLayoutManager(this));
@@ -81,17 +86,19 @@ public class NearbyListActivity extends BaseActivity {
 
         //getData();
 
-        getNearbyUser(1,20);
+      //  getNearbyUser(1,20);
     }
 
     /**
      * 获取附近的人列表
      */
     private void getNearbyUser(int page,int size) {
+
+
         OkHttpUtils.get()
                 .addParams("start",page+"")
                 .addParams("count",size+"")
-                .url("https://www.baidu.com/")
+                .url(Constans.REQUEST_URL+Constans.PORT)
                 .build()
                 .connTimeOut(3000)
                 .execute(new StringCallback() {
@@ -147,7 +154,7 @@ public class NearbyListActivity extends BaseActivity {
                         easy_layout.loadMoreComplete();
 //                        easy_layout.closeLoadView();
                         int postion = mNearbyListAdapter.getData().size();
-                        mNearbyListAdapter.getData().addAll(list);
+                       // mNearbyListAdapter.getData().addAll(list);
                         mNearbyListAdapter.notifyDataSetChanged();
                         recycler_nearbylist.scrollToPosition(postion);
                     }
@@ -169,7 +176,7 @@ public class NearbyListActivity extends BaseActivity {
                             list.add(mEn);
                             list.add(mEn);
                         }
-                        mNearbyListAdapter.setNewData(list);
+                       // mNearbyListAdapter.setNewData(list);
                         easy_layout.refreshComplete();
 //                        Toast.makeText(getApplicationContext(), "refresh success", Toast.LENGTH_SHORT).show();
                     }

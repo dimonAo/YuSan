@@ -59,7 +59,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.PublishTaskActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+           />
     </application>
 
 </manifest>
