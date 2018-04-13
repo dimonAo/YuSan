@@ -22,6 +22,8 @@ public class TaskEntity {
 
     private String create_time;   //任务发布时间
 
+    private String start_time; //任务开始时间
+
     private UserEntity accepter;     //任务接收者，可以为空
 
     private int status;    //任务状态，0是待领取，1是进行中，2是确认完成，3是等待对方确认，4是已完成，5是已失效
@@ -107,6 +109,14 @@ public class TaskEntity {
         this.status = status;
     }
 
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
     @Override
     public String toString() {
         return "TaskEntity{" +
@@ -118,6 +128,7 @@ public class TaskEntity {
                 ", money=" + money +
                 ", publisher=" + publisher +
                 ", create_time='" + create_time + '\'' +
+                ", start_time='" + start_time + '\'' +
                 ", accepter=" + accepter +
                 ", status=" + status +
                 '}';

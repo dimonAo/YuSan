@@ -68,8 +68,8 @@ public class Pref {
      *
      * @param userId
      */
-    public void setUserId(String userId) {
-        getSharedPreferencesCommon().edit().putString("user_id", userId).apply();
+    public void setUserId(int userId) {
+        getSharedPreferencesCommon().edit().putInt("user_id", userId).apply();
     }
 
     /**
@@ -77,8 +77,46 @@ public class Pref {
      *
      * @return 存储的user_id
      */
-    public String getUserId() {
-        return getSharedPreferencesCommon().getString("user_id", "0");
+    public int getUserId() {
+        return getSharedPreferencesCommon().getInt("user_id", 0);
     }
+
+
+    /**
+     * 存储退出任务广场界面时，已存在的任务数据
+     *
+     * @param mTaskJson
+     */
+    public void setTaskJson(String mTaskJson) {
+        getSharedPreferencesCommon().edit().putString("task_json", mTaskJson).apply();
+    }
+
+    /**
+     * 获取最后一次浏览的任务数据
+     *
+     * @return
+     */
+    public String getTaskJson() {
+        return getSharedPreferencesCommon().getString("task_json", "0");
+    }
+
+    /**
+     * 存储退出我的任务界面时，已存在的任务数据
+     *
+     * @param mTaskJson
+     */
+    public void setMeTaskJson(String mTaskJson) {
+        getSharedPreferencesCommon().edit().putString("task_me_json", mTaskJson).apply();
+    }
+
+    /**
+     * 获取最后一次浏览的我的任务数据
+     *
+     * @return
+     */
+    public String getMeTaskJson() {
+        return getSharedPreferencesCommon().getString("task_me_json", "0");
+    }
+
 
 }

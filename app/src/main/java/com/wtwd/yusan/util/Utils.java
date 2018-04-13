@@ -44,6 +44,35 @@ public class Utils {
     }
 
 
+    public static String getErrorString(int errorCode) {
+        String mErrorInfo = "";
+        switch (errorCode) {
+            case 0:
+                mErrorInfo = "参数为空";
+                break;
+            case 1:
+                mErrorInfo = "系统繁忙";
+                break;
+            case 2:
+                mErrorInfo = "该用户已存在";
+
+                break;
+            case 3:
+                mErrorInfo = "密码错误";
+                break;
+            case 4:
+                mErrorInfo = "该用户不存在";
+                break;
+            case 5:
+                mErrorInfo = "数据有误";
+                break;
+            case 6:
+                mErrorInfo = "该任务不适合你";
+                break;
+        }
+        return mErrorInfo;
+    }
+
     /**
      * 设置ToolBar Title居中
      *
@@ -388,9 +417,6 @@ public class Utils {
     }
 
     public static void setData(WheelPicker mHour, WheelPicker mMinute, int position, List<String> mHours, List<String> mMinutes) {
-
-//        List<String> mHours = new ArrayList<>();
-//        List<String> mMinutes = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         //当天时间
@@ -436,17 +462,15 @@ public class Utils {
                 mMinutes.add(addZeroBeforeString((i * 10) + ""));
             }
         }
+
         mHour.setData(mHours);
         mMinute.setData(mMinutes);
-
-//        mHour.setSelectedItemPosition(0);
-//        mMinute.setSelectedItemPosition(0);
     }
 
 
-    public static void setWheelHour(WheelPicker wheel_day, WheelPicker wheel_hour, WheelPicker wheel_minute, int position, List<String> mHours, List<String> mMinutes) {
-//        List<String> mHours = new ArrayList<>();
-//        List<String> mMinutes = new ArrayList<>();
+    public static void setWheelHour(WheelPicker wheel_day, WheelPicker wheel_hour, WheelPicker wheel_minute
+            ,int position, List<String> mHours, List<String> mMinutes) {
+
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         int posi = wheel_day.getCurrentItemPosition();

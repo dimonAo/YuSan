@@ -93,7 +93,7 @@ public class GsonUtils {
      * @param <T>
      * @return
      */
-    public <T> List<T> jsonToList(String json, Class<T> cls) {
+    public static <T> List<T> jsonToList(String json, Class<T> cls) {
         Gson gson = new Gson();
         List<T> list = new ArrayList<T>();
         JsonArray array = new JsonParser().parse(json).getAsJsonArray();
