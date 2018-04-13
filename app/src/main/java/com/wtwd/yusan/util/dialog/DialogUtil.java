@@ -119,6 +119,7 @@ public class DialogUtil {
 
         wheel_day.setData(mMonth);
         Utils.setData(wheel_hour, wheel_minute, 0, mHours, mMinutes);
+//        Utils.setWheelHour(wheel_day, wheel_hour, wheel_minute, 0, mHours, mMinutes);
         mDialog.setContentView(view);
         mDialog.setCanceledOnTouchOutside(true);
 

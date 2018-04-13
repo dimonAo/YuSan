@@ -8,19 +8,32 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.adapter.TaskAdapter;
 import com.wtwd.yusan.adapter.TaskMeAdapter;
 import com.wtwd.yusan.base.BaseFragment;
+import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.entity.TaskEntity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import okhttp3.Call;
 
 /**
  * Created by Administrator on 2018/4/9 0009.
@@ -33,6 +46,18 @@ public class TaskMeFragment extends BaseFragment {
     private EasyRefreshLayout easy_layout;
     private List<TaskEntity> mTaskEntitys = new ArrayList<>();
     private TaskMeAdapter mAdapter;
+
+    /**
+     * 加载类型
+     * 1：上拉加载
+     * 2：下拉刷新
+     */
+    private int mLoadTYpe;
+
+    /**
+     * 上拉加载次数
+     */
+    private int mLoadCount;
 
     public TaskMeFragment() {
 
@@ -64,27 +89,127 @@ public class TaskMeFragment extends BaseFragment {
         getData();
 
         initListener();
+
+        addListener();
+    }
+
+    private void addListener() {
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                List<TaskEntity> mTaskList = mAdapter.getData();
+                /**
+                 * 确认完成任务
+                 */
+                if (R.id.btn_task == view.getId()) {
+                    acceptMission(Pref.getInstance(getActivity()).getUserId() + "", mTaskList.get(position).getMission_id() + "");
+                }
+            }
+        });
+    }
+
+    /**
+     * 确认完成任务
+     *
+     * @param userId    用户ID
+     * @param missionId 任务ID
+     */
+    private void acceptMission(String userId, String missionId) {
+        Map<String, String> mAcceptMission = new HashMap<>();
+        mAcceptMission.put("userId", userId);
+        mAcceptMission.put("missionId", missionId);
+
+        OkHttpUtils.get()
+                .url(Constans.COMPLET_MISSION)
+                .params(mAcceptMission)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
+
     }
 
 
+    /**
+     * 从服务器获取指定的任务信息
+     *
+     * @param startCount 开始条数
+     * @param count      一次获取几条消息
+     */
+    private void getMeMission(int startCount, int count) {
+        Map<String, String> mStartCount = new HashMap<>();
+        mStartCount.put("userId", Pref.getInstance(getActivity()).getUserId() + "");
+        mStartCount.put("start", startCount + "");
+        mStartCount.put("count", count + "");
+
+        final List<TaskEntity> mList = new ArrayList<>();
+
+        OkHttpUtils.get()
+                .url(Constans.GET_MY_MISSION)
+                .params(mStartCount)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (1 == mLoadTYpe) {
+                            easy_layout.loadMoreComplete();
+                            easy_layout.closeLoadView();
+
+                        } else if (2 == mLoadTYpe) {
+                            easy_layout.refreshComplete();
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                        ResultEntity mEn = Utils.getResultEntity(response);
+
+                        if (1 == mEn.getStatus()) {
+                            mList.addAll(GsonUtils.jsonToList(mEn.getObject(), TaskEntity.class));
+                            if (1 == mLoadTYpe) {
+                                easy_layout.loadMoreComplete();
+                                easy_layout.closeLoadView();
+                                int postion = mAdapter.getData().size();
+                                mAdapter.getData().addAll(mList);
+                                mAdapter.notifyDataSetChanged();
+                                recycler_task.scrollToPosition(postion);
+                            } else if (2 == mLoadTYpe) {
+                                mAdapter.setNewData(mList);
+                                easy_layout.refreshComplete();
+                            }
+                        } else {
+                            String mError = Utils.getErrorString(mEn.getErrCode());
+                            if (1 == mLoadTYpe) {
+                                easy_layout.loadMoreComplete();
+                                easy_layout.closeLoadView();
+
+                            } else if (2 == mLoadTYpe) {
+                                easy_layout.refreshComplete();
+                            }
+                        }
+                    }
+                });
+
+//        return mList;
+    }
+
     private void getData() {
-        mTaskEntitys.clear();
-        for (int i = 0; i < 20; i++) {
-            TaskEntity mEn = new TaskEntity();
-            mEn.setImgUrl("");
-            mEn.setTaskCondition(new Random().nextInt(4) + "");
-            mEn.setTaskContent("很长很长很长的任务 : " + (mAdapter.getData().size() + i));
-            mEn.setTaskerSex(new Random().nextInt(2) + "");
-            mEn.setTaskCost(Float.parseFloat(String.format("%1.1f", (new Random().nextFloat()) * 10)));
-            mEn.setTaskLocation("深圳");
-            mEn.setTaskType(new Random().nextInt(2));
-            mEn.setTaskTime(new SimpleDateFormat("HH:mm").format(new Date()));
-            mEn.setTaskDate(new SimpleDateFormat("MM月dd日").format(new Date()));
-            mEn.setTaskState(new Random().nextInt(7) + "");
-            mEn.setTaskName("张三");
-            mTaskEntitys.add(mEn);
+        String mStr = Pref.getInstance(getActivity()).getMeTaskJson();
+        if ("0".equals(mStr)) {
+            return;
         }
-        mAdapter.getData().addAll(mTaskEntitys);
+        mAdapter.getData().addAll(GsonUtils.GsonToList(mStr, TaskEntity.class));
         mAdapter.notifyDataSetChanged();
     }
 
@@ -93,65 +218,26 @@ public class TaskMeFragment extends BaseFragment {
         easy_layout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
             @Override
             public void onLoadMore() {
+                mLoadTYpe = 1;
+                getMeMission(mLoadCount * 20, 20);
 
-                final List<TaskEntity> list = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
-                    TaskEntity mEn = new TaskEntity();
-                    mEn.setImgUrl("");
-                    mEn.setTaskCondition(new Random().nextInt(4) + "");
-                    mEn.setTaskContent("很长很长很长的任务 : " + (mAdapter.getData().size() + i));
-                    mEn.setTaskerSex(new Random().nextInt(2) + "");
-                    mEn.setTaskCost(Float.parseFloat(String.format("%1.1f", (new Random().nextFloat()) * 10)));
-                    mEn.setTaskLocation("深圳");
-                    mEn.setTaskType(new Random().nextInt(2));
-                    mEn.setTaskTime(new SimpleDateFormat("HH:mm").format(new Date()));
-                    mEn.setTaskDate(new SimpleDateFormat("MM月dd日").format(new Date()));
-                    mEn.setTaskState(new Random().nextInt(7) + "");
-                    mEn.setTaskName("张三");
-                    list.add(mEn);
-                }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        easy_layout.loadMoreComplete();
-//                        easy_layout.closeLoadView();
-                        int postion = mAdapter.getData().size();
-                        mAdapter.getData().addAll(list);
-                        mAdapter.notifyDataSetChanged();
-                        recycler_task.scrollToPosition(postion);
-                    }
-                }, 500);
-
+                mLoadCount++;
             }
 
             @Override
             public void onRefreshing() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<TaskEntity> list = new ArrayList<>();
-                        for (int i = 0; i < 20; i++) {
-                            TaskEntity mEn = new TaskEntity();
-                            mEn.setImgUrl("");
-                            mEn.setTaskCondition(new Random().nextInt(4) + "");
-                            mEn.setTaskContent("很长很长很长的任务 : " + (mAdapter.getData().size() + i));
-                            mEn.setTaskerSex(new Random().nextInt(2) + "");
-                            mEn.setTaskCost(Float.parseFloat(String.format("%1.1f", (new Random().nextFloat()) * 10)));
-                            mEn.setTaskLocation("深圳");
-                            mEn.setTaskType(new Random().nextInt(2));
-                            mEn.setTaskTime(new SimpleDateFormat("HH:mm").format(new Date()));
-                            mEn.setTaskDate(new SimpleDateFormat("MM月dd日").format(new Date()));
-                            mEn.setTaskState(new Random().nextInt(7) + "");
-                            mEn.setTaskName("张三");
-                            list.add(mEn);
-                        }
-                        mAdapter.setNewData(list);
-                        easy_layout.refreshComplete();
-//                        Toast.makeText(getApplicationContext(), "refresh success", Toast.LENGTH_SHORT).show();
-                    }
-                }, 1000);
-
+                mLoadCount = 0;
+                mLoadTYpe = 2;
+                getMeMission(0, 20);
             }
         });
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        String mTaskJson = GsonUtils.GsonString(mAdapter.getData());
+        Pref.getInstance(getActivity()).setMeTaskJson(mTaskJson);
+    }
+
 }
