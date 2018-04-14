@@ -1,14 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@mipmap/task_bg">
+        android:background="@null">
 
         <include layout="@layout/tool_bar" />
+
+        <com.wtwd.yusan.widget.view.CircleImageView
+            android:id="@+id/img_head_me"
+            android:layout_width="@dimen/common_76"
+            android:layout_height="@dimen/common_76"
+            app:border_color="@color/recycler_line"
+            app:border_width="@dimen/common_4"
+            android:background="@mipmap/task_head"
+            />
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="@dimen/common_16"
+        android:layout_height="@dimen/common_16"
+        android:layout_marginRight="@dimen/common_14"
+        android:layout_marginTop="@dimen/common_14"
+        android:src="@mipmap/me_edit" />
+    <LinearLayout
+        android:id="@+id/img_me_head_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:orientation="vertical">
     </LinearLayout>
-</LinearLayout>
+   <!-- <com.wtwd.yusan.widget.view.ArcImageView
+        android:id="@+id/img_me_head_bg"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        app:arcHeight="60dp" />-->
+
+    <LinearLayout
+        android:id="@+id/lin_me_money"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_46"
+        android:layout_below="@+id/img_me_head_bg"
+        android:layout_marginLeft="@dimen/common_14"
+        android:layout_marginRight="@dimen/common_14">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/common_28"
+                android:layout_height="@dimen/common_28"
+                android:layout_marginRight="@dimen/common_12"
+                android:src="@mipmap/me_money" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="我的钱包"
+                android:textColor="#262626"
+                android:textSize="@dimen/text_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/common_14"
+                    android:text="余额196.00"
+                    android:textColor="#999999" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/right_row" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_me_help_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_46"
+        android:layout_below="@+id/lin_me_money"
+        android:layout_marginLeft="@dimen/common_14"
+        android:layout_marginRight="@dimen/common_14">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/common_28"
+                android:layout_height="@dimen/common_28"
+                android:layout_marginRight="@dimen/common_12"
+                android:src="@mipmap/me_help_feedback" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="帮助与反馈"
+                android:textColor="#262626"
+                android:textSize="@dimen/text_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/right_row" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_me_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_46"
+        android:layout_below="@id/lin_me_help_feedback"
+        android:layout_marginLeft="@dimen/common_14"
+        android:layout_marginRight="@dimen/common_14">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/common_28"
+                android:layout_height="@dimen/common_28"
+                android:layout_marginRight="@dimen/common_12"
+                android:src="@mipmap/me_setting" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="设置"
+                android:textColor="#262626"
+                android:textSize="@dimen/text_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/right_row" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

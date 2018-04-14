@@ -21,8 +21,10 @@ import com.wtwd.yusan.base.BaseActivity;
 import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.NearbyEntity;
+import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -70,6 +72,18 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
     private Double mScaleTemp;
 
+    /**
+     * 加载类型
+     * 1：上拉加载
+     * 2：下拉刷新
+     */
+    private int mLoadTYpe;
+
+    /**
+     * 上拉加载次数
+     */
+    private int mLoadCount;
+
 
     @Override
     public int getLayoutResourceId() {
@@ -91,15 +105,10 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
     private void initView() {
 
-
-
         text_tool_bar_title.setText("附近");
         easy_layout = (EasyRefreshLayout) findViewById(R.id.easy_layout);
         recycler_nearbylist = (RecyclerView) findViewById(R.id.recycler_nearbylist);
         recycler_nearbylist.setLayoutManager(new LinearLayoutManager(this));
-       // DividerItemDecoration mDi = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-      //  mDi.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_line));
-       // recycler_nearbylist.addItemDecoration(mDi);
 
         mNearbyListAdapter = new NearbyListAdapter(R.layout.item_nearby_list, null);
         recycler_nearbylist.setAdapter(mNearbyListAdapter);
@@ -108,104 +117,94 @@ public class NearbyListActivity extends CommonToolBarActivity {
         mMyLocation = bundle.getParcelable("location");
         mScale = bundle.getParcelable("scale");
         Log.e(TAG,mMyLocation.latitude+"");
-        //getData();
 
-      //  getNearbyUser(1,20);
+        initListener();
     }
 
     /**
-     * 获取附近的人列表
+     * 初始化监听
      */
-    private void getNearbyUser() {
-        String param = "?lat="+mMyLocation.latitude+"&lng="+mMyLocation.longitude+"&start="+start+"&count="+count;
+    private void initListener() {
+        easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
+        easy_layout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
+            @Override
+            public void onLoadMore() {
+                mLoadTYpe = 1;
+                getNearbyUser(mLoadCount * 20, 20);
+
+                mLoadCount++;
+            }
+
+            @Override
+            public void onRefreshing() {
+                mLoadTYpe = 2;
+                mLoadCount = 0;
+                getNearbyUser(0, 20);
+
+            }
+        });
+    }
+
+    /**
+     * 获取附近的人
+     * @param start
+     * @param count
+     */
+    private void getNearbyUser(int start,int count){
+        final List<LastVersionEntity> list = new ArrayList<>();
+        HashMap<String,String> params = new HashMap<>();
+        params.put("start",start+"");
+        params.put("count",count+"");
+
         OkHttpUtils.get()
-                .url(Constans.REQUEST_URL+Constans.PORT)
+                .url("")
+                .params(params)
                 .build()
-                .connTimeOut(3000)
+                .connTimeOut(Constans.TIME_OUT)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        if (1 == mLoadTYpe) {
+                            easy_layout.loadMoreComplete();
+                            easy_layout.closeLoadView();
 
+                        } else if (2 == mLoadTYpe) {
+                            easy_layout.refreshComplete();
+                        }
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e("ff",response);
 
-                        try {
-                            JSONObject json = new JSONObject(response);
-                            int status = json.getInt("status");
-                            int errCode = json.getInt("errCode");
-                            if (status == 1) {
-                                String result = json.getString("object");
-                                mLastVersionEntityList = GsonUtils.getInstance().jsonToList(result, LastVersionEntity.class);
-                                if (!mLastVersionEntityList.isEmpty()) {
-                                    start+=count;
-                                    mLastVersionEntityList.clear();
-                                    mNearbyListAdapter.getData().addAll(mLastVersionEntityList);
-                                    mNearbyListAdapter.notifyDataSetChanged();
-                                }
+                        ResultEntity mEn = Utils.getResultEntity(response);
+                        if(1 == mEn.getStatus()){
+                            list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
+                            if(1 == mLoadTYpe){
+                                easy_layout.loadMoreComplete();
+                                easy_layout.closeLoadView();
+                                int position = mNearbyListAdapter.getData().size();
+                                mNearbyListAdapter.getData().addAll(list);
+                                mNearbyListAdapter.notifyDataSetChanged();
+                                recycler_nearbylist.scrollToPosition(position);
+                            }else if(2 == mEn.getStatus()){
+                                mNearbyListAdapter.setNewData(list);
+                                easy_layout.refreshComplete();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        }else{
+                            String mError = Utils.getErrorString(mEn.getErrCode());
+                            Log.e(TAG,mError);
+                            if (1 == mLoadTYpe) {
+                                easy_layout.loadMoreComplete();
+                                easy_layout.closeLoadView();
+
+                            } else if (2 == mLoadTYpe) {
+                                easy_layout.refreshComplete();
+                            }
                         }
                     }
                 });
 
     }
 
-    private void loadNearbyUserRecycleList() {
-        easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
-        easy_layout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
-            @Override
-            public void onLoadMore() {
-                mScale = mScaleTemp + 1L;
-                getNearbyUser();
-                final List<NearbyEntity> list = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
-                    NearbyEntity mEn = new NearbyEntity();
-                    mEn.setSex(new Random().nextInt(1) + "");
 
-                    mEn.setName("张三" + i);
-                    list.add(mEn);
-                }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        easy_layout.loadMoreComplete();
-//                        easy_layout.closeLoadView();
-                        int postion = mNearbyListAdapter.getData().size();
-                       // mNearbyListAdapter.getData().addAll(list);
-                        mNearbyListAdapter.notifyDataSetChanged();
-                        recycler_nearbylist.scrollToPosition(postion);
-                    }
-                }, 500);
-
-            }
-
-            @Override
-            public void onRefreshing() {
-                start = 0;
-                mScaleTemp = mScale;
-                getNearbyUser();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<LastVersionEntity> list = new ArrayList<>();
-                        for (int i = 0; i < 20; i++) {
-                            LastVersionEntity mEn = new LastVersionEntity();
-                            mEn.getUser().setSex(new Random().nextInt(1) );
-                            mEn.getUser().setUser_name("张三" + i);
-                            list.add(mEn);
-                            list.add(mEn);
-                        }
-                        mNearbyListAdapter.setNewData(list);
-                        easy_layout.refreshComplete();
-//                        Toast.makeText(getApplicationContext(), "refresh success", Toast.LENGTH_SHORT).show();
-                    }
-                }, 1000);
-
-            }
-        });
-    }
 }
