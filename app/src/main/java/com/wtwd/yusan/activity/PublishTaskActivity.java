@@ -8,7 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +34,9 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
     private RelativeLayout relative_time;
     private TextView text_time;
+
+    private EditText edit_detail;
+    private TextView text_count;
 
     private RecyclerView recycler_task_type;
 
@@ -86,6 +93,28 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
         relative_time = (RelativeLayout) findViewById(R.id.relative_time);
         text_time = (TextView) findViewById(R.id.text_time);
+
+        edit_detail = (EditText) findViewById(R.id.edit_detail);
+        edit_detail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                Log.e("TAG", "s : " + s);
+//                Log.e("TAG", "count : " + count);
+                text_count.setText(String.format("%S/15个字",s.length() + ""));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        text_count = (TextView) findViewById(R.id.text_count);
 
         recycler_task_type = (RecyclerView) findViewById(R.id.recycler_task_type);
         recycler_task_type.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -197,5 +226,6 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             this.mDrawableId = mDrawableId;
         }
     }
+
 
 }

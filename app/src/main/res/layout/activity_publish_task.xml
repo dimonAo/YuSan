@@ -390,9 +390,14 @@
                         android:background="@null"
                         android:gravity="top|left"
                         android:hint="说点什么吧..."
+                        android:maxLength="15"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:textColor="@color/colorTaskContent"
                         android:textColorHint="@color/colorTaskContent_9"
-                        android:textSize="@dimen/text_12" />
+                        android:textSize="@dimen/text_12"
+                        android:imeOptions="actionDone"
+                        />
 
                     <TextView
                         android:id="@+id/text_count"
