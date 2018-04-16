@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,6 +75,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
                 Editable editable = ed_feedback_content.getText();
                 int len = editable.length();
+                Log.e("length",len+"");
                 if (len > 200) {
                     //showToast("超出字数限制");
                     int selEndIndex = Selection.getSelectionEnd(editable);
@@ -94,6 +96,8 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
                 }else{
                     if(!TextUtils.isEmpty(charSequence.toString())){
                         tv_feedback_num.setText((200 - len)+"个字");
+                    }else{
+                        tv_feedback_num.setText(200+"个字");
                     }
                 }
             }

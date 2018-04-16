@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -43,6 +44,8 @@ import com.wtwd.yusan.activity.NearbyListActivity;
 import com.wtwd.yusan.activity.TaskActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.entity.LastVersionEntity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.ViewUtil;
@@ -115,6 +118,10 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     LatLng mMyLocation;
 
+    private ImageView img_user_status;
+
+    private TextView tv_user_status;
+
     float mScale;
 
     Boolean mIsInVisiable = false;
@@ -172,6 +179,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         img_shang = (ImageView) view.findViewById(R.id.img_shang);
         img_nearbymap_list = (ImageView) view.findViewById(R.id.img_nearbymap_list);
         lin_nearbymap_status = (LinearLayout) view.findViewById(R.id.lin_nearbymap_status);
+        img_user_status = view.findViewById(R.id.img_user_status);
+        tv_user_status = view.findViewById(R.id.tv_user_status);
         mMapView = view.findViewById(R.id.map);
         // mMapView = new MapView(getActivity(),mapOptions);
         mMapView.onCreate(savedInstanceState);
@@ -220,7 +229,11 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 mScale = mAMap.getScalePerPixel();
                 Log.e(TAG,"range "+range);
                 int pixel = Math.round( range/ mAMap.getScalePerPixel());
-                //getNearbyUser();
+                if(mIsInVisiable == false){
+                    //getNearbyUser();
+                }else if(mIsInVisiable == true){
+
+                }
             }
         });
         mAMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
@@ -333,7 +346,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 startActivity(taskIntent);
                 break;
             case R.id.img_nearbymap_list:
-                if(mIsInVisiable == false){
+                if(mIsInVisiable == true){
                    showToast("隐身状态");
                     return;
                 }
@@ -400,13 +413,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void changeUserStatus() {
         if(mIsInVisiable == true){
+            tv_user_status.setText("隐身");
 
         }else if(mIsInVisiable == false){
-
+            tv_user_status.setText("在线");
         }
-        String url = "";
         OkHttpUtils.get()
-                .url(url)
+                .url(Constans.REQUEST_URL)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -416,7 +429,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
                     @Override
                     public void onResponse(String response, int id) {
+                        ResultEntity mEn = Utils.getResultEntity(response);
+                        if(1 == mEn.getStatus()){
 
+                        }else {
+
+                        }
                     }
                 });
     }
@@ -443,22 +461,19 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
                     @Override
                     public void onResponse(String response, int id) {
-                        try {
-                            JSONObject json = new JSONObject(response);
+                           /* JSONObject json = new JSONObject(response);
                             int status = json.getInt("status");
-                            int errCode = json.getInt("errCode");
-                            if (status == 1) {
-                                String result = json.getString("object");
-                                List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(result, LastVersionEntity.class);
+                            int errCode = json.getInt("errCode");*/
+                            ResultEntity mEn = Utils.getResultEntity(response);
+                            if (1 == mEn.getStatus()) {
+                               // String result = json.getString("object");
+                                List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(mEn.getObject(), LastVersionEntity.class);
                                 if (!list.isEmpty()) {
                                     for (int i = 0; i < list.size(); i++) {
                                         addMarkerToMap(list.get(i));
                                     }
                                 }
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                     }
                 });
     }

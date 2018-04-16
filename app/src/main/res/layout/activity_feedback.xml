@@ -16,7 +16,7 @@
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_marginTop="@dimen/common_36"
+       android:layout_marginTop="@dimen/common_16"
        android:layout_marginLeft="@dimen/common_14">
        <TextView
            android:layout_width="match_parent"
@@ -77,7 +77,7 @@
         <Button
             android:id="@+id/btn_feedback_submit"
             android:layout_width="@dimen/common_300"
-            android:layout_height="@dimen/common_40"
+            android:layout_height="@dimen/common_44"
             android:background="@drawable/selector_task_btn"
             android:text="提交"
             android:textColor="@color/colorWhite"/>

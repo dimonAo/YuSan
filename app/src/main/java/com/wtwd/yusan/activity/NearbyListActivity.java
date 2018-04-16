@@ -157,7 +157,7 @@ public class NearbyListActivity extends CommonToolBarActivity {
         params.put("count",count+"");
 
         OkHttpUtils.get()
-                .url("")
+                .url(Constans.REQUEST_URL)
                 .params(params)
                 .build()
                 .connTimeOut(Constans.TIME_OUT)
@@ -172,10 +172,8 @@ public class NearbyListActivity extends CommonToolBarActivity {
                             easy_layout.refreshComplete();
                         }
                     }
-
                     @Override
                     public void onResponse(String response, int id) {
-
                         ResultEntity mEn = Utils.getResultEntity(response);
                         if(1 == mEn.getStatus()){
                             list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
@@ -196,7 +194,6 @@ public class NearbyListActivity extends CommonToolBarActivity {
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
-
                             } else if (2 == mLoadTYpe) {
                                 easy_layout.refreshComplete();
                             }
