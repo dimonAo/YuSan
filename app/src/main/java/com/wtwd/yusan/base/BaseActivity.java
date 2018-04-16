@@ -1,6 +1,7 @@
 package com.wtwd.yusan.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -11,9 +12,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.util.Util;
 import com.wtwd.yusan.R;
@@ -28,6 +32,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public static final int PURE_PICTURE_TITLE = 1;
     public static final int SOLID_COLOR_TITLE = 2;
+
+    Toast toast;
 
 //    public Toolbar tool_bar;
 //    public ImageView img_tool_bar_left;
@@ -212,5 +218,35 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
+    /**
+     * 自定义toast
+     *
+     * @param msg
+     */
+    public void showToast(String msg) {
 
+        cancelToast(toast);
+        toast = new Toast(this);
+        //设置Toast显示位置，居中，向 X、Y轴偏移量均为0
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        //获取自定义视图
+        View view = LayoutInflater.from(this).inflate(R.layout.toast_setting_clear, null);
+
+        TextView tvMessage = (TextView) view.findViewById(R.id.tv_message_toast);
+        //设置文本
+        tvMessage.setText(msg);
+        //设置视图
+        toast.setView(view);
+        //设置显示时长
+        toast.setDuration(Toast.LENGTH_SHORT);
+        //显示
+        toast.show();
+    }
+
+    private void cancelToast(Toast toast) {
+        if (null != toast) {
+            toast.cancel();
+            toast = null;
+        }
+    }
 }

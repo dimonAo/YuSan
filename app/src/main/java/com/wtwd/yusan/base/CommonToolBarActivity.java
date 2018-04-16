@@ -40,6 +40,13 @@ public abstract class CommonToolBarActivity extends BaseActivity {
             }
         });
 
+        tool_bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         onCreateCommonView(saveInstanceState);
     }
 

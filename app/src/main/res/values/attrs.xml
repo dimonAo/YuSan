@@ -3,6 +3,7 @@
     <declare-styleable name="CircleImageView">
         <attr name="border_width" format="dimension" />
         <attr name="border_color" format="color" />
+        <attr name="border_cover_color" format="color"/>
     </declare-styleable>
 
     <!--滚动选择器通用属性-->
@@ -51,5 +52,16 @@
         <attr name="isOpened" format="boolean"/>
     </declare-styleable>
 
+    <attr name="arcHeight" format="dimension"/>
+
+    <declare-styleable name="ArcView">
+        <attr name="arcHeight"/>
+        <attr name="bgColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ArcImageView">
+        <attr name="arcHeight"/>
+        <attr name="arcImageRes" format="reference"/>
+    </declare-styleable>
 
 </resources>

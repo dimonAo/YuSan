@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,13 +13,18 @@ import android.widget.TextView;
 
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.BaseActivity;
+import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import okhttp3.Call;
 
 /**
  * time:2018/4/11
  * Created by w77996
  */
 
-public class FeedBackActivity extends BaseActivity implements View.OnClickListener{
+public class FeedBackActivity extends CommonToolBarActivity implements View.OnClickListener{
     /**
      * 反馈的内容
      */
@@ -37,9 +43,8 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onCreateView(Bundle saveInstanceState) {
+    public void onCreateCommonView(Bundle saveInstanceState) {
         initView();
-
     }
 
 
@@ -52,6 +57,7 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
      * 界面控件初始化
      */
     private void initView() {
+        text_tool_bar_title.setText("用户反馈");
         ed_feedback_content = (EditText)findViewById(R.id.ed_feedback_content);
         tv_feedback_num = (TextView)findViewById(R.id.tv_feedback_num);
         btn_feedback_submit = (Button)findViewById(R.id.btn_feedback_submit);
@@ -69,6 +75,7 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 
                 Editable editable = ed_feedback_content.getText();
                 int len = editable.length();
+                Log.e("length",len+"");
                 if (len > 200) {
                     //showToast("超出字数限制");
                     int selEndIndex = Selection.getSelectionEnd(editable);
@@ -89,6 +96,8 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                 }else{
                     if(!TextUtils.isEmpty(charSequence.toString())){
                         tv_feedback_num.setText((200 - len)+"个字");
+                    }else{
+                        tv_feedback_num.setText(200+"个字");
                     }
                 }
             }
@@ -115,5 +124,19 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
      */
     private void submitFeedback() {
         // TODO: 2018/4/11 提交反馈
+        OkHttpUtils.post()
+                .url("")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
     }
 }

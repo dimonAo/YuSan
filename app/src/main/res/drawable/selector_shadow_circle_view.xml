@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#08000000" />-->
+    <!--<padding-->
+    <!--android:bottom="@dimen/common_4"-->
+    <!--android:left="@dimen/common_4"-->
+    <!--android:right="@dimen/common_4" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#09000000" />-->
+    <!--<padding-->
+    <!--android:bottom="@dimen/common_2"-->
+    <!--android:left="@dimen/common_2"-->
+    <!--android:right="@dimen/common_2" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#10000000" />-->
+    <!--<padding-->
+    <!--android:bottom="@dimen/common_2"-->
+    <!--android:left="@dimen/common_2"-->
+    <!--android:right="@dimen/common_2" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#11000000" />-->
+    <!--<padding-->
+    <!--android:bottom="1dp"-->
+    <!--android:left="1dp"-->
+    <!--android:right="1dp" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#12000000" />-->
+    <!--<padding-->
+    <!--android:bottom="1dp"-->
+    <!--android:left="1dp"-->
+    <!--android:right="1dp" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#13000000" />-->
+    <!--<padding-->
+    <!--android:bottom="1dp"-->
+    <!--android:left="1dp"-->
+    <!--android:right="1dp" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#14000000" />-->
+    <!--<padding-->
+    <!--android:bottom="1dp"-->
+    <!--android:left="1dp"-->
+    <!--android:right="1dp" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#15000000" />-->
+    <!--<padding-->
+    <!--android:bottom="1dp"-->
+    <!--android:left="1dp"-->
+    <!--android:right="1dp" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape>-->
+    <!--<solid android:color="#16000000" />-->
+    <!--<padding-->
+    <!--android:bottom="1dp"-->
+    <!--android:left="1dp"-->
+    <!--android:right="1dp" />-->
+    <!--<corners android:radius="999dp"/>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!-- 阴影部分 -->
+    <!-- 个人觉得更形象的表达：top代表下边的阴影高度，left代表右边的阴影宽度。其实也就是相对应的offset，solid中的颜色是阴影的颜色，也可以设置角度等等 -->
+    <item
+        android:left="0dp"
+        android:right="0dp"
+        android:top="@dimen/common_6">
+        <shape android:shape="rectangle">
+
+            <gradient
+                android:angle="270"
+                android:endColor="@color/transparent"
+                android:startColor="@color/colorBlack" />
+
+            <corners android:radius="999dp" />
+        </shape>
+    </item>
+
+    <!-- 背景部分 -->
+    <!-- 形象的表达：bottom代表背景部分在上边缘超出阴影的高度，right代表背景部分在左边超出阴影的宽度（相对应的offset） -->
+    <item
+        android:left="0dp"
+        android:right="0dp"
+        android:top="@dimen/common_6">
+        <shape android:shape="rectangle">
+
+            <gradient
+                android:angle="270"
+                android:endColor="@color/transparent"
+                android:startColor="@color/colorBlack" />
+
+            <corners android:radius="999dp" />
+        </shape>
+    </item>
+
+</layer-list>

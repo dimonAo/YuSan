@@ -36,6 +36,10 @@
     <color name="dialogContentBg">#eeeeee</color>
     <color name="colorFailedReceiveTask">#d3eaff</color>
     <color name="colorFailedReceiveTaskText">#0178e4</color>
+    <color name="colorCloseTask">#e1483c</color>
+
+    <color name="alpha_black_43">#91ffffff</color>
+    <color name="alpha_black_30">#4c000000</color>
 
 
 </resources>

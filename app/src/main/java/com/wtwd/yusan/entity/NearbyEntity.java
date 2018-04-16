@@ -1,5 +1,7 @@
 package com.wtwd.yusan.entity;
 
+import com.amap.api.maps.AMapUtils;
+
 /**
  * time:2018/4/11
  * Created by w77996
@@ -67,4 +69,7 @@ public class NearbyEntity {
     public void setSex(String sex) {
         this.sex = sex;
     }
+
+
+
 }

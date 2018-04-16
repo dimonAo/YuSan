@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -40,9 +41,13 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.activity.NearbyListActivity;
+import com.wtwd.yusan.activity.TaskActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.entity.LastVersionEntity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.ViewUtil;
 import com.wtwd.yusan.widget.view.CircleImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -52,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
@@ -106,16 +112,31 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 用户状态
      */
     LinearLayout lin_nearbymap_status;
+
+    /**
+     * 我的位置
+     */
+    LatLng mMyLocation;
+
+    private ImageView img_user_status;
+
+    private TextView tv_user_status;
+
+    float mScale;
+
+    Boolean mIsInVisiable = false;
+
     BitmapDescriptor bitmapDescriptor;
 
     private static NearbyMapFragment mNearbyMapFragment;
+
     /**
      * 实例化fragment
      *
      * @return
      */
     public static NearbyMapFragment newInstance() {
-        if(null == mNearbyMapFragment){
+        if (null == mNearbyMapFragment) {
             mNearbyMapFragment = new NearbyMapFragment();
         }
 
@@ -155,9 +176,11 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         //  mapOptions.camera(new CameraPosition(centerBJPoint, 15f, 0, 0));
         text_tool_bar_title.setText("附近");
         img_location = (ImageView) view.findViewById(R.id.img_location);
-        img_shang = (ImageView)view.findViewById(R.id.img_shang);
-        img_nearbymap_list = (ImageView)view.findViewById(R.id.img_nearbymap_list);
-        lin_nearbymap_status= (LinearLayout)view.findViewById(R.id.lin_nearbymap_status);
+        img_shang = (ImageView) view.findViewById(R.id.img_shang);
+        img_nearbymap_list = (ImageView) view.findViewById(R.id.img_nearbymap_list);
+        lin_nearbymap_status = (LinearLayout) view.findViewById(R.id.lin_nearbymap_status);
+        img_user_status = view.findViewById(R.id.img_user_status);
+        tv_user_status = view.findViewById(R.id.tv_user_status);
         mMapView = view.findViewById(R.id.map);
         // mMapView = new MapView(getActivity(),mapOptions);
         mMapView.onCreate(savedInstanceState);
@@ -165,8 +188,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             mAMap = mMapView.getMap();
         }
         mMyLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);
-         mMyLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point));//设置定位图标
-       // mMyLocationStyle.myLocationIcon(null);
+        mMyLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point));//设置定位图标
+        // mMyLocationStyle.myLocationIcon(null);
         mMyLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);//定位一次，且将视角移动到地图中心点。
         mMyLocationStyle.anchor(0.5f, 1f);//偏移
         mMyLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
@@ -184,9 +207,9 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         mAMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (marker.getObject().getClass().equals(MarkerBean.class)) {
-                    MarkerBean markerBean = (MarkerBean) marker.getObject();
-                    Toast.makeText(getActivity(), "这是自定义marker，代号" + markerBean.getMarkerId(), Toast.LENGTH_SHORT).show();
+                if (marker.getObject().getClass().equals(LastVersionEntity.class)) {
+                    LastVersionEntity lastVersionEntity = (LastVersionEntity) marker.getObject();
+                    Toast.makeText(getActivity(), "这是自定义marker，代号" + lastVersionEntity.getUser().getUser_id(), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -194,19 +217,29 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                Log.e(TAG,"onCameraChange-----");
+                Log.e(TAG, "onCameraChange-----");
             }
 
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
-                Log.e(TAG,"onCameraChangeFinish-----"+cameraPosition.target.longitude+" "+cameraPosition.target.latitude+" "+cameraPosition.zoom);
+                Log.e(TAG, "onCameraChangeFinish-----" + cameraPosition.target.longitude + " " + cameraPosition.target.latitude + " " + cameraPosition.zoom+" "+mAMap.getScalePerPixel());
                 // TODO: 2018/4/12 向后台请求数据并显示
+                float range = cameraPosition.zoom * mAMap.getScalePerPixel();
+
+                mScale = mAMap.getScalePerPixel();
+                Log.e(TAG,"range "+range);
+                int pixel = Math.round( range/ mAMap.getScalePerPixel());
+                if(mIsInVisiable == false){
+                    //getNearbyUser();
+                }else if(mIsInVisiable == true){
+
+                }
             }
         });
         mAMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
             @Override
             public void onMapLoaded() {
-                Log.e(TAG,"onMapLoaded--------------");
+                Log.e(TAG, "onMapLoaded--------------");
             }
         });
     }
@@ -229,13 +262,14 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             if (null != aMapLocation && aMapLocation.getErrorCode() == 0) {
                 Log.e(TAG, "onLocationChanged 定位成功 ----------------------- :" + "aMapLocation 信息 " + aMapLocation.getLongitude() + " " + aMapLocation.getLatitude());
                 mOnLocationChangedListener.onLocationChanged(aMapLocation);//显示定位
-                LatLng latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//构造位置
+                mMyLocation = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//构造位置
                /* MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
                         .position(latLng)
                         .draggable(false);
                 mAMap.addMarker(markerOption);*/
-                mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
-                moveMapToPosition(latLng);
+                mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMyLocation, 15));
+                moveMapToPosition(mMyLocation);
+
                 //addCustomMarkersToMap(latLng);
             } else {
                 Log.e(TAG, "onLocationChanged 定位失败----------------------- :" + "aMapLocation 信息 " + aMapLocation.getErrorCode() + " " + aMapLocation.getErrorInfo());
@@ -308,10 +342,17 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 location();
                 break;
             case R.id.img_shang:
-
+                Intent taskIntent = new Intent(getActivity(), TaskActivity.class);
+                startActivity(taskIntent);
                 break;
             case R.id.img_nearbymap_list:
+                if(mIsInVisiable == true){
+                   showToast("隐身状态");
+                    return;
+                }
                 Intent nearbyListIntent = new Intent(getActivity(), NearbyListActivity.class);
+                nearbyListIntent.putExtra("location",mMyLocation);
+                nearbyListIntent.putExtra("scale",mScale);
                 startActivity(nearbyListIntent);
                 break;
             case R.id.lin_nearbymap_status:
@@ -319,7 +360,6 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 break;
         }
     }
-
 
 
     /**
@@ -372,9 +412,14 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 改变用户状态
      */
     private void changeUserStatus() {
-        String url = "";
+        if(mIsInVisiable == true){
+            tv_user_status.setText("隐身");
+
+        }else if(mIsInVisiable == false){
+            tv_user_status.setText("在线");
+        }
         OkHttpUtils.get()
-                .url(url)
+                .url(Constans.REQUEST_URL)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -384,7 +429,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
                     @Override
                     public void onResponse(String response, int id) {
+                        ResultEntity mEn = Utils.getResultEntity(response);
+                        if(1 == mEn.getStatus()){
 
+                        }else {
+
+                        }
                     }
                 });
     }
@@ -392,7 +442,14 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     /**
      * 获取附近的人数据
      */
-    private void getNearbyUser(){
+    private synchronized  void getNearbyUser() {
+        clearMarkers();
+      /*  HashMap<String,Double> latMap = new HashMap<>();
+        latMap.put("lat",mMyLocation.latitude);
+        HashMap<String,Double> lngMap = new HashMap<>();
+        lngMap.put("lngMap",mMyLocation.longitude);
+        HashMap<String,Float> distanceMap = new HashMap<>();
+        distanceMap.put("distanceMap",mScale);*/
         OkHttpUtils.get()
                 .url("")
                 .build()
@@ -404,35 +461,48 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
                     @Override
                     public void onResponse(String response, int id) {
-                        try {
-                            JSONObject json = new JSONObject(response);
+                           /* JSONObject json = new JSONObject(response);
                             int status = json.getInt("status");
-                            int errCode = json.getInt("errCode");
-                            if(status == 1){
-                                String result = json.getString("object");
-                                List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(result,LastVersionEntity.class);
+                            int errCode = json.getInt("errCode");*/
+                            ResultEntity mEn = Utils.getResultEntity(response);
+                            if (1 == mEn.getStatus()) {
+                               // String result = json.getString("object");
+                                List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(mEn.getObject(), LastVersionEntity.class);
+                                if (!list.isEmpty()) {
+                                    for (int i = 0; i < list.size(); i++) {
+                                        addMarkerToMap(list.get(i));
+                                    }
+                                }
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        addMarkerToMap();
                     }
                 });
-
     }
 
     /**
      * 添加marker到地图上
      */
-    private void addMarkerToMap() {
-
+    private synchronized void addMarkerToMap(final LastVersionEntity lastVersionEntity) {
+        final MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.setFlat(true);
+        markerOptions.anchor(0.5f, 0.5f);
+        markerOptions.position(new LatLng(lastVersionEntity.getLat(), lastVersionEntity.getLng()));
+        customizeMarkerIcon(lastVersionEntity, new OnMarkerIconLoadListener() {
+            @Override
+            public void markerIconLoadingFinished(View view) {
+                //bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
+                Marker marker;
+                markerOptions.icon(bitmapDescriptor);
+                marker = mAMap.addMarker(markerOptions);
+                marker.setObject(lastVersionEntity);
+            }
+        });
 
     }
 
     /**
      * 添加附近的人标记
      */
-    private void addMarker(final LatLng latLng, final MarkerBean markerBean) {
+   /* private void addMarker(final LatLng latLng, final MarkerBean markerBean) {
         String url = "http://ucardstorevideo.b0.upaiyun.com/test/e8c8472c-d16d-4f0a-8a7b-46416a79f4c6.png";
         final MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.setFlat(true);
@@ -449,16 +519,16 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             }
         });
 
-    }
+    }*/
 
-    private void addCustomMarkersToMap(LatLng latLng) {
+    /*private void addCustomMarkersToMap(LatLng latLng) {
 
         List<LatLng> locations = new ArrayList<>();
         locations = addSimulatedData(latLng, 20, 0.02);
         for (int i = 0; i < locations.size(); i++) {
             addMarker(locations.get(i), new MarkerBean(i));
         }
-    }
+    }*/
 
 
     /**
@@ -466,11 +536,16 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      *
      * @return
      */
-    private void customizeMarkerIcon(String url, MarkerBean markerBean, final OnMarkerIconLoadListener listener) {
-        final View markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+    private void customizeMarkerIcon(LastVersionEntity lastVersionEntity, final OnMarkerIconLoadListener listener) {
+        final View markerView;
+        if (lastVersionEntity.getUser().getSex() == 0) {
+            markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+        } else {
+            markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+        }
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
-                .load(url +"!/format/webp")
+                .load(lastVersionEntity.getUser().getHead_img())
                 .asBitmap()
                 .thumbnail(0.2f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -493,7 +568,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         void markerIconLoadingFinished(View view);
     }
 
-    public class MarkerBean {
+   /* public class MarkerBean {
         private int markerId;
 
         public MarkerBean(int markerId) {
@@ -507,7 +582,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         public void setMarkerId(int markerId) {
             this.markerId = markerId;
         }
-    }
+    }*/
 
     /**
      * 模拟获取网络上的marker数据
@@ -539,7 +614,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         List<Marker> mapScreenMarkers = mAMap.getMapScreenMarkers();
         for (int i = 0; i < mapScreenMarkers.size(); i++) {
             Marker marker = mapScreenMarkers.get(i);
-            if (marker.getObject() instanceof MarkerBean) {
+            if (marker.getObject() instanceof LastVersionEntity) {
                 marker.remove();//移除当前Marker
             }
         }
