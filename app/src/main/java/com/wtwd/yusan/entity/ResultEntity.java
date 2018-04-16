@@ -1,13 +1,19 @@
 package com.wtwd.yusan.entity;
 
 /**
+<<<<<<< HEAD
+ * time:2018/4/13
+ * Created by w77996
+=======
  * Created by Administrator on 2018/4/13 0013.
+>>>>>>> upstream/master
  */
 
 public class ResultEntity {
 
     private String msg;
-    private  int status;
+    private int status;
+
     private int errCode;
     private String object;
 
