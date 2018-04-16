@@ -11,6 +11,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.DetailTaskActivity;
 import com.wtwd.yusan.adapter.TaskAdapter;
 import com.wtwd.yusan.adapter.TaskMeAdapter;
 import com.wtwd.yusan.base.BaseFragment;
@@ -41,11 +42,16 @@ import okhttp3.Call;
 
 public class TaskMeFragment extends BaseFragment {
 
+    /**
+     * 刷新和加载条数
+     */
+    private static final int REFRESH_AND_LOAD_ITEM_COUNT = 20;
+
     private static TaskMeFragment mInstance;
     private RecyclerView recycler_task;
     private EasyRefreshLayout easy_layout;
-    private List<TaskEntity> mTaskEntitys = new ArrayList<>();
     private TaskMeAdapter mAdapter;
+
 
     /**
      * 加载类型
@@ -94,48 +100,27 @@ public class TaskMeFragment extends BaseFragment {
     }
 
     private void addListener() {
-        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+//        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+//            @Override
+//            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+//                List<TaskEntity> mTaskList = mAdapter.getData();
+//                /**
+//                 * 确认完成任务
+//                 */
+//                if (R.id.btn_task == view.getId()) {
+//                    acceptMission(Pref.getInstance(getActivity()).getUserId() + "", mTaskList.get(position).getMission_id() + "");
+//                }
+//            }
+//        });
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                List<TaskEntity> mTaskList = mAdapter.getData();
-                /**
-                 * 确认完成任务
-                 */
-                if (R.id.btn_task == view.getId()) {
-                    acceptMission(Pref.getInstance(getActivity()).getUserId() + "", mTaskList.get(position).getMission_id() + "");
-                }
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                List<TaskEntity> mList = mAdapter.getData();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("task_entity", mList.get(position));
+                readyGo(DetailTaskActivity.class, bundle);
             }
         });
-    }
-
-    /**
-     * 确认完成任务
-     *
-     * @param userId    用户ID
-     * @param missionId 任务ID
-     */
-    private void acceptMission(String userId, String missionId) {
-        Map<String, String> mAcceptMission = new HashMap<>();
-        mAcceptMission.put("userId", userId);
-        mAcceptMission.put("missionId", missionId);
-
-        OkHttpUtils.get()
-                .url(Constans.COMPLET_MISSION)
-                .params(mAcceptMission)
-                .build()
-                .connTimeOut(Constans.TIME_OUT)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-
-                    }
-                });
-
     }
 
 
@@ -143,13 +128,12 @@ public class TaskMeFragment extends BaseFragment {
      * 从服务器获取指定的任务信息
      *
      * @param startCount 开始条数
-     * @param count      一次获取几条消息
      */
-    private void getMeMission(int startCount, int count) {
+    private void getMeMission(int startCount) {
         Map<String, String> mStartCount = new HashMap<>();
         mStartCount.put("userId", Pref.getInstance(getActivity()).getUserId() + "");
         mStartCount.put("start", startCount + "");
-        mStartCount.put("count", count + "");
+        mStartCount.put("count", REFRESH_AND_LOAD_ITEM_COUNT + "");
 
         final List<TaskEntity> mList = new ArrayList<>();
 
@@ -219,7 +203,7 @@ public class TaskMeFragment extends BaseFragment {
             @Override
             public void onLoadMore() {
                 mLoadTYpe = 1;
-                getMeMission(mLoadCount * 20, 20);
+                getMeMission(mLoadCount * 20);
 
                 mLoadCount++;
             }
@@ -228,7 +212,7 @@ public class TaskMeFragment extends BaseFragment {
             public void onRefreshing() {
                 mLoadCount = 0;
                 mLoadTYpe = 2;
-                getMeMission(0, 20);
+                getMeMission(0);
             }
         });
     }

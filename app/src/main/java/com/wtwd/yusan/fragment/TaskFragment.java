@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.DetailTaskActivity;
 import com.wtwd.yusan.adapter.TaskAdapter;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.entity.ResultEntity;
@@ -93,48 +94,15 @@ public class TaskFragment extends BaseFragment {
     }
 
     private void addListener() {
-        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                List<TaskEntity> mTaskList = mAdapter.getData();
-                /**
-                 * 接取任务
-                 */
-                if (R.id.btn_task == view.getId()) {
-                    acceptMission(Pref.getInstance(getActivity()).getUserId() + "", mTaskList.get(position).getMission_id() + "");
-                }
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                List<TaskEntity> mList = mAdapter.getData();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("task_entity", mList.get(position));
+                readyGo(DetailTaskActivity.class, bundle);
             }
         });
-    }
-
-    /**
-     * 接取任务
-     *
-     * @param userId    用户ID
-     * @param missionId 任务ID
-     */
-    private void acceptMission(String userId, String missionId) {
-        Map<String, String> mAcceptMission = new HashMap<>();
-        mAcceptMission.put("userId", userId);
-        mAcceptMission.put("missionId", missionId);
-
-        OkHttpUtils.get()
-                .url(Constans.ACCEPT_MISSION)
-                .params(mAcceptMission)
-                .build()
-                .connTimeOut(Constans.TIME_OUT)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-
-                    }
-                });
-
     }
 
 

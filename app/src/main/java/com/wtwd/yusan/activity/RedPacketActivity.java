@@ -18,6 +18,7 @@ import com.wtwd.yusan.entity.ResultEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2018/4/14 0014.
@@ -29,14 +30,13 @@ public class RedPacketActivity extends CommonToolBarActivity {
     private RecyclerView recycler_red_packet;
 
 
-    private int[] mDrawables = {R.mipmap.redpacket_yue,R.mipmap.redpacket_zhifubao,R.mipmap.redpacket_wechat};
+    private int[] mDrawables = {R.mipmap.redpacket_yue, R.mipmap.redpacket_zhifubao, R.mipmap.redpacket_wechat};
 
-    private String[] mRedPacketName = {"钱包余额（0.00）","支付宝","微信"};
+    private String[] mRedPacketName = {"钱包余额(%1.2f)", "支付宝", "微信"};
 
     private List<RedPacketRecyclerEntity> mList = new ArrayList<>();
 
     private RedPacketAdapter mRedPacketAdapter;
-
 
 
     @Override
@@ -47,19 +47,28 @@ public class RedPacketActivity extends CommonToolBarActivity {
     }
 
     private void getDate() {
-        for(int i = 0;i< mRedPacketName.length;i++){
+        for (int i = 0; i < mRedPacketName.length; i++) {
             RedPacketRecyclerEntity redPacketRecyclerEntity = new RedPacketRecyclerEntity();
+            if (0 == i) {
+
+                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[0], new Random().nextInt(10) + new Random().nextDouble()));
+            } else {
+                redPacketRecyclerEntity.setmRedPacketName(mRedPacketName[i]);
+            }
             redPacketRecyclerEntity.setmDrawableId(mDrawables[i]);
-            redPacketRecyclerEntity.setmRedPacketName(mRedPacketName[i]);
             mList.add(redPacketRecyclerEntity);
         }
+//        recycler_red_packet.removeItemDecorationAt(mList.size()-1);
+        mList.get(0).setCheck(true);
         mRedPacketAdapter.notifyDataSetChanged();
     }
 
     private void initView() {
+        text_tool_bar_title.setText("包红包");
+
         recycler_red_packet = (RecyclerView) findViewById(R.id.recycler_red_packet);
         recycler_red_packet.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRedPacketAdapter = new RedPacketAdapter(R.layout.item_red_packet_type,mList);
+        mRedPacketAdapter = new RedPacketAdapter(R.layout.item_red_packet_type, mList);
         recycler_red_packet.setAdapter(mRedPacketAdapter);
         DividerItemDecoration mDi = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mDi.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_line));
@@ -68,11 +77,12 @@ public class RedPacketActivity extends CommonToolBarActivity {
         mRedPacketAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Log.e("dd","ddd"+position);
-                for(int i = 0;i < mList.size();i++){
+                Log.e("dd", "ddd" + position);
+                for (int i = 0; i < mList.size(); i++) {
                     mList.get(i).setCheck(false);
                 }
                 mList.get(position).setCheck(true);
+//                recycler_red_packet.removeItemDecorationAt(mList.size()-1);
                 mRedPacketAdapter.notifyDataSetChanged();
             }
         });
@@ -90,10 +100,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
     }
 
 
-
-
-
-    private class RedPacketRecyclerEntity{
+    private class RedPacketRecyclerEntity {
         private int mDrawableId;
         private String mRedPacketName;
         private boolean IsCheck;
@@ -123,7 +130,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
         }
     }
 
-    private class RedPacketAdapter  extends BaseQuickAdapter<RedPacketRecyclerEntity,BaseViewHolder>{
+    private class RedPacketAdapter extends BaseQuickAdapter<RedPacketRecyclerEntity, BaseViewHolder> {
 
 
         public RedPacketAdapter(int layoutResId, @Nullable List<RedPacketRecyclerEntity> data) {
@@ -133,9 +140,9 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
         @Override
         protected void convert(BaseViewHolder helper, RedPacketRecyclerEntity item) {
-            helper.setImageDrawable(R.id.img_redpacket_head, ContextCompat.getDrawable(RedPacketActivity.this,item.getmDrawableId()))
-                    .setText(R.id.tv_redpacket_text,item.getmRedPacketName())
-                    .setChecked(R.id.ck_redpacket,item.isCheck());
+            helper.setImageDrawable(R.id.img_redpacket_head, ContextCompat.getDrawable(RedPacketActivity.this, item.getmDrawableId()))
+                    .setText(R.id.tv_redpacket_text, item.getmRedPacketName())
+                    .setChecked(R.id.ck_redpacket, item.isCheck());
         }
     }
 }

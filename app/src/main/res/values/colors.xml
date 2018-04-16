@@ -16,6 +16,7 @@
     <color name="colorUnselectedText">#a1a1a2</color>
     <color name="colorTaskerNick">#262626</color>
     <color name="colorTaskContent">#666666</color>
+    <color name="colorTaskContent_8">#888888</color>
     <color name="colorTaskContent_9">#999999</color>
     <color name="colorShortVerticalLine">#c3c1c1</color>
     <color name="colorMoneyUnit">#fd1b00</color>
@@ -33,6 +34,8 @@
 
     <color name="dialogTitleBg">#cccccc</color>
     <color name="dialogContentBg">#eeeeee</color>
+    <color name="colorFailedReceiveTask">#d3eaff</color>
+    <color name="colorFailedReceiveTaskText">#0178e4</color>
 
 
 </resources>

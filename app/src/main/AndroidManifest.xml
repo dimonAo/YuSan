@@ -28,14 +28,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme">
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="6072b710f29cb4bd5e0d60843bbee090" />
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.RedPacketActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,8 +61,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.RedPacketActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".activity.DetailTaskActivity"></activity>
     </application>
 
 </manifest>

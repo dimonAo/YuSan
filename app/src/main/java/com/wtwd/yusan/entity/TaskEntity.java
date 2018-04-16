@@ -1,10 +1,13 @@
 package com.wtwd.yusan.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Administrator on 2018/4/9 0009.
  */
 
-public class TaskEntity {
+public class TaskEntity implements Parcelable {
 
     private Long mission_id;                  //任务ID
 
@@ -28,6 +31,37 @@ public class TaskEntity {
 
     private int status;    //任务状态，0是待领取，1是进行中，2是确认完成，3是等待对方确认，4是已完成，5是已失效
 
+    public TaskEntity() {
+
+    }
+
+    protected TaskEntity(Parcel in) {
+        if (in.readByte() == 0) {
+            mission_id = null;
+        } else {
+            mission_id = in.readLong();
+        }
+        content = in.readString();
+        type = in.readInt();
+        sex = in.readInt();
+        address = in.readString();
+        money = in.readDouble();
+        create_time = in.readString();
+        start_time = in.readString();
+        status = in.readInt();
+    }
+
+    public static final Creator<TaskEntity> CREATOR = new Creator<TaskEntity>() {
+        @Override
+        public TaskEntity createFromParcel(Parcel in) {
+            return new TaskEntity(in);
+        }
+
+        @Override
+        public TaskEntity[] newArray(int size) {
+            return new TaskEntity[size];
+        }
+    };
 
     public Long getMission_id() {
         return mission_id;
@@ -132,5 +166,28 @@ public class TaskEntity {
                 ", accepter=" + accepter +
                 ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (mission_id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(mission_id);
+        }
+        dest.writeString(content);
+        dest.writeInt(type);
+        dest.writeInt(sex);
+        dest.writeString(address);
+        dest.writeDouble(money);
+        dest.writeString(create_time);
+        dest.writeString(start_time);
+        dest.writeInt(status);
     }
 }

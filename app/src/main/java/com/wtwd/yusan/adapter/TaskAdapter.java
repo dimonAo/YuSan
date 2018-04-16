@@ -1,13 +1,19 @@
 package com.wtwd.yusan.adapter;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.widget.view.CircleImageView;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -22,6 +28,9 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, TaskEntity item) {
+//        Glide.with(mContext)
+//                .load(Uri.parse(item.getPublisher().getHead_img()))
+//                .into((CircleImageView) helper.getView(R.id.circle_img_task_publisher));
 
 
         helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
