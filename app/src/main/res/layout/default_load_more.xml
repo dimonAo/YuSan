@@ -24,5 +24,5 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:layout_toLeftOf="@id/tv_hit_content"
-        app:SpinKit_Color="@color/colorAccent" />
+        app:SpinKit_Color="@color/colorTask" />
 </RelativeLayout>
