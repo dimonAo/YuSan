@@ -6,6 +6,7 @@
     android:gravity="center_horizontal">
 
     <RelativeLayout
+        android:id="@+id/rl_map_bg"
         android:layout_width="@dimen/common_42"
         android:layout_height="@dimen/common_48"
         android:layout_centerHorizontal="true"
