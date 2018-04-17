@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/task_bg">
+
+        <include layout="@layout/tool_bar" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_withdrawals_wechat_set"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_46"
+        android:layout_below="@+id/img_me_head_bg"
+        android:background="@drawable/selector_lin_click_bg"
+        android:paddingLeft="@dimen/common_14"
+        android:paddingRight="@dimen/common_14">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="提现微信账号"
+                android:textColor="#262626"
+                android:textSize="@dimen/text_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/common_16"
+                    android:text="设置"
+                    android:textColor="#999999" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/right_row" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_46"
+        android:layout_below="@+id/img_me_head_bg"
+        android:background="@drawable/selector_lin_click_bg"
+        android:layout_marginTop="@dimen/common_10"
+        android:paddingLeft="@dimen/common_14"
+        android:paddingRight="@dimen/common_14">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="提现金额"
+                android:textColor="#262626"
+                android:textSize="@dimen/text_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="可提现金额0元"
+                    android:textColor="#999999" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_32"
+        android:paddingLeft="@dimen/common_14">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_12"
+            android:layout_gravity="center_vertical"
+            android:text="提现方式"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lin_me_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_46"
+        android:layout_below="@id/lin_me_help_feedback"
+        android:background="@drawable/selector_lin_click_bg"
+        android:paddingLeft="@dimen/common_14"
+        android:paddingRight="@dimen/common_14">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/common_28"
+                android:layout_height="@dimen/common_28"
+                android:layout_marginRight="@dimen/common_12"
+                android:src="@mipmap/redpacket_wechat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="微信"
+                android:textColor="#262626"
+                android:textSize="@dimen/text_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_14">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="邀请好友充值贵族或者消费分成收益达100,即可随时随意金额提现"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_withdrawals_rule"
+                android:layout_above="@+id/btn_withdrawals_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="提交规则"
+                android:textColor="#999999"
+                android:textSize="@dimen/common_12"/>
+            <Button
+                android:id="@+id/btn_withdrawals_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_14"
+                android:background="@drawable/selector_task_btn"
+                android:layout_alignParentBottom="true"
+                android:text="提交"
+                android:textColor="@color/colorWhite"/>
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

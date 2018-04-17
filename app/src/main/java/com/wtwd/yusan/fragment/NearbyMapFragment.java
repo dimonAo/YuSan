@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -414,11 +416,14 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     private void changeUserStatus() {
         if(mIsInVisiable == true){
             tv_user_status.setText("隐身");
-
+            img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_invisible));
+            mIsInVisiable = false;
         }else if(mIsInVisiable == false){
             tv_user_status.setText("在线");
+            img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_visible));
+            mIsInVisiable = true;
         }
-        OkHttpUtils.get()
+       /* OkHttpUtils.get()
                 .url(Constans.REQUEST_URL)
                 .build()
                 .execute(new StringCallback() {
@@ -436,7 +441,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
                         }
                     }
-                });
+                });*/
     }
 
     /**
@@ -538,10 +543,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void customizeMarkerIcon(LastVersionEntity lastVersionEntity, final OnMarkerIconLoadListener listener) {
         final View markerView;
+
+        markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+        RelativeLayout rl = markerView.findViewById(R.id.rl_map_bg);
         if (lastVersionEntity.getUser().getSex() == 0) {
-            markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+           rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_man_bg));
         } else {
-            markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
+           // rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_);
         }
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
