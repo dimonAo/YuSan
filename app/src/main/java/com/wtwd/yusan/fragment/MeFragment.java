@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.activity.FeedBackActivity;
+import com.wtwd.yusan.activity.MyPacketActivity;
 import com.wtwd.yusan.activity.SettingActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.widget.view.ArcImageView;
@@ -94,6 +95,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 startActivity(settingIntent);
                 break;
             case R.id.lin_me_money:
+                Intent mypacketIntent = new Intent(getActivity(), MyPacketActivity.class);
+                startActivity(mypacketIntent);
                 break;
             case R.id.lin_me_help_feedback:
                 Intent feedbackIntent = new Intent(getActivity(), FeedBackActivity.class);

@@ -124,9 +124,9 @@
             android:gravity="center_vertical">
 
             <ImageView
-                android:layout_width="@dimen/common_28"
-                android:layout_height="@dimen/common_28"
-                android:layout_marginRight="@dimen/common_12"
+                android:layout_width="@dimen/common_16"
+                android:layout_height="@dimen/common_18"
+                android:layout_marginRight="@dimen/common_10"
                 android:src="@mipmap/redpacket_wechat" />
 
             <TextView
@@ -146,6 +146,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:button="@drawable/selector_check_box"
+                    android:clickable="true"
+                    android:checked="true"
                     />
             </RelativeLayout>
         </LinearLayout>
@@ -165,7 +168,8 @@
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
             <TextView
                 android:id="@+id/tv_withdrawals_rule"
                 android:layout_above="@+id/btn_withdrawals_submit"
@@ -179,11 +183,15 @@
                 android:id="@+id/btn_withdrawals_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/common_14"
+                android:layout_marginLeft="@dimen/common_14"
+                android:layout_marginRight="@dimen/common_14"
+                android:layout_marginTop="@dimen/common_14"
                 android:background="@drawable/selector_task_btn"
                 android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/common_26"
                 android:text="提交"
-                android:textColor="@color/colorWhite"/>
+                android:textColor="@color/colorWhite"
+                />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
