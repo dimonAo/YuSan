@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_68"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.wtwd.yusan.widget.view.CircleImageView
+                android:id="@+id/circle_img_nearbylist_publisher"
+                android:layout_width="@dimen/common_40"
+                android:layout_height="@dimen/common_40"
+                android:layout_margin="@dimen/common_14"
+                android:src="@mipmap/task_head"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_packetdetail_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorTaskerNick"
+                        android:textSize="@dimen/text_16"
+                        android:text="任务红包"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_packetdetail_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_4"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#b8b8b8"
+                    android:text="2018年4月17日 18：00"
+                    android:textSize="@dimen/text_12" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/common_14">
+                <TextView
+                    android:id="@+id/tv_packetdetail_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:layout_gravity="center"
+                    android:textColor="#262626"
+                    android:textSize="@dimen/text_16"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_marginLeft="@dimen/common_14"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/shape_line"
+            />
+
+
+    </LinearLayout>
+</LinearLayout>
