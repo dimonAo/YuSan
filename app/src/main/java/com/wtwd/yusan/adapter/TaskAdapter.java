@@ -77,14 +77,14 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
          */
 
         if (item.getPublisher().getUser_id() == Pref.getInstance(mContext).getUserId()) {
-            helper.getView(R.id.btn_task).setEnabled(false);
+//            helper.getView(R.id.btn_task).setEnabled(false);
             helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
-                    .addOnClickListener(R.id.btn_task)
+//                    .addOnClickListener(R.id.btn_task)
                     .setText(R.id.btn_task, "待领取");
         } else {
-            helper.getView(R.id.btn_task).setEnabled(true);
+//            helper.getView(R.id.btn_task).setEnabled(true);
             helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
-                    .addOnClickListener(R.id.btn_task)
+//                    .addOnClickListener(R.id.btn_task)
                     .setText(R.id.btn_task, "领取任务");
         }
 

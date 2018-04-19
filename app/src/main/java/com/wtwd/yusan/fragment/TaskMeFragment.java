@@ -218,8 +218,8 @@ public class TaskMeFragment extends BaseFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         String mTaskJson = GsonUtils.GsonString(mAdapter.getData());
         Pref.getInstance(getActivity()).setMeTaskJson(mTaskJson);
     }

@@ -18,6 +18,7 @@
     </string-array>
 
     <string-array name="task_type">
+        <item>拼车</item>
         <item>美食</item>
         <item>唱K</item>
         <item>游戏</item>

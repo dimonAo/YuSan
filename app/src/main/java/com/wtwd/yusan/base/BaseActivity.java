@@ -29,7 +29,8 @@ import com.wtwd.yusan.util.Utils;
  */
 
 public abstract class BaseActivity extends AppCompatActivity {
-
+    public final String TAG = this.getClass().getSimpleName();
+    public static final boolean DEBUG = true;
     public static final int PURE_PICTURE_TITLE = 1;
     public static final int SOLID_COLOR_TITLE = 2;
 

@@ -2,6 +2,7 @@ package com.wtwd.yusan.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,23 +10,40 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.dialog.DialogUtil;
+import com.wtwd.yusan.widget.view.SwitchView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 public class PublishTaskActivity extends CommonToolBarActivity implements View.OnClickListener {
+    private static final int RED_PACKET_REQUEST_CODE = 0x01;
+
     private RelativeLayout relative_sex;
     private TextView text_sex;
 
@@ -35,8 +53,15 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
     private RelativeLayout relative_time;
     private TextView text_time;
 
+    private RelativeLayout relative_cost;
+    private TextView text_money;
+
     private EditText edit_detail;
     private TextView text_count;
+
+    private Button btn_publish;
+    private SwitchView switchview_anonymous;
+
 
     private RecyclerView recycler_task_type;
 
@@ -46,6 +71,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
     private TaskRecyclerAdapter mTaskRecyclerAdapter;
 
     private int[] mDrawables = {R.drawable.selector_task_car
+            , R.drawable.selector_task_food
             , R.drawable.selector_task_singing
             , R.drawable.selector_task_game
             , R.drawable.selector_task_travel
@@ -54,7 +80,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             , R.drawable.selector_task_other};
 
     private String[] mTaskNames;
-    private int mSelectPos;
+    private int mSelectPos, mSelectSex;
     private List<TaskRecyclerEntity> mTasks = new ArrayList<>();
 
     @Override
@@ -81,8 +107,6 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
 
     private void initView() {
-
-
         mDialog = new Dialog(this, R.style.MyCommonDialog);
 
         relative_sex = (RelativeLayout) findViewById(R.id.relative_sex);
@@ -93,6 +117,12 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
         relative_time = (RelativeLayout) findViewById(R.id.relative_time);
         text_time = (TextView) findViewById(R.id.text_time);
+
+        btn_publish = (Button) findViewById(R.id.btn_publish);
+        switchview_anonymous = (SwitchView) findViewById(R.id.switchview_anonymous);
+
+        relative_cost = (RelativeLayout) findViewById(R.id.relative_cost);
+        text_money = (TextView) findViewById(R.id.text_money);
 
         edit_detail = (EditText) findViewById(R.id.edit_detail);
         edit_detail.addTextChangedListener(new TextWatcher() {
@@ -105,7 +135,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                Log.e("TAG", "s : " + s);
 //                Log.e("TAG", "count : " + count);
-                text_count.setText(String.format("%S/15个字",s.length() + ""));
+                text_count.setText(String.format("%S/15个字", s.length() + ""));
 
             }
 
@@ -121,6 +151,9 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         mTaskRecyclerAdapter = new TaskRecyclerAdapter(R.layout.item_task_type_choose, mTasks);
         recycler_task_type.setAdapter(mTaskRecyclerAdapter);
 
+        //设置性别条件缺省值
+        text_sex.setText(mSexChoose.get(2));
+        text_province.setText(Pref.getInstance(this).getCity());
 
         getTaskTypeData();
     }
@@ -129,6 +162,8 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         relative_sex.setOnClickListener(this);
         relative_location.setOnClickListener(this);
         relative_time.setOnClickListener(this);
+        relative_cost.setOnClickListener(this);
+        btn_publish.setOnClickListener(this);
 
 
         mTaskRecyclerAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -178,7 +213,206 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
                 Dialog mDialog2 = new Dialog(this, R.style.MyCommonDialog);
                 DialogUtil.dialogShowDate(this, mDialog2, text_time);
                 break;
+
+            case R.id.btn_publish:
+                checkInputContent();
+                break;
+
+            case R.id.relative_cost:
+                readyGoForResult(RedPacketActivity.class, RED_PACKET_REQUEST_CODE);
+                break;
         }
+    }
+
+    /**
+     * 1.判断任务条件所填写项是否填写完成
+     * 2.请求服务器
+     */
+    private void checkInputContent() {
+        if ("选择时间".equals(getTaskStartTime())) {
+            showToast("请选择任务开始时间");
+            return;
+        }
+
+        if (TextUtils.isEmpty(getTaskDetailContent())) {
+            showToast("请输入任务说明");
+            return;
+        }
+//      publishTask(Pref.getInstance(this).getUserId() + "", "0");
+        publishTask("3", "0");
+    }
+
+
+    //获取任务描述
+    private String getTaskDetailContent() {
+        return edit_detail.getText().toString();
+    }
+
+    /**
+     * 获取任务类型
+     * 0:拼车
+     * 1：美食
+     * 2：唱K
+     * 3：游戏
+     * 4：出游
+     * 5：运动
+     * 6：品酒
+     * 7：其他
+     *
+     * @return
+     */
+    public String getTaskType() {
+        return mSelectPos + "";
+    }
+
+    /**
+     * 获取任务性别限制
+     *
+     * @return
+     */
+    private String getSexType() {
+        int mSelectPos = 0;
+        String mSexStr = text_sex.getText().toString();
+        for (int i = 0; i < mSexChoose.size(); i++) {
+            if (mSexStr.equals(mSexChoose.get(i))) {
+                mSelectPos = i;
+                break;
+            }
+        }
+
+        return mSelectPos + "";
+    }
+
+    /**
+     * 获取任务金额
+     *
+     * @return
+     */
+    private String getTaskMoney() {
+        return text_money.getText().toString();
+    }
+
+    /**
+     * 获取任务地址
+     *
+     * @return
+     */
+    private String getTaskAddress() {
+        return text_province.getText().toString();
+    }
+
+    /**
+     * 是否匿名
+     *
+     * @return
+     */
+    private String getTaskAnonymous() {
+        int mAnony = 0;
+        if (switchview_anonymous.isOpened()) {
+            mAnony = 1;
+        } else {
+            mAnony = 0;
+        }
+
+        return mAnony + "";
+    }
+
+    /**
+     * 将今天、明天、后天转成日期
+     *
+     * @return
+     */
+    private String getTaskStartTime() {
+        String mStartDateAndTime = null;
+        String time = text_time.getText().toString();
+        String mStartDate = time.substring(0, 2);
+        String mStartTime = time.substring(2, time.length());
+
+        String[] mm = getResources().getStringArray(R.array.data_array);
+        int mPosition = 0;
+
+        for (int i = 0; i < mm.length; i++) {
+            if (mStartDate.equals(mm[i])) {
+                mPosition = i;
+                break;
+            }
+        }
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, mPosition);
+
+        mStartDateAndTime = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + " " + mStartTime;
+
+
+        return mStartDateAndTime;
+    }
+
+    private void publishTask(String userId, String toId) {
+
+        Map<String, String> mPublishMap = new HashMap<>();
+        mPublishMap.put("userId", userId);
+        mPublishMap.put("content", getTaskDetailContent()); //任务描述
+        mPublishMap.put("type", getTaskType()); //任务类型
+        mPublishMap.put("sex", getSexType()); //接受者性别限制
+        mPublishMap.put("money", getTaskMoney());//任务金额
+        mPublishMap.put("address", getTaskAddress());//任务地址
+        mPublishMap.put("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
+        mPublishMap.put("to", toId); //发送给谁，0所有人，指定人传用户userid
+        mPublishMap.put("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
+        if (DEBUG) {
+            Log.e(TAG, "mPublishMap : " + mPublishMap.toString());
+        }
+
+//        OkHttpUtils.get()
+//                .url(Constans.PUBLISH_MISSION)
+//                .params(mPublishMap)
+//                .build()
+//                .connTimeOut(Constans.TIME_OUT)
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        if (DEBUG) {
+//                            Log.e("", "" + response);
+//                        }
+//
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+//
+//                        if (1 == mEn.getStatus()) {
+//
+//                        } else {
+//                            String mError = Utils.getErrorString(mEn.getErrCode());
+//                            showToast(mError);
+//                        }
+//
+//
+//                    }
+//                });
+
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (null != data) {
+            if (RED_PACKET_REQUEST_CODE == requestCode && RedPacketActivity.RED_PACKET_RESULT_CODE == resultCode) {
+
+                Bundle bundle = data.getExtras();
+                if (null != bundle) {
+                    String money = bundle.getString("money");
+                    text_money.setText(money);
+                }
+            }
+        }
+
     }
 
     private class TaskRecyclerAdapter extends BaseQuickAdapter<TaskRecyclerEntity, BaseViewHolder> {

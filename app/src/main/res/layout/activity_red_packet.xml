@@ -167,6 +167,7 @@
         android:textSize="@dimen/text_12" />
 
     <Button
+        android:id="@+id/btn_red_packet_commit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_42"
         android:layout_marginLeft="@dimen/common_14"

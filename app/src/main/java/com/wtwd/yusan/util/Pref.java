@@ -68,8 +68,8 @@ public class Pref {
      *
      * @param userId
      */
-    public void setUserId(int userId) {
-        getSharedPreferencesCommon().edit().putInt("user_id", userId).apply();
+    public void setUserId(Long userId) {
+        getSharedPreferencesCommon().edit().putLong("user_id", userId).apply();
     }
 
     /**
@@ -77,8 +77,8 @@ public class Pref {
      *
      * @return 存储的user_id
      */
-    public int getUserId() {
-        return getSharedPreferencesCommon().getInt("user_id", 0);
+    public Long getUserId() {
+        return getSharedPreferencesCommon().getLong("user_id", 0);
     }
 
 
@@ -116,6 +116,25 @@ public class Pref {
      */
     public String getMeTaskJson() {
         return getSharedPreferencesCommon().getString("task_me_json", "0");
+    }
+
+    /**
+     * 获取存储的城市
+     *
+     * @return
+     */
+    public String getCity() {
+        return getSharedPreferencesCommon().getString("city", "深圳");
+    }
+
+    /**
+     * 存储城市
+     *
+     * @param city 城市
+     */
+    public void setCity(String city) {
+
+        getSharedPreferencesCommon().edit().putString("city", city).apply();
     }
 
 

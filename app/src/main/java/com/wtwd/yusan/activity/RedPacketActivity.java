@@ -1,5 +1,6 @@
 package com.wtwd.yusan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -8,7 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -25,10 +28,12 @@ import java.util.Random;
  */
 
 public class RedPacketActivity extends CommonToolBarActivity {
-
+    public static final int RED_PACKET_RESULT_CODE = 0x02;
 
     private RecyclerView recycler_red_packet;
 
+    private Button btn_red_packet_commit;
+    private TextView text_task_cost;
 
     private int[] mDrawables = {R.mipmap.redpacket_yue, R.mipmap.redpacket_zhifubao, R.mipmap.redpacket_wechat};
 
@@ -65,7 +70,10 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
     private void initView() {
         text_tool_bar_title.setText("包红包");
+        text_task_cost = (TextView) findViewById(R.id.text_task_cost);
 
+
+        btn_red_packet_commit = (Button) findViewById(R.id.btn_red_packet_commit);
         recycler_red_packet = (RecyclerView) findViewById(R.id.recycler_red_packet);
         recycler_red_packet.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRedPacketAdapter = new RedPacketAdapter(R.layout.item_red_packet_type, mList);
@@ -87,6 +95,21 @@ public class RedPacketActivity extends CommonToolBarActivity {
             }
         });
 
+        addListener();
+    }
+
+    private void addListener() {
+        btn_red_packet_commit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("money", text_task_cost.getText().toString());
+                intent.putExtras(bundle);
+                setResult(RED_PACKET_RESULT_CODE, intent);
+                finish();
+            }
+        });
     }
 
     @Override

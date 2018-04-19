@@ -225,10 +225,10 @@ public class Utils {
         return (int) (pxValue / scale + 0.5f);
     }
 
-    public static int dip2px(Context context, float dipValue){
+    public static int dip2px(Context context, float dipValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dipValue * scale + 0.5f);  //+0.5是为了向上取整
+        return (int) (dipValue * scale + 0.5f);  //+0.5是为了向上取整
     }
 
     /**
@@ -441,6 +441,11 @@ public class Utils {
                 for (int i = minuteC; i < 6; i++) {
                     mMinutes.add(addZeroBeforeString((i * 10) + ""));
                 }
+
+                for (int i = 0; i < 6; i++) {
+                    mMinutes.add(addZeroBeforeString((i * 10) + ""));
+                }
+
             } else {
                 if (5 == minuteC) {
                     for (int i = (hour + 1); i < 24; i++) {
@@ -475,7 +480,7 @@ public class Utils {
 
 
     public static void setWheelHour(WheelPicker wheel_day, WheelPicker wheel_hour, WheelPicker wheel_minute
-            ,int position, List<String> mHours, List<String> mMinutes) {
+            , int position, List<String> mHours, List<String> mMinutes) {
 
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -542,7 +547,6 @@ public class Utils {
     }
 
 //    public static void
-
 
 
 }

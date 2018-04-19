@@ -31,6 +31,13 @@ public class TaskEntity implements Parcelable {
 
     private int status;    //任务状态，0是待领取，1是进行中，2是确认完成，3是等待对方确认，4是已完成，5是已失效
 
+    private String accept_time;//领取时间
+
+    private String finish_time;//完成时间
+
+    private int anonymous;//匿名装填，1是匿名，0是不匿名
+
+
     public TaskEntity() {
 
     }
@@ -49,6 +56,9 @@ public class TaskEntity implements Parcelable {
         create_time = in.readString();
         start_time = in.readString();
         status = in.readInt();
+        accept_time = in.readString();
+        finish_time = in.readString();
+        anonymous = in.readInt();
     }
 
     public static final Creator<TaskEntity> CREATOR = new Creator<TaskEntity>() {
@@ -127,6 +137,14 @@ public class TaskEntity implements Parcelable {
         this.create_time = create_time;
     }
 
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
     public UserEntity getAccepter() {
         return accepter;
     }
@@ -143,29 +161,28 @@ public class TaskEntity implements Parcelable {
         this.status = status;
     }
 
-    public String getStart_time() {
-        return start_time;
+    public String getAccept_time() {
+        return accept_time;
     }
 
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
+    public void setAccept_time(String accept_time) {
+        this.accept_time = accept_time;
     }
 
-    @Override
-    public String toString() {
-        return "TaskEntity{" +
-                "mission_id=" + mission_id +
-                ", content='" + content + '\'' +
-                ", type=" + type +
-                ", sex=" + sex +
-                ", address='" + address + '\'' +
-                ", money=" + money +
-                ", publisher=" + publisher +
-                ", create_time='" + create_time + '\'' +
-                ", start_time='" + start_time + '\'' +
-                ", accepter=" + accepter +
-                ", status=" + status +
-                '}';
+    public String getFinish_time() {
+        return finish_time;
+    }
+
+    public void setFinish_time(String finish_time) {
+        this.finish_time = finish_time;
+    }
+
+    public int getAnonymous() {
+        return anonymous;
+    }
+
+    public void setAnonymous(int anonymous) {
+        this.anonymous = anonymous;
     }
 
     @Override
@@ -189,5 +206,8 @@ public class TaskEntity implements Parcelable {
         dest.writeString(create_time);
         dest.writeString(start_time);
         dest.writeInt(status);
+        dest.writeString(accept_time);
+        dest.writeString(finish_time);
+        dest.writeInt(anonymous);
     }
 }

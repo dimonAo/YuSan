@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ import okhttp3.Call;
  */
 
 public class TaskFragment extends BaseFragment {
+    private static final String TAG = "TaskFragment";
+
     private static TaskFragment mInstance;
     private RecyclerView recycler_task;
     private EasyRefreshLayout easy_layout;
@@ -127,6 +130,10 @@ public class TaskFragment extends BaseFragment {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        if (DEBUG) {
+                            Log.e(TAG, "okhttp getAllMission e : " + e.toString());
+                        }
+
                         if (1 == mLoadTYpe) {
                             easy_layout.loadMoreComplete();
                             easy_layout.closeLoadView();
@@ -138,7 +145,9 @@ public class TaskFragment extends BaseFragment {
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        if (DEBUG) {
+                            Log.e(TAG, "okhttp getAllMission response : " + response);
+                        }
                         ResultEntity mEn = Utils.getResultEntity(response);
 
                         if (1 == mEn.getStatus()) {
