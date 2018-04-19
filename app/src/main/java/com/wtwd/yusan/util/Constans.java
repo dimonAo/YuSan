@@ -10,7 +10,8 @@ public class Constans {
     /**
      * 请求http地址
      */
-    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat";
+//    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat";
+    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat/open";
     /**
      * 请求http端口
      */
@@ -26,6 +27,9 @@ public class Constans {
     public static final String ACCEPT_MISSION = REQUEST_URL + "/acceptMission";
     public static final String COMPLET_MISSION = REQUEST_URL + "/completeMission";
     public static final String PUBLISH_MISSION = REQUEST_URL+"/publishMission";
+
+
+    public static final String GET_NEAYBY_USER = REQUEST_URL + "/getNearBy";//获取附近的人
 
 
 }

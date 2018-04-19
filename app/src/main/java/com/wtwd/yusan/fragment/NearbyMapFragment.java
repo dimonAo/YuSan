@@ -232,10 +232,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 Log.e(TAG,"range "+range);
                 int pixel = Math.round( range/ mAMap.getScalePerPixel());
                 if(mIsInVisiable == false){
-                    //getNearbyUser();
+
                 }else if(mIsInVisiable == true){
 
                 }
+                getNearbyUser(cameraPosition.target.latitude,cameraPosition.target.longitude,mAMap.getScalePerPixel());
+
             }
         });
         mAMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
@@ -447,7 +449,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     /**
      * 获取附近的人数据
      */
-    private synchronized  void getNearbyUser() {
+    private synchronized  void getNearbyUser(Double lat,Double lng,float zoom) {
         clearMarkers();
       /*  HashMap<String,Double> latMap = new HashMap<>();
         latMap.put("lat",mMyLocation.latitude);
@@ -455,8 +457,15 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         lngMap.put("lngMap",mMyLocation.longitude);
         HashMap<String,Float> distanceMap = new HashMap<>();
         distanceMap.put("distanceMap",mScale);*/
+        HashMap<String,String> params = new HashMap<>();
+        params.put("userId","1");
+        params.put("lat",lat+"");
+        params.put("lng",lng+"");
+        params.put("distance",zoom+"");
+      Log.e(TAG,"进入getNearbyUser");
         OkHttpUtils.get()
-                .url("")
+                .url(Constans.GET_NEAYBY_USER)
+                .params(params)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -466,10 +475,25 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
                     @Override
                     public void onResponse(String response, int id) {
-                           /* JSONObject json = new JSONObject(response);
+                        try {
+                            JSONObject json = new JSONObject(response);
                             int status = json.getInt("status");
-                            int errCode = json.getInt("errCode");*/
-                            ResultEntity mEn = Utils.getResultEntity(response);
+                           // int errCode = json.getInt("errCode");
+                            String result = json.getString("object");
+                            List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(result, LastVersionEntity.class);
+                            if (!list.isEmpty()) {
+                                Log.e(TAG,"list size"+list.size());
+                                for (int i = 0; i < list.size(); i++) {
+                                    addMarkerToMap(list.get(i));
+                                }
+                            }else{
+                                Log.e(TAG,"list is null");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                           Log.e(TAG,response);
+                            /*ResultEntity mEn = Utils.getResultEntity(response);
                             if (1 == mEn.getStatus()) {
                                // String result = json.getString("object");
                                 List<LastVersionEntity> list = GsonUtils.getInstance().jsonToList(mEn.getObject(), LastVersionEntity.class);
@@ -478,7 +502,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                                         addMarkerToMap(list.get(i));
                                     }
                                 }
-                            }
+                            }*/
                     }
                 });
     }
@@ -487,6 +511,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      * 添加marker到地图上
      */
     private synchronized void addMarkerToMap(final LastVersionEntity lastVersionEntity) {
+        Log.e(TAG,lastVersionEntity.getLat()+"  "+lastVersionEntity.getLng());
         final MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.setFlat(true);
         markerOptions.anchor(0.5f, 0.5f);
@@ -543,17 +568,18 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void customizeMarkerIcon(LastVersionEntity lastVersionEntity, final OnMarkerIconLoadListener listener) {
         final View markerView;
-
+        String url = "http://ucardstorevideo.b0.upaiyun.com/test/e8c8472c-d16d-4f0a-8a7b-46416a79f4c6.png";
         markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
         RelativeLayout rl = markerView.findViewById(R.id.rl_map_bg);
-        if (lastVersionEntity.getUser().getSex() == 0) {
+        rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_man_bg));
+       /* if (lastVersionEntity.getUser().getSex() == 0) {
            rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_man_bg));
         } else {
            // rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_);
-        }
+        }*/
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
-                .load(lastVersionEntity.getUser().getHead_img())
+                .load(url)
                 .asBitmap()
                 .thumbnail(0.2f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
