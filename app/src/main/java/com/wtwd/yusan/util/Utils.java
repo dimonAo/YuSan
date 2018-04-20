@@ -39,7 +39,7 @@ import javax.xml.transform.Result;
 
 public class Utils {
 
-    public static ResultEntity getResultEntity(String jsonString) {
+    public static  ResultEntity getResultEntity(String jsonString) {
         return GsonUtils.GsonToBean(jsonString, ResultEntity.class);
     }
 
@@ -72,6 +72,54 @@ public class Utils {
         }
         return mErrorInfo;
     }
+
+    /**
+     * 获取任务类型
+     * 0:拼车
+     * 1：美食
+     * 2：唱K
+     * 3：游戏
+     * 4：出游
+     * 5：运动
+     * 6：品酒
+     * 7：其他
+     *
+     * @return
+     */
+    public static String getTaskString(int type){
+        String mErrorInfo = "";
+        switch (type) {
+            case 0:
+                mErrorInfo = "拼车";
+                break;
+            case 1:
+                mErrorInfo = "美食";
+                break;
+            case 2:
+                mErrorInfo = "唱K";
+
+                break;
+            case 3:
+                mErrorInfo = "游戏";
+                break;
+            case 4:
+                mErrorInfo = "出游";
+                break;
+            case 5:
+                mErrorInfo = "运动";
+                break;
+            case 6:
+                mErrorInfo = "品酒";
+                break;
+            case 7:
+                mErrorInfo = "其他";
+                break;
+        }
+        return mErrorInfo;
+    }
+
+
+
 
     /**
      * 设置ToolBar Title居中

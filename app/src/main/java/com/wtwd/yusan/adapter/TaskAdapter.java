@@ -1,24 +1,17 @@
 package com.wtwd.yusan.adapter;
 
-import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Pref;
-import com.wtwd.yusan.widget.view.CircleImageView;
+import com.wtwd.yusan.util.Utils;
 
-import java.net.URI;
-import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by Administrator on 2018/4/9 0009.
- */
 
 public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
 
@@ -32,12 +25,17 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
 //                .load(Uri.parse(item.getPublisher().getHead_img()))
 //                .into((CircleImageView) helper.getView(R.id.circle_img_task_publisher));
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(item.getStart_time()/1000);
+
 
         helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
-                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
+//                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
+                .setText(R.id.text_task_publisher_nick, item.getUser_name())
                 .setText(R.id.text_task_content, item.getContent())
 //                .setText(R.id.text_task_time, item.getTaskTime())
-                .setText(R.id.text_task_date, item.getStart_time())
+                .setText(R.id.text_task_date, calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日")
+                .setText(R.id.text_task_time, calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE))
                 .setText(R.id.text_task_location, item.getAddress())
 //                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1)
                 .setText(R.id.text_task_cost, item.getMoney() + "");
@@ -45,19 +43,21 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
         /**
          * 任务类型
          */
-        if (1 == item.getType()) {
-            helper.setText(R.id.text_task_type, "吃饭")
-                    .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1);
-        } else {
-            helper.setText(R.id.text_task_type, "快递");
-        }
+//        if (1 == item.getType()) {
+        helper.setText(R.id.text_task_type, Utils.getTaskString(item.getType()))
+                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1);
+//        } else {
+//            helper.setText(R.id.text_task_type, "快递");
+//        }
 
         /**
          * 任务发布者性别标识
          */
-        if (2 == item.getPublisher().getSex()) {
+//        if (2 == item.getPublisher().getSex()) {
+        if (2 == item.getUser_sex()) {
             helper.setBackgroundRes(R.id.task_publisher_sex, R.mipmap.task_f);
-        } else if (1 == item.getPublisher().getSex()) {
+//        } else if (1 == item.getPublisher().getSex()) {
+        } else if (1 == item.getUser_sex()) {
             helper.setBackgroundRes(R.id.task_publisher_sex, R.mipmap.task_m);
         }
 
@@ -76,7 +76,7 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
          * 发布任务状态
          */
 
-        if (item.getPublisher().getUser_id() == Pref.getInstance(mContext).getUserId()) {
+        if (item.getUser_id() == Pref.getInstance(mContext).getUserId()) {
 //            helper.getView(R.id.btn_task).setEnabled(false);
             helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
 //                    .addOnClickListener(R.id.btn_task)
@@ -104,4 +104,5 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
 //        }
 
     }
+
 }

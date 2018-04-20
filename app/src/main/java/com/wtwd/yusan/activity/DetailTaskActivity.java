@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,12 +17,14 @@ import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.view.CircleImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.w3c.dom.Text;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,7 +95,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
                 if (1 == mTaskSatusType) {
                     //关闭任务
 
-
+                    closeMission(Pref.getInstance(DetailTaskActivity.this).getUserId() + "", mMissionId);
                 } else if (2 == mTaskSatusType) {
                     //确认完成
                     completMission(Pref.getInstance(DetailTaskActivity.this).getUserId() + "", mMissionId);
@@ -100,6 +103,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
                 } else if (3 == mTaskSatusType) {
                     //领取任务
                     acceptMission(Pref.getInstance(DetailTaskActivity.this).getUserId() + "", mMissionId);
+//                    acceptMission(2L + "", mMissionId);
                 }
 
 
@@ -115,32 +119,40 @@ public class DetailTaskActivity extends CommonToolBarActivity {
             return;
         }
 
-        Glide.with(this)
-                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
-                .into(circle_img_task_publisher);
+//        Glide.with(this)
+////                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
+//                .load(Uri.parse(mTaskEntity.getHead_img()))
+//                .into(circle_img_task_publisher);
 
         mMissionId = mTaskEntity.getMission_id() + "";
 
-        text_task_publisher_nick.setText(mTaskEntity.getPublisher().getUser_name());
-        if (1 == mTaskEntity.getPublisher().getSex()) {
+//        text_task_publisher_nick.setText(mTaskEntity.getPublisher().getUser_name());
+        text_task_publisher_nick.setText(mTaskEntity.getUser_name());
+//        if (1 == mTaskEntity.getPublisher().getSex()) {
+        if (1 == mTaskEntity.getUser_sex()) {
             task_publisher_sex.setImageResource(R.mipmap.task_m);
-        } else if (2 == mTaskEntity.getPublisher().getSex()) {
+//        } else if (2 == mTaskEntity.getPublisher().getSex()) {
+        } else if (2 == mTaskEntity.getUser_sex()) {
             task_publisher_sex.setImageResource(R.mipmap.task_f);
         }
 
         text_task_content.setText(mTaskEntity.getContent());
         text_task_cost.setText(mTaskEntity.getMoney() + "");
 
-        if (1 == mTaskEntity.getType()) {
-            img_task_type.setImageResource(R.mipmap.task_type_1);
-            text_task_type.setText("快递");
-        }
+//        if (1 == mTaskEntity.getType()) {
+        img_task_type.setImageResource(R.mipmap.task_type_1);
+        text_task_type.setText(Utils.getTaskString(mTaskEntity.getType()));
+//        }
 
         /**
          * 任务开始日期和时间
          */
-        text_task_date.setText(mTaskEntity.getStart_time());
-        text_task_time.setText(mTaskEntity.getStart_time());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mTaskEntity.getStart_time() / 1000);
+
+
+        text_task_date.setText(calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日");
+        text_task_time.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
 
         if (1 == mTaskEntity.getSex()) {
             text_task_condition.setText("限男生");
@@ -172,9 +184,14 @@ public class DetailTaskActivity extends CommonToolBarActivity {
          */
         text_task_close_time.setText(mTaskEntity.getFinish_time());
 
-        long publishUserId = mTaskEntity.getPublisher().getUser_id();
+//        long publishUserId = mTaskEntity.getPublisher().getUser_id();
+        long publishUserId = mTaskEntity.getUser_id();
 
         long userId = Pref.getInstance(this).getUserId();
+
+        if (DEBUG) {
+            Log.e(TAG, "detail task id : " + publishUserId + "---->" + userId);
+        }
 
         if (userId == publishUserId) {
             //我发布的任务
@@ -294,6 +311,9 @@ public class DetailTaskActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        if (DEBUG) {
+                            Log.e(TAG, "complet : " + response);
+                        }
 
                     }
                 });
@@ -324,7 +344,9 @@ public class DetailTaskActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        if (DEBUG) {
+                            Log.e(TAG, "accept : " + response);
+                        }
                     }
                 });
     }
@@ -335,7 +357,28 @@ public class DetailTaskActivity extends CommonToolBarActivity {
      *
      * @param userId
      */
-    private void closeMission(String userId) {
+    private void closeMission(String userId, String missionId) {
+        Map<String, String> mAcceptMission = new HashMap<>();
+        mAcceptMission.put("userId", userId);
+        mAcceptMission.put("missionId", missionId);
 
+        OkHttpUtils.get()
+                .url(Constans.CLOSE_MISSION)
+                .params(mAcceptMission)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        if (DEBUG) {
+                            Log.e(TAG, "close : " + response);
+                        }
+                    }
+                });
     }
 }

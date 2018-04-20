@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -92,11 +93,11 @@ public class TaskMeFragment extends BaseFragment {
 
         mAdapter = new TaskMeAdapter(R.layout.item_fragment_task, null);
         recycler_task.setAdapter(mAdapter);
-        getData();
-
-        initListener();
-
-        addListener();
+//        getData();
+//
+//        initListener();
+//
+//        addListener();
     }
 
     private void addListener() {
@@ -132,8 +133,13 @@ public class TaskMeFragment extends BaseFragment {
     private void getMeMission(int startCount) {
         Map<String, String> mStartCount = new HashMap<>();
         mStartCount.put("userId", Pref.getInstance(getActivity()).getUserId() + "");
+//        mStartCount.put("userId", 1L + "");
         mStartCount.put("start", startCount + "");
         mStartCount.put("count", REFRESH_AND_LOAD_ITEM_COUNT + "");
+
+        if (DEBUG) {
+            Log.e(TAG, "get me mission params : " + mStartCount.toString());
+        }
 
         final List<TaskEntity> mList = new ArrayList<>();
 
@@ -154,23 +160,29 @@ public class TaskMeFragment extends BaseFragment {
                         }
                     }
 
+                    @SuppressWarnings("unchecked")
                     @Override
                     public void onResponse(String response, int id) {
 
                         ResultEntity mEn = Utils.getResultEntity(response);
 
+                        String st = GsonUtils.GsonString(mEn.getObject());
+                        List<TaskEntity> mLists = GsonUtils.jsonToList(st,TaskEntity.class);
+
                         if (1 == mEn.getStatus()) {
-                            mList.addAll(GsonUtils.jsonToList(mEn.getObject(), TaskEntity.class));
+                            mList.addAll(mLists);
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
                                 int postion = mAdapter.getData().size();
-                                mAdapter.getData().addAll(mList);
+                                mAdapter.getData().addAll(mLists);
                                 mAdapter.notifyDataSetChanged();
                                 recycler_task.scrollToPosition(postion);
                             } else if (2 == mLoadTYpe) {
-                                mAdapter.setNewData(mList);
+                                mAdapter.setNewData(mLists);
                                 easy_layout.refreshComplete();
+                            }else{
+                                mAdapter.setNewData(mLists);
                             }
                         } else {
                             String mError = Utils.getErrorString(mEn.getErrCode());
@@ -198,7 +210,7 @@ public class TaskMeFragment extends BaseFragment {
     }
 
     private void initListener() {
-        easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
+//        easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
         easy_layout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
             @Override
             public void onLoadMore() {
@@ -210,8 +222,8 @@ public class TaskMeFragment extends BaseFragment {
 
             @Override
             public void onRefreshing() {
-                mLoadCount = 0;
                 mLoadTYpe = 2;
+                mLoadCount = 0;
                 getMeMission(0);
             }
         });
@@ -224,4 +236,23 @@ public class TaskMeFragment extends BaseFragment {
         Pref.getInstance(getActivity()).setMeTaskJson(mTaskJson);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        getData();
+//
+        initListener();
+
+        addListener();
+
+        mLoadTYpe = 0;
+        mLoadCount = 0;
+        getMeMission(0);
+    }
 }

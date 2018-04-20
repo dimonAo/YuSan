@@ -238,8 +238,8 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             showToast("请输入任务说明");
             return;
         }
-//      publishTask(Pref.getInstance(this).getUserId() + "", "0");
-        publishTask("3", "0");
+        publishTask(Pref.getInstance(this).getUserId(), "0");
+//        publishTask(1L, "0");
     }
 
 
@@ -280,7 +280,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             }
         }
 
-        return mSelectPos + "";
+        return (mSelectPos + 1) + "";
     }
 
     /**
@@ -348,10 +348,10 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         return mStartDateAndTime;
     }
 
-    private void publishTask(String userId, String toId) {
+    private void publishTask(long userId, String toId) {
 
         Map<String, String> mPublishMap = new HashMap<>();
-        mPublishMap.put("userId", userId);
+        mPublishMap.put("userId", userId + "");
         mPublishMap.put("content", getTaskDetailContent()); //任务描述
         mPublishMap.put("type", getTaskType()); //任务类型
         mPublishMap.put("sex", getSexType()); //接受者性别限制
@@ -364,35 +364,36 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             Log.e(TAG, "mPublishMap : " + mPublishMap.toString());
         }
 
-//        OkHttpUtils.get()
-//                .url(Constans.PUBLISH_MISSION)
-//                .params(mPublishMap)
-//                .build()
-//                .connTimeOut(Constans.TIME_OUT)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        if (DEBUG) {
-//                            Log.e("", "" + response);
-//                        }
-//
-//                        ResultEntity mEn = Utils.getResultEntity(response);
-//
-//                        if (1 == mEn.getStatus()) {
-//
-//                        } else {
-//                            String mError = Utils.getErrorString(mEn.getErrCode());
-//                            showToast(mError);
-//                        }
-//
-//
-//                    }
-//                });
+        OkHttpUtils.get()
+                .url(Constans.PUBLISH_MISSION)
+                .params(mPublishMap)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        if (DEBUG) {
+                            Log.e(TAG, "publish task : " + response);
+                        }
+
+                        ResultEntity mEn = Utils.getResultEntity(response);
+
+                        if (1 == mEn.getStatus()) {
+                            showToast("发布完成");
+                            finish();
+                        } else {
+                            String mError = Utils.getErrorString(mEn.getErrCode());
+                            showToast(mError);
+                        }
+
+
+                    }
+                });
 
 
     }

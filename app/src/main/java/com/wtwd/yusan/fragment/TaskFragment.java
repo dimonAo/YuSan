@@ -89,11 +89,7 @@ public class TaskFragment extends BaseFragment {
 
         mAdapter = new TaskAdapter(R.layout.item_fragment_task, null);
         recycler_task.setAdapter(mAdapter);
-        getData();
 
-        initListener();
-
-        addListener();
     }
 
     private void addListener() {
@@ -120,8 +116,14 @@ public class TaskFragment extends BaseFragment {
         mStartCount.put("start", startCount + "");
         mStartCount.put("count", count + "");
 
-        final List<TaskEntity> mList = new ArrayList<>();
+        if (DEBUG) {
+            Log.e(TAG, "get mission params : " + mStartCount.toString());
+        }
 
+        final List<TaskEntity> mList = new ArrayList<>();
+        if (DEBUG) {
+            Log.e(TAG, "get mission lists : " + mList);
+        }
         OkHttpUtils.get()
                 .url(Constans.GET_ALL_MISSION)
                 .params(mStartCount)
@@ -130,38 +132,51 @@ public class TaskFragment extends BaseFragment {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        if (DEBUG) {
-                            Log.e(TAG, "okhttp getAllMission e : " + e.toString());
-                        }
-
-                        if (1 == mLoadTYpe) {
-                            easy_layout.loadMoreComplete();
-                            easy_layout.closeLoadView();
-
-                        } else if (2 == mLoadTYpe) {
-                            easy_layout.refreshComplete();
-                        }
+//                        if (DEBUG) {
+//                            Log.e(TAG, "okhttp getAllMission e : " + e.toString());
+//                        }
+//
+//                        if (1 == mLoadTYpe) {
+//                            easy_layout.loadMoreComplete();
+//                            easy_layout.closeLoadView();
+//
+//                        } else if (2 == mLoadTYpe) {
+//                            easy_layout.refreshComplete();
+//                        } else {
+//
+//                        }
                     }
 
+                    @SuppressWarnings("unchecked")
                     @Override
                     public void onResponse(String response, int id) {
                         if (DEBUG) {
                             Log.e(TAG, "okhttp getAllMission response : " + response);
                         }
-                        ResultEntity mEn = Utils.getResultEntity(response);
+                        ResultEntity<TaskEntity> mEn = Utils.getResultEntity(response);
+                        List<TaskEntity> mL = mEn.getObject();
+                        String st = GsonUtils.GsonString(mL);
+                        List<TaskEntity> mLists = GsonUtils.jsonToList(st,TaskEntity.class);
 
+
+                        if (DEBUG) {
+//                            Log.e(TAG, "okhttp getAllMission response : " + mLists.toString());
+                            Log.e(TAG, "okhttp getAllMission mLoadTYpe : " +mLoadTYpe);
+                        }
                         if (1 == mEn.getStatus()) {
-                            mList.addAll(GsonUtils.jsonToList(mEn.getObject(), TaskEntity.class));
+                            mList.addAll(mLists);
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
                                 int postion = mAdapter.getData().size();
-                                mAdapter.getData().addAll(mList);
+                                mAdapter.getData().addAll(mLists);
                                 mAdapter.notifyDataSetChanged();
                                 recycler_task.scrollToPosition(postion);
                             } else if (2 == mLoadTYpe) {
-                                mAdapter.setNewData(mList);
+                                mAdapter.setNewData(mLists);
                                 easy_layout.refreshComplete();
+                            } else {
+                                mAdapter.setNewData(mLists);
                             }
                         } else {
                             String mError = Utils.getErrorString(mEn.getErrCode());
@@ -189,8 +204,9 @@ public class TaskFragment extends BaseFragment {
         mAdapter.notifyDataSetChanged();
     }
 
+
     private void initListener() {
-        easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
+//        easy_layout.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 5);
         easy_layout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
             @Override
             public void onLoadMore() {
@@ -202,8 +218,8 @@ public class TaskFragment extends BaseFragment {
 
             @Override
             public void onRefreshing() {
-                mLoadCount = 0;
                 mLoadTYpe = 2;
+                mLoadCount = 0;
                 getAllMission(0, 20);
 
             }
@@ -217,4 +233,25 @@ public class TaskFragment extends BaseFragment {
         Pref.getInstance(getActivity()).setTaskJson(mTaskJson);
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        getData();
+
+        initListener();
+
+        addListener();
+
+        mLoadTYpe = 0;
+        mLoadCount = 0;
+        getAllMission(0, 20);
+    }
 }

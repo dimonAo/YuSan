@@ -1,21 +1,15 @@
 package com.wtwd.yusan.entity;
 
-/**
-<<<<<<< HEAD
- * time:2018/4/13
- * Created by w77996
-=======
- * Created by Administrator on 2018/4/13 0013.
->>>>>>> upstream/master
- */
 
-public class ResultEntity {
+import java.util.List;
+
+public class ResultEntity<T> {
 
     private String msg;
     private int status;
 
     private int errCode;
-    private String object;
+    private List<T> object;
 
     public String getMsg() {
         return msg;
@@ -41,11 +35,11 @@ public class ResultEntity {
         this.errCode = errCode;
     }
 
-    public String getObject() {
+    public List<T> getObject() {
         return object;
     }
 
-    public void setObject(String object) {
+    public void setObject(List<T> object) {
         this.object = object;
     }
 

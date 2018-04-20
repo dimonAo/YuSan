@@ -10,7 +10,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.util.Utils;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -25,12 +27,14 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
 
     @Override
     protected void convert(BaseViewHolder helper, TaskEntity item) {
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(item.getStart_time() / 1000);
         helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
-                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
+//                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
+                .setText(R.id.text_task_publisher_nick, item.getUser_name())
                 .setText(R.id.text_task_content, item.getContent())
-//                .setText(R.id.text_task_time, item.getTaskTime())
-                .setText(R.id.text_task_date, item.getStart_time())
+                .setText(R.id.text_task_date, calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日")
+                .setText(R.id.text_task_time, calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE))
                 .setText(R.id.text_task_location, item.getAddress())
 //                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1)
                 .setText(R.id.text_task_cost, item.getMoney() + "");
@@ -38,19 +42,22 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
         /**
          * 任务类型
          */
-        if (1 == item.getType()) {
-            helper.setText(R.id.text_task_type, "吃饭")
-                    .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1);
-        } else {
-            helper.setText(R.id.text_task_type, "快递");
-        }
+
+//        if (1 == item.getType()) {
+        helper.setText(R.id.text_task_type, Utils.getTaskString(item.getType()))
+                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1);
+//        } else {
+//            helper.setText(R.id.text_task_type, "快递");
+//        }
 
         /**
          * 任务发布者性别标识
          */
-        if (2 == item.getPublisher().getSex()) {
+//        if (2 == item.getPublisher().getSex()) {
+        if (2 == item.getUser_sex()) {
             helper.setBackgroundRes(R.id.task_publisher_sex, R.mipmap.task_f);
-        } else if (1 == item.getPublisher().getSex()) {
+//        } else if (1 == item.getPublisher().getSex()) {
+        } else if (1 == item.getUser_sex()) {
             helper.setBackgroundRes(R.id.task_publisher_sex, R.mipmap.task_m);
         }
 
@@ -79,8 +86,8 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
 
             case 1:
 //                //进行中
-
-                if (item.getPublisher().getUser_id() == getUserId()) {
+//                if (item.getPublisher().getUser_id() == getUserId()) {
+                if (item.getUser_id() == getUserId()) {
                     //我发布的任务
                     helper.setText(R.id.btn_task, "进行中")
                             .setBackgroundRes(R.id.btn_task, R.drawable.shape_stroke_btn)
@@ -97,7 +104,8 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
             case 2:
                 //确认完成
 
-                if (item.getPublisher().getUser_id() == getUserId()) {
+//                if (item.getPublisher().getUser_id() == getUserId()) {
+                if (item.getUser_id() == getUserId()) {
                     //我发布的任务
                     helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
                             .setText(R.id.btn_task, "确认完成")

@@ -68,7 +68,7 @@ public class Pref {
      *
      * @param userId
      */
-    public void setUserId(Long userId) {
+    public void setUserId(long userId) {
         getSharedPreferencesCommon().edit().putLong("user_id", userId).apply();
     }
 
@@ -77,8 +77,9 @@ public class Pref {
      *
      * @return 存储的user_id
      */
-    public Long getUserId() {
-        return getSharedPreferencesCommon().getLong("user_id", 0);
+    public long getUserId() {
+//        return getSharedPreferencesCommon().getLong("user_id", 1);
+        return getSharedPreferencesCommon().getLong("user_id", 1L);
     }
 
 

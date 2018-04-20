@@ -174,30 +174,30 @@ public class NearbyListActivity extends CommonToolBarActivity {
                     }
                     @Override
                     public void onResponse(String response, int id) {
-                        ResultEntity mEn = Utils.getResultEntity(response);
-                        if(1 == mEn.getStatus()){
-                            list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
-                            if(1 == mLoadTYpe){
-                                easy_layout.loadMoreComplete();
-                                easy_layout.closeLoadView();
-                                int position = mNearbyListAdapter.getData().size();
-                                mNearbyListAdapter.getData().addAll(list);
-                                mNearbyListAdapter.notifyDataSetChanged();
-                                recycler_nearbylist.scrollToPosition(position);
-                            }else if(2 == mEn.getStatus()){
-                                mNearbyListAdapter.setNewData(list);
-                                easy_layout.refreshComplete();
-                            }
-                        }else{
-                            String mError = Utils.getErrorString(mEn.getErrCode());
-                            Log.e(TAG,mError);
-                            if (1 == mLoadTYpe) {
-                                easy_layout.loadMoreComplete();
-                                easy_layout.closeLoadView();
-                            } else if (2 == mLoadTYpe) {
-                                easy_layout.refreshComplete();
-                            }
-                        }
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+//                        if(1 == mEn.getStatus()){
+//                            list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
+//                            if(1 == mLoadTYpe){
+//                                easy_layout.loadMoreComplete();
+//                                easy_layout.closeLoadView();
+//                                int position = mNearbyListAdapter.getData().size();
+//                                mNearbyListAdapter.getData().addAll(list);
+//                                mNearbyListAdapter.notifyDataSetChanged();
+//                                recycler_nearbylist.scrollToPosition(position);
+//                            }else if(2 == mEn.getStatus()){
+//                                mNearbyListAdapter.setNewData(list);
+//                                easy_layout.refreshComplete();
+//                            }
+//                        }else{
+//                            String mError = Utils.getErrorString(mEn.getErrCode());
+//                            Log.e(TAG,mError);
+//                            if (1 == mLoadTYpe) {
+//                                easy_layout.loadMoreComplete();
+//                                easy_layout.closeLoadView();
+//                            } else if (2 == mLoadTYpe) {
+//                                easy_layout.refreshComplete();
+//                            }
+//                        }
                     }
                 });
 
