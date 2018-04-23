@@ -82,6 +82,10 @@
         <activity
             android:name=".activity.PacketDetailActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ModifyUserActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.NickActivity"></activity>
     </application>
 
 </manifest>

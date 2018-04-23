@@ -3,6 +3,7 @@ package com.wtwd.yusan.adapter;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -25,16 +26,29 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
         super(layoutResId, data);
     }
 
+    private String getDate(long mi) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis((mi));
+        String date = calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日";
+        return date;
+    }
+
+    private String getTime(long mi) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis((mi));
+        String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        return time;
+    }
+
     @Override
     protected void convert(BaseViewHolder helper, TaskEntity item) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(item.getStart_time() / 1000);
+
         helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
 //                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
                 .setText(R.id.text_task_publisher_nick, item.getUser_name())
                 .setText(R.id.text_task_content, item.getContent())
-                .setText(R.id.text_task_date, calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日")
-                .setText(R.id.text_task_time, calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE))
+                .setText(R.id.text_task_date, getDate(item.getStart_time()))
+                .setText(R.id.text_task_time, getTime(item.getStart_time()))
                 .setText(R.id.text_task_location, item.getAddress())
 //                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1)
                 .setText(R.id.text_task_cost, item.getMoney() + "");

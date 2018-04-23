@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.activity.FeedBackActivity;
+import com.wtwd.yusan.activity.ModifyUserActivity;
 import com.wtwd.yusan.activity.MyPacketActivity;
 import com.wtwd.yusan.activity.SettingActivity;
 import com.wtwd.yusan.base.BaseFragment;
@@ -85,25 +86,28 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         lin_me_setting.setOnClickListener(this);
         lin_me_money.setOnClickListener(this);
         lin_me_help_feedback.setOnClickListener(this);
+        img_tool_bar_right.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.lin_me_setting:
-                Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
-                startActivity(settingIntent);
+                readyGo(SettingActivity.class);
                 break;
+
             case R.id.lin_me_money:
-                Intent mypacketIntent = new Intent(getActivity(), MyPacketActivity.class);
-                startActivity(mypacketIntent);
+                readyGo(MyPacketActivity.class);
                 break;
+
             case R.id.lin_me_help_feedback:
-                Intent feedbackIntent = new Intent(getActivity(), FeedBackActivity.class);
-                startActivity(feedbackIntent);
+                readyGo(FeedBackActivity.class);
                 break;
+
             case R.id.img_tool_bar_right:
+                readyGo(ModifyUserActivity.class);
                 break;
+
         }
     }
 

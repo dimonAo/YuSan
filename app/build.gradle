@@ -60,5 +60,5 @@ dependencies {
     implementation 'com.amap.api:location:3.8.0'
     implementation 'com.zhy:okhttputils:2.6.2'
     implementation project(':WheelPicker')
-    implementation project (':imagepicker')
+    implementation project(':imagepicker')
 }

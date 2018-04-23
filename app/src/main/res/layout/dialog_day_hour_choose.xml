@@ -110,7 +110,7 @@
                 app:wheel_indicator="true"
                 app:wheel_indicator_size="1dp"
                 app:wheel_item_text_size="@dimen/text_14"
-                app:wheel_visible_item_count="5" />
+                app:wheel_visible_item_count="7" />
 
         </LinearLayout>
 
@@ -128,7 +128,7 @@
                 app:wheel_indicator="true"
                 app:wheel_indicator_size="1dp"
                 app:wheel_item_text_size="@dimen/text_14"
-                app:wheel_visible_item_count="5" />
+                app:wheel_visible_item_count="7" />
 
         </LinearLayout>
 
@@ -146,7 +146,7 @@
                 app:wheel_indicator="true"
                 app:wheel_indicator_size="1dp"
                 app:wheel_item_text_size="@dimen/text_14"
-                app:wheel_visible_item_count="5" />
+                app:wheel_visible_item_count="7" />
 
         </LinearLayout>
 
