@@ -118,5 +118,22 @@ public class Pref {
         return getSharedPreferencesCommon().getString("task_me_json", "0");
     }
 
+    /**
+     * 获取存储的城市
+     *
+     * @return
+     */
+    public String getCity() {
+        return getSharedPreferencesCommon().getString("city", "深圳");
+    }
 
+    /**
+     * 存储城市
+     *
+     * @param city 城市
+     */
+    public void setCity(String city) {
+
+        getSharedPreferencesCommon().edit().putString("city", city).apply();
+    }
 }
