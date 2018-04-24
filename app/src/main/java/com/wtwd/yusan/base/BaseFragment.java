@@ -24,6 +24,8 @@ import com.wtwd.yusan.util.Utils;
  */
 
 public abstract class BaseFragment extends Fragment {
+    public final String TAG = this.getClass().getSimpleName();
+    public static final boolean DEBUG = true;
     public Toolbar tool_bar;
     //    public ImageView img_tool_bar_left;
     public ImageView img_tool_bar_right;

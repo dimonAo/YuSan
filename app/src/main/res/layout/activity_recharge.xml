@@ -17,38 +17,43 @@
         android:layout_weight="1"
         android:layout_marginTop="@dimen/common_8"
         android:gravity="center">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/common_110"
-            android:background="@mipmap/recharge_bg"
             android:layout_marginLeft="@dimen/common_14"
             android:layout_marginRight="@dimen/common_14"
+            android:background="@mipmap/recharge_bg"
             android:gravity="center">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="bottom|center_horizontal"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="余额: "
-                    android:textSize="@dimen/text_18"
-                    android:textColor="#e7b7d5"/>
+                    android:textColor="#e7b7d5"
+                    android:textSize="@dimen/text_18" />
+
                 <TextView
                     android:id="@+id/tv_recharge_yue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00"
                     android:gravity="bottom"
-                    android:textSize="@dimen/text_32"
-                    android:textColor="#ffffff"/>
+                    android:text="0.00"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/text_32" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="元"
-                    android:textSize="@dimen/text_14"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/text_14" />
             </LinearLayout>
 
         </LinearLayout>
@@ -102,9 +107,10 @@
                 android:hint="手动输入充值金额"
                 android:layout_centerInParent="true"
                 android:textColorHint="#c7c7c7"
-                android:maxLength="6"
+                android:maxLength="8"
                 android:singleLine="true"
                 android:digits="0123456789."
+                android:inputType="numberDecimal"
                 android:layout_height="@dimen/common_32"
                 android:background="@null"
                 />

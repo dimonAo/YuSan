@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.BaseActivity;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.Utils;
+import com.wtwd.yusan.util.ViewUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -123,9 +126,17 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
      * 提交反馈
      */
     private void submitFeedback() {
+
+        String feedbackData = ed_feedback_content.getText().toString().trim();
+        if(TextUtils.isEmpty(feedbackData)){
+            showToast("请输入反馈内容");
+            return;
+        }
+
         // TODO: 2018/4/11 提交反馈
         OkHttpUtils.post()
-                .url("")
+                .url(Constans.FEEDBACK)
+                .addParams("feedback",feedbackData)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -135,7 +146,8 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        showToast("提交成功");
+                        ed_feedback_content.setText("");
                     }
                 });
     }

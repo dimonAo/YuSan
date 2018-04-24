@@ -178,7 +178,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/common_14"
                     android:layout_toLeftOf="@id/img_2"
-                    android:text="今天18:00"
+                    android:text="选择时间"
                     android:textColor="@color/colorTaskContent_9"
                     android:textSize="@dimen/text_14" />
 
@@ -216,12 +216,24 @@
                     android:background="@mipmap/publish_right_arrow" />
 
                 <TextView
+                    android:id="@+id/text_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/common_14"
                     android:layout_toLeftOf="@id/img_4"
-                    android:text="5元"
+                    android:text="元"
+                    android:textColor="@color/colorTaskContent_9"
+                    android:textSize="@dimen/text_14" />
+
+
+                <TextView
+                    android:id="@+id/text_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/text_unit"
+                    android:text="5"
                     android:textColor="@color/colorTaskContent_9"
                     android:textSize="@dimen/text_14" />
 
@@ -294,6 +306,7 @@
                     android:textSize="@dimen/text_14" />
 
                 <com.wtwd.yusan.widget.view.SwitchView
+                    android:id="@+id/switchview_anonymous"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -390,14 +403,13 @@
                         android:background="@null"
                         android:gravity="top|left"
                         android:hint="说点什么吧..."
+                        android:imeOptions="actionDone"
                         android:maxLength="15"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/colorTaskContent"
                         android:textColorHint="@color/colorTaskContent_9"
-                        android:textSize="@dimen/text_12"
-                        android:imeOptions="actionDone"
-                        />
+                        android:textSize="@dimen/text_12" />
 
                     <TextView
                         android:id="@+id/text_count"

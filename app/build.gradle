@@ -43,22 +43,19 @@ dependencies {
     implementation("com.yanzhenjie:permission:1.1.2", {
         exclude group: 'com.yanzhenjie', module: 'permission'
     })
-
     implementation("com.github.bumptech.glide:glide:3.7.0", {
         exclude group: 'com.github.bumptech.glide', module: 'glide'
     })
-
     implementation("com.google.code.gson:gson:2.8.2", {
         exclude group: 'com.google.code.gson', module: "gson"
     })
-
     implementation("com.github.ybq:Android-SpinKit:1.0.2", {
         exclude group: 'com.github.ybq', module: 'Android-SpinKit'
     })
-
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.amap.api:location:3.8.0'
     implementation 'com.zhy:okhttputils:2.6.2'
     implementation project(':WheelPicker')
-    implementation project (':imagepicker')
+    implementation project(':imagepicker')
+    implementation files('libs/libammsdk.jar')
 }

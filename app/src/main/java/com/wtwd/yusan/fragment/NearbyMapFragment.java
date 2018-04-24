@@ -418,6 +418,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     }
 
     /**
+     * 获取用户状态
+     */
+    private void getUsreStatus(){
+
+    }
+    /**
      * 改变用户状态
      */
     private void changeUserStatus() {
@@ -475,7 +481,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        Log.e(TAG,e.getMessage());
                     }
 
                     @Override

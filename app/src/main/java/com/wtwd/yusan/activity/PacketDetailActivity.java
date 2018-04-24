@@ -93,15 +93,6 @@ public class PacketDetailActivity extends CommonToolBarActivity {
 
             }
         });
-
-        for(int i = 0; i< 10;i++){
-            PacketDetailEntity packetDetailEntity = new PacketDetailEntity();
-            packetDetailEntity.setNum("i +num"+i);
-            packetDetailEntity.setTime("i +time"+i);
-            packetDetailEntity.setType("i +type"+i);
-            list.add(packetDetailEntity);
-        }
-        mPacketDetailAdapter.notifyDataSetChanged();
     }
 
     private void getPacketDetail(int start, int count) {
@@ -110,8 +101,8 @@ public class PacketDetailActivity extends CommonToolBarActivity {
         params.put("start",start+"");
         params.put("count",count+"");
 
-       /* OkHttpUtils.get()
-                .url(Constans.REQUEST_URL)
+        OkHttpUtils.get()
+                .url(Constans.GET_PACKETDETAIL)
                 .params(params)
                 .build()
                 .connTimeOut(Constans.TIME_OUT)
@@ -153,7 +144,7 @@ public class PacketDetailActivity extends CommonToolBarActivity {
                             }
                         }
                     }
-                });*/
+                });
     }
 
     @Override

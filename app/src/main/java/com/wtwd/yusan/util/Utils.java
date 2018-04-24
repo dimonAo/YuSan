@@ -6,6 +6,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
@@ -28,8 +32,14 @@ import com.wtwd.yusan.entity.ResultEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,6 +82,52 @@ public class Utils {
         }
         return mErrorInfo;
     }
+
+    /**
+     * 获取任务类型
+     * 0:拼车
+     * 1：美食
+     * 2：唱K
+     * 3：游戏
+     * 4：出游
+     * 5：运动
+     * 6：品酒
+     * 7：其他
+     *
+     * @return
+     */
+    public static String getTaskString(int type) {
+        String mErrorInfo = "";
+        switch (type) {
+            case 0:
+                mErrorInfo = "拼车";
+                break;
+            case 1:
+                mErrorInfo = "美食";
+                break;
+            case 2:
+                mErrorInfo = "唱K";
+
+                break;
+            case 3:
+                mErrorInfo = "游戏";
+                break;
+            case 4:
+                mErrorInfo = "出游";
+                break;
+            case 5:
+                mErrorInfo = "运动";
+                break;
+            case 6:
+                mErrorInfo = "品酒";
+                break;
+            case 7:
+                mErrorInfo = "其他";
+                break;
+        }
+        return mErrorInfo;
+    }
+
 
     /**
      * 设置ToolBar Title居中
@@ -225,10 +281,10 @@ public class Utils {
         return (int) (pxValue / scale + 0.5f);
     }
 
-    public static int dip2px(Context context, float dipValue){
+    public static int dip2px(Context context, float dipValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dipValue * scale + 0.5f);  //+0.5是为了向上取整
+        return (int) (dipValue * scale + 0.5f);  //+0.5是为了向上取整
     }
 
     /**
@@ -441,6 +497,11 @@ public class Utils {
                 for (int i = minuteC; i < 6; i++) {
                     mMinutes.add(addZeroBeforeString((i * 10) + ""));
                 }
+
+                for (int i = 0; i < 6; i++) {
+                    mMinutes.add(addZeroBeforeString((i * 10) + ""));
+                }
+
             } else {
                 if (5 == minuteC) {
                     for (int i = (hour + 1); i < 24; i++) {
@@ -475,7 +536,7 @@ public class Utils {
 
 
     public static void setWheelHour(WheelPicker wheel_day, WheelPicker wheel_hour, WheelPicker wheel_minute
-            ,int position, List<String> mHours, List<String> mMinutes) {
+            , int position, List<String> mHours, List<String> mMinutes) {
 
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -541,8 +602,66 @@ public class Utils {
         return string;
     }
 
-//    public static void
+    /**
+     * 获取用户IP地址
+     * @param context
+     * @return
+     */
+    public static String getIPAddress(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
+                try {
+                    //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                        NetworkInterface intf = en.nextElement();
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                            InetAddress inetAddress = enumIpAddr.nextElement();
+                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
+                return ipAddress;
+            }
+        } else {
+            //当前无网络连接,请在设置中打开网络
+        }
+        return null;
+    }
 
+    /**
+     * 将得到的int类型的IP转换为String类型
+     *
+     * @param ip
+     * @return
+     */
+    public static String intIP2StringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
+    }
 
+    /**
+     * 获取当前时间
+     * @return
+     */
+    public static String getNowDate(){
+        Date d = new Date();
+        System.out.println(d);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateNowStr = sdf.format(d);
+        System.out.println("格式化后的日期：" + dateNowStr);
+        return dateNowStr;
+    }
 
 }

@@ -44,7 +44,6 @@ public class DialogUtil {
         mDialog.setContentView(view);
         mDialog.setCanceledOnTouchOutside(true);
 
-
         text_commit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,10 +52,7 @@ public class DialogUtil {
             }
         });
 
-
         mDialog.show();
-
-
         setDialogMaxheightLayoutParams(mActivity, mDialog);
     }
 

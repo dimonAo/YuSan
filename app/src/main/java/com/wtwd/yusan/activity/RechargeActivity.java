@@ -6,40 +6,66 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.Utils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import okhttp3.Call;
 
 /**
  * time:2018/4/17
  * Created by w77996
  */
 
-public class RechargeActivity extends CommonToolBarActivity{
-
+public class RechargeActivity extends CommonToolBarActivity implements View.OnClickListener {
 
 
     RecyclerView rcl_recharge;
 
+    Button btn_recharg;
+
+    EditText ed_recharge;
+
     CheckBox ck_wechat_recharge;
     List<SelectBean> mNumList = new ArrayList<>();
 
-    private String[] numData= {"5元","20","50","100"};
+    private String[] numData = {"5元", "20", "50", "100"};
 
     RechargeNumAdapter mRechargeNumAdapter;
+    private int selectionStart;
+    private int selectionEnd;
+
+
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
         initData();
         initView();
+        addListener();
 
+    }
+
+    private void addListener() {
+        btn_recharg.setOnClickListener(this);
+        ed_recharge.setOnClickListener(this);
     }
 
     /**
@@ -47,31 +73,63 @@ public class RechargeActivity extends CommonToolBarActivity{
      */
     private void initView() {
         text_tool_bar_title.setText("充值");
-        rcl_recharge = (RecyclerView)findViewById(R.id.rcl_recharge);
-        rcl_recharge.setLayoutManager(new GridLayoutManager(this,2));
-        ck_wechat_recharge  = findViewById(R.id.ck_wechat_recharge);
+        rcl_recharge = (RecyclerView) findViewById(R.id.rcl_recharge);
+        rcl_recharge.setLayoutManager(new GridLayoutManager(this, 2));
+        ck_wechat_recharge = findViewById(R.id.ck_wechat_recharge);
         ck_wechat_recharge.setChecked(true);
-        mRechargeNumAdapter = new RechargeNumAdapter(R.layout.item_recharge_num,mNumList);
+        mRechargeNumAdapter = new RechargeNumAdapter(R.layout.item_recharge_num, mNumList);
         rcl_recharge.setAdapter(mRechargeNumAdapter);
+        btn_recharg = findViewById(R.id.btn_recharg);
+        ed_recharge = findViewById(R.id.ed_recharge);
 
         mRechargeNumAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                for(int i = 0; i < numData.length;i++){
+                for (int i = 0; i < numData.length; i++) {
                     mNumList.get(i).setSelect(false);
                 }
-                Log.e("dd",position+"");
+                Log.e("dd", position + "");
                 mNumList.get(position).setSelect(true);
                 mRechargeNumAdapter.notifyDataSetChanged();
             }
         });
+
+        ed_recharge.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                selectionStart = ed_recharge.getSelectionStart();
+                selectionEnd = ed_recharge.getSelectionEnd();
+                if (!isOnlyPointNumber(ed_recharge.getText().toString()) && !TextUtils.isEmpty(s.toString())) {
+                    // PromptManager.showToast(context,"您输入的数字保留在小数点后两位");
+                    //删除多余输入的字（不会显示出来）
+                    s.delete(selectionStart - 1, selectionEnd);
+                    ed_recharge.setText(s);
+                    ed_recharge.setSelection(s.length());
+                }
+
+            }
+        });
     }
 
-    private void initData(){
-        for(int i = 0; i<numData.length;i++){
+    private void initData() {
+        for (int i = 0; i < numData.length; i++) {
             SelectBean selectBean = new SelectBean();
             selectBean.setNum(numData[i]);
             selectBean.setSelect(false);
+            if (i == 0) {
+                selectBean.setSelect(true);
+            }
+
             mNumList.add(selectBean);
         }
     }
@@ -86,7 +144,51 @@ public class RechargeActivity extends CommonToolBarActivity{
         return null;
     }
 
-    private class RechargeNumAdapter extends BaseQuickAdapter<SelectBean,BaseViewHolder>{
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_recharg:
+                float rechageData = Float.parseFloat(ed_recharge.getText().toString());
+                Log.e(TAG, rechageData + "");
+              /*  int total_fee = Integer.parseInt((rechageData * 100)+"");
+                Log.e(TAG,total_fee+"");
+                if(rechageData <=0){
+                    showToast("输入错误");
+                    return;
+                }*/
+                // rechargMoney(rechageData);
+                break;
+        }
+    }
+
+    /**
+     * 充值,请求服务器返回preperId
+     */
+    private void rechargMoney(float rechargData) {
+
+        int total_fee = Integer.parseInt((rechargData * 100) + "");
+        OkHttpUtils.post()
+                .addParams("body", "用户充值")//商品描述
+                .addParams("total_fee", total_fee + "")
+                .addParams("spbill_create_ip", Utils.getIPAddress(this))
+                .addParams("trade_type", "APP")
+                .url(Constans.GET_WX_PERPERID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, response.toString());
+                    }
+                });
+
+    }
+
+    private class RechargeNumAdapter extends BaseQuickAdapter<SelectBean, BaseViewHolder> {
 
         public RechargeNumAdapter(int layoutResId, @Nullable List<SelectBean> data) {
             super(layoutResId, data);
@@ -94,18 +196,34 @@ public class RechargeActivity extends CommonToolBarActivity{
 
         @Override
         protected void convert(BaseViewHolder helper, SelectBean item) {
-            helper.setText(R.id.tv_item_recharge_num,item.getNum());
-            if(item.isSelect() == true){
-                helper.setBackgroundRes(R.id.lin_recharge,R.drawable.selector_recharge_num_select)
+            helper.setText(R.id.tv_item_recharge_num, item.getNum());
+            if (item.isSelect() == true) {
+                helper.setBackgroundRes(R.id.lin_recharge, R.drawable.selector_recharge_num_select)
                         .setTextColor(R.id.tv_item_recharge_num, Color.WHITE);
-            }else if(item.isSelect() == false){
-                helper.setBackgroundRes(R.id.lin_recharge,R.drawable.selector_recharge_num)
+            } else if (item.isSelect() == false) {
+                helper.setBackgroundRes(R.id.lin_recharge, R.drawable.selector_recharge_num)
                         .setTextColor(R.id.tv_item_recharge_num, Color.parseColor("#262626"));
             }
         }
     }
 
-    private class SelectBean{
+    public static boolean isOnlyPointNumber(String number) {//保留两位小数正则
+        Pattern pattern = Pattern.compile("^\\d+\\.?\\d{0,2}$");
+        Matcher matcher = pattern.matcher(number);
+        return matcher.matches();
+    }
+
+    public static boolean isMoney(String str) {
+        Pattern pattern = Pattern.compile("^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$"); // 判断小数点后2位的数字的正则表达式
+        Matcher match = pattern.matcher(str);
+        if (match.matches() == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private class SelectBean {
         String num;
         boolean isSelect;
 

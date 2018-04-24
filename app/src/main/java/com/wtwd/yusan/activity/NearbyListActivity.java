@@ -176,7 +176,7 @@ public class NearbyListActivity extends CommonToolBarActivity {
                     public void onResponse(String response, int id) {
                         ResultEntity mEn = Utils.getResultEntity(response);
                         if(1 == mEn.getStatus()){
-                            list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
+                           // list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
                             if(1 == mLoadTYpe){
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
