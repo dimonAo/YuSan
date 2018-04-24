@@ -38,6 +38,8 @@
     <string name="header_pull_over">释放立即刷新</string>
     <string name="header_refreshing">正在刷新...</string>
     <string name="header_completed">刷新成功</string>
+    <string name="register_verify_code_text">获取验证码</string>
+    <string name="register_retest">%d秒后重试</string>
 
 
 </resources>

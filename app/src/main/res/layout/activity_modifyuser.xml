@@ -29,6 +29,7 @@
             android:textSize="@dimen/text_14" />
 
         <com.wtwd.yusan.widget.view.CircleImageView
+            android:id="@+id/circle_img_head"
             android:layout_width="@dimen/common_62"
             android:layout_height="@dimen/common_62"
             android:layout_centerVertical="true"

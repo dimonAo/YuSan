@@ -40,11 +40,13 @@
 
     <color name="alpha_black_43">#91ffffff</color>
     <color name="alpha_white_35">#94ffffff</color>
+    <color name="alpha_white_b3">#b3ffffff</color>
 
     <color name="alpha_black_30">#4c000000</color>
     <color name="alpha_black_31">#80000000</color>
 
     <color name="closeTask">#e1483c</color>
+    <color name="blue">#33b5e5</color>
 
 
 </resources>

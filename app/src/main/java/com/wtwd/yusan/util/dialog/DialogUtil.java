@@ -41,6 +41,7 @@ public class DialogUtil {
 //        StringScrollPicker string_picker_sex = (StringScrollPicker) view.findViewById(R.id.string_picker_sex);
         final WheelPicker wheel_picker_sex = (WheelPicker) view.findViewById(R.id.wheel_picker_sex);
         wheel_picker_sex.setData(mSexs);
+//        wheel_picker_sex.setSelectedItemPosition();
         mDialog.setContentView(view);
         mDialog.setCanceledOnTouchOutside(true);
 

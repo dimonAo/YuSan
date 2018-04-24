@@ -76,4 +76,17 @@ public class ImageItem implements Serializable, Parcelable {
             return new ImageItem[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "ImageItem{" +
+                "name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", size=" + size +
+                ", width=" + width +
+                ", height=" + height +
+                ", mimeType='" + mimeType + '\'' +
+                ", addTime=" + addTime +
+                '}';
+    }
 }
