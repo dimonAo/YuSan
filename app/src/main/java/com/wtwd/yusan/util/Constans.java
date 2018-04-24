@@ -33,6 +33,18 @@ public class Constans {
 
 
     public static final String GET_NEAYBY_USER = REQUEST_URL + "/getNearBy";//获取附近的人
+    public static final String FEEDBACK = REQUEST_URL+"/feedback";//反馈
+    public static final String GET_PACKETDETAIL = REQUEST_URL+"/packetdetail";//钱包详情
 
+    /******微信支付相关**********/
+    public static final String  WX_APP_ID = "";
+    public static final String WX_API_KEY="";
+    public static final String WX_MCH_ID="";
 
+    public static final String GET_WX_PERPERID = REQUEST_URL+"";//传值后台获取preperId
+
+    public static final int ORDER_TYPE_TRADE = 1;//交易类型：充值
+    public static final int ORDER_TYPE_WITHDRAWLS = 2;//交易类型：提现
+    public static final int ORDER_TYPE_REDPACKET = 3;//交易类型：红包
+    public static final int ORDER_TYPE_TASK = 4;//交易类型：任务
 }

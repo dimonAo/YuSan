@@ -107,6 +107,11 @@
             android:name=".activity.PacketDetailActivity"
             android:screenOrientation="portrait" />
         <activity
+
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+
             android:name=".activity.ModifyUserActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -118,6 +123,7 @@
         <activity
             android:name=".activity.LandPhoneActivity"
             android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

@@ -128,6 +128,7 @@ public class Pref {
         return getSharedPreferencesCommon().getString("city", "深圳");
     }
 
+
     /**
      * 存储城市
      *

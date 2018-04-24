@@ -58,16 +58,19 @@ public class MyPacketActivity extends CommonToolBarActivity implements  View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.lin_mypacket_withdrawals:
-                Intent withdrawalsItnent = new Intent(this,WithdrawalsActivity.class);
-                startActivity(withdrawalsItnent);
+               /* Intent withdrawalsItnent = new Intent(this,WithdrawalsActivity.class);
+                startActivity(withdrawalsItnent);*/
+                readyGo(WithdrawalsActivity.class);
                 break;
             case R.id.lin_mypacket_recharge:
-                Intent rechargeIntent = new Intent(this,RechargeActivity.class);
-                startActivity(rechargeIntent);
+               /* Intent rechargeIntent = new Intent(this,RechargeActivity.class);
+                startActivity(rechargeIntent);*/
+                readyGo(RechargeActivity.class);
                 break;
             case R.id.tv_mypacket_detail:
-                Intent mypacketDetailIntent = new Intent(this,PacketDetailActivity.class);
-                startActivity(mypacketDetailIntent);
+               /* Intent mypacketDetailIntent = new Intent(this,PacketDetailActivity.class);
+                startActivity(mypacketDetailIntent);*/
+               readyGo(PacketDetailActivity.class);
                 break;
         }
     }

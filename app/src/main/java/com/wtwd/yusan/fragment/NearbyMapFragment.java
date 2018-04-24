@@ -42,6 +42,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.MainActivity;
 import com.wtwd.yusan.activity.NearbyListActivity;
 import com.wtwd.yusan.activity.TaskActivity;
 import com.wtwd.yusan.base.BaseFragment;
@@ -49,6 +50,7 @@ import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.ViewUtil;
 import com.wtwd.yusan.widget.view.CircleImageView;
@@ -267,6 +269,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 Log.e(TAG, "onLocationChanged 定位成功 ----------------------- :" + "aMapLocation 信息 " + aMapLocation.getLongitude() + " " + aMapLocation.getLatitude());
                 mOnLocationChangedListener.onLocationChanged(aMapLocation);//显示定位
                 mMyLocation = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//构造位置
+                Pref.getInstance(getActivity()).setCity(aMapLocation.getCity());
                /* MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
                         .position(latLng)
                         .draggable(false);
@@ -334,9 +337,11 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-        if (null != mAMapLocationClient) {
+        /*if (null != mAMapLocationClient) {
             mAMapLocationClient.onDestroy();
-        }
+        }else{
+           Log.e(TAG,"mAMapLocationClient != null");
+        }*/
     }
 
     @Override
@@ -413,6 +418,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     }
 
     /**
+     * 获取用户状态
+     */
+    private void getUsreStatus(){
+
+    }
+    /**
      * 改变用户状态
      */
     private void changeUserStatus() {
@@ -470,7 +481,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        Log.e(TAG,e.getMessage());
                     }
 
                     @Override

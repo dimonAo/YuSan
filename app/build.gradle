@@ -63,7 +63,11 @@ dependencies {
     implementation 'com.zhy:okhttputils:2.6.2'
     implementation project(':WheelPicker')
     implementation project(':imagepicker')
+
+    implementation files('libs/libammsdk.jar')
+
     implementation files('libs/SMSSDK-3.1.1.jar')
     implementation files('libs/MobTools-2018.0419.1211.jar')
     implementation files('libs/MobCommons-2018.0418.1102.jar')
+
 }

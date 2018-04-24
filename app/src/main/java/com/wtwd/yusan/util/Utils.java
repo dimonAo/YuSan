@@ -6,6 +6,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
@@ -29,8 +33,14 @@ import com.wtwd.yusan.entity.ResultEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +50,7 @@ import javax.xml.transform.Result;
 
 public class Utils {
 
-    public static  ResultEntity getResultEntity(String jsonString) {
+    public static ResultEntity getResultEntity(String jsonString) {
         return GsonUtils.GsonToBean(jsonString, ResultEntity.class);
     }
 
@@ -87,7 +97,7 @@ public class Utils {
      *
      * @return
      */
-    public static String getTaskString(int type){
+    public static String getTaskString(int type) {
         String mErrorInfo = "";
         switch (type) {
             case 0:
@@ -119,6 +129,7 @@ public class Utils {
         return mErrorInfo;
     }
 
+
     /**
      * 手机号
      */
@@ -126,6 +137,7 @@ public class Utils {
 //        String telRegex = "[1][34578]\\d{9}";
         return !TextUtils.isEmpty(mobileNums) && mobileNums.matches("[1][34578]\\d{9}");
     }
+
 
 
     /**
@@ -601,7 +613,66 @@ public class Utils {
         return string;
     }
 
-//    public static void
+    /**
+     * 获取用户IP地址
+     * @param context
+     * @return
+     */
+    public static String getIPAddress(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
+                try {
+                    //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                        NetworkInterface intf = en.nextElement();
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                            InetAddress inetAddress = enumIpAddr.nextElement();
+                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
+                return ipAddress;
+            }
+        } else {
+            //当前无网络连接,请在设置中打开网络
+        }
+        return null;
+    }
 
+    /**
+     * 将得到的int类型的IP转换为String类型
+     *
+     * @param ip
+     * @return
+     */
+    public static String intIP2StringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
+    }
+
+    /**
+     * 获取当前时间
+     * @return
+     */
+    public static String getNowDate(){
+        Date d = new Date();
+        System.out.println(d);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateNowStr = sdf.format(d);
+        System.out.println("格式化后的日期：" + dateNowStr);
+        return dateNowStr;
+    }
 
 }
