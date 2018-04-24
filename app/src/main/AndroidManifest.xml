@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 允许程序设置内置sd卡的写权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- 允许程序访问WiFi网络信息 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
@@ -21,7 +22,15 @@
     <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!--用于mob验证码权限-->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+
     <application
+        android:name="com.mob.MobApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -32,15 +41,30 @@
             android:name="com.amap.api.v2.apikey"
             android:value="6072b710f29cb4bd5e0d60843bbee090" />
 
+        <!-- 通过AndroidManifest配置AppKey和AppSecret，如果你选择通过代码配置，则不需要配置以下meta-data -->
+        <meta-data
+            android:name="Mob-AppKey"
+            android:value="256911464aeb8" />
+        <meta-data
+            android:name="Mob-AppSecret"
+            android:value="3605bf95f4aceb7a3322eac16f265e87" />
+
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.LandChooseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--验证码界面-->
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <activity
             android:name=".activity.TaskActivity"
             android:screenOrientation="portrait" />
@@ -83,9 +107,23 @@
             android:name=".activity.PacketDetailActivity"
             android:screenOrientation="portrait" />
         <activity
+
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"/>
+
+            android:name=".activity.ModifyUserActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NickActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LandPhoneActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

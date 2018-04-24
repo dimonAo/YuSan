@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/land_phone_bg"
+    android:orientation="vertical"
+    tools:context="com.wtwd.yusan.activity.LandPhoneActivity">
+
+    <include layout="@layout/tool_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_42"
+        android:layout_marginLeft="@dimen/common_28"
+        android:layout_marginRight="@dimen/common_28"
+        android:layout_marginTop="@dimen/common_40"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/common_10"
+            android:layout_height="@dimen/common_14"
+            android:background="@mipmap/land_phone" />
+
+        <EditText
+            android:id="@+id/edit_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/common_12"
+            android:background="@null"
+            android:hint="手机号"
+            android:imeOptions="actionNext"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColorHint="@color/colorTaskContent_9"
+            android:textSize="@dimen/text_14"
+            android:textColor="@color/colorTaskContent_9"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/common_28"
+        android:layout_marginRight="@dimen/common_28"
+        android:background="@color/colorTaskContent_9" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_42"
+        android:layout_marginLeft="@dimen/common_28"
+        android:layout_marginRight="@dimen/common_28"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/common_10"
+            android:layout_height="@dimen/common_14"
+            android:background="@mipmap/land_vertify" />
+
+        <EditText
+            android:id="@+id/edit_verify"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/common_12"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="短信验证码"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColorHint="@color/colorTaskContent_9"
+            android:textSize="@dimen/text_14"
+            android:textColor="@color/colorTaskContent_9"
+            />
+
+        <Button
+            android:id="@+id/btn_get_verification_code"
+            android:layout_width="@dimen/common_58"
+            android:layout_height="@dimen/common_22"
+            android:background="@drawable/selector_vertify"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_8"
+
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/common_28"
+        android:layout_marginRight="@dimen/common_28"
+        android:background="@color/colorTaskContent_9" />
+
+    <Button
+        android:id="@+id/btn_land"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_40"
+        android:layout_marginLeft="@dimen/common_14"
+        android:layout_marginRight="@dimen/common_14"
+        android:layout_marginTop="@dimen/common_40"
+        android:background="@drawable/selector_task_btn"
+        android:gravity="center"
+        android:text="确定"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_14" />
+
+</LinearLayout>

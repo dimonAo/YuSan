@@ -13,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -127,6 +128,16 @@ public class Utils {
         }
         return mErrorInfo;
     }
+
+
+    /**
+     * 手机号
+     */
+    public static boolean isMobileNO(String mobileNums) {
+//        String telRegex = "[1][34578]\\d{9}";
+        return !TextUtils.isEmpty(mobileNums) && mobileNums.matches("[1][34578]\\d{9}");
+    }
+
 
 
     /**

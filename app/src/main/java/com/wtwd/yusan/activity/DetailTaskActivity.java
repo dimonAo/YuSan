@@ -148,7 +148,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
          * 任务开始日期和时间
          */
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(mTaskEntity.getStart_time() / 1000);
+        calendar.setTimeInMillis((mTaskEntity.getStart_time() / 1000L));
 
 
         text_task_date.setText(calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日");

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/land_choose_bg"
+    android:orientation="vertical"
+    tools:context="com.wtwd.yusan.activity.LandChooseActivity">
+
+    <include
+        layout="@layout/tool_bar"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/text_protocol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/common_34"
+        android:text="登录即代表您同意用户协议"
+        android:textColor="@color/alpha_white_b3"
+        android:textSize="@dimen/text_10" />
+
+    <LinearLayout
+        android:id="@+id/lin_choose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/text_protocol"
+        android:layout_marginBottom="@dimen/common_46"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right">
+
+            <ImageView
+                android:id="@+id/img_choose_wechat_land"
+                android:layout_width="@dimen/common_34"
+                android:layout_height="@dimen/common_34"
+                android:layout_marginRight="@dimen/common_38"
+                android:background="@mipmap/land_choose_wechat" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/img_choose_phone_land"
+                android:layout_width="@dimen/common_34"
+                android:layout_height="@dimen/common_34"
+                android:layout_marginLeft="@dimen/common_38"
+                android:background="@mipmap/land_choose_phone" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/lin_choose"
+        android:layout_marginBottom="@dimen/common_22"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="@dimen/common_100"
+            android:layout_height="1dp"
+            android:background="@drawable/shape_land_line_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/common_4"
+            android:layout_marginRight="@dimen/common_4"
+            android:text="选择登录方式"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_14" />
+
+        <View
+            android:layout_width="@dimen/common_100"
+            android:layout_height="1dp"
+            android:background="@drawable/shape_land_line_right" />
+    </LinearLayout>
+
+</RelativeLayout>
