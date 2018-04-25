@@ -33,7 +33,7 @@ public class NickActivity extends CommonToolBarActivity implements View.OnClickL
         text_left = (TextView) findViewById(R.id.text_left);
         text_right = (TextView) findViewById(R.id.text_right);
         edit_nick = (EditText) findViewById(R.id.edit_nick);
-        text_tool_bar_title.setText("昵称");
+        text_tool_bar_title.setText(R.string.modify_user_nick);
 
         addListener();
     }
@@ -46,7 +46,7 @@ public class NickActivity extends CommonToolBarActivity implements View.OnClickL
     private boolean checkNickNull() {
         String mNick = edit_nick.getText().toString();
         if (TextUtils.isEmpty(mNick)) {
-            showToast("昵称不能为空");
+            showToast(getString(R.string.nick_not_null));
             return false;
         }
         return true;

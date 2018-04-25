@@ -117,7 +117,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
                 mMeAddPicAdapter.notifyDataSetChanged();
             } else {
 //                Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
-                showToast("没有数据");
+                showToast(getString(R.string.user_index_no_data));
             }
         }
     }

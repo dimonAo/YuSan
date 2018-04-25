@@ -24,7 +24,7 @@
             android:drawableTop="@drawable/selector_main_message"
             android:paddingBottom="@dimen/common_4"
             android:paddingTop="@dimen/common_6"
-            android:text="消息"
+            android:text="@string/main_message"
             android:textColor="@color/colorTaskContent"
             android:textSize="@dimen/text_10" />
 
@@ -38,7 +38,7 @@
             android:drawableTop="@drawable/selector_main_near"
             android:paddingBottom="@dimen/common_4"
             android:paddingTop="@dimen/common_6"
-            android:text="附近"
+            android:text="@string/main_nearby"
             android:textColor="@color/colorTaskContent"
             android:textSize="@dimen/text_10" />
 
@@ -52,7 +52,7 @@
             android:drawableTop="@drawable/selector_main_me"
             android:paddingBottom="@dimen/common_4"
             android:paddingTop="@dimen/common_6"
-            android:text="我的"
+            android:text="@string/main_me"
             android:textColor="@color/colorTaskContent"
             android:textSize="@dimen/text_10" />
     </LinearLayout>

@@ -37,7 +37,7 @@
                     android:layout_marginLeft="@dimen/common_6"
                     android:textSize="@dimen/text_14"
                     android:textColor="#fbc200"
-                    android:text="余额"/>
+                    android:text="@string/packet_balance"/>
             </LinearLayout>
             <TextView
                 android:id="@+id/tv_mypacket_detail"
@@ -48,7 +48,7 @@
                 android:textSize="@dimen/text_12"
                 android:textColor="#fbc200"
                 android:layout_centerVertical="true"
-                android:text="明细"/>
+                android:text="@string/packet_details"/>
         </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#ffffff"
-                    android:text="元"
+                    android:text="@string/packet_yuan"
                     android:layout_gravity="bottom"
                     android:textSize="@dimen/common_16"/>
             </LinearLayout>
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_16"
                     android:textColor="#ffffff"
-                    android:text="充值"/>
+                    android:text="@string/packet_recharge"/>
             </LinearLayout>
             <View
                 android:layout_width="1dp"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_16"
                     android:textColor="#ffffff"
-                    android:text="提现"/>
+                    android:text="@string/packet_withdraw"/>
             </LinearLayout>
         </LinearLayout>
 

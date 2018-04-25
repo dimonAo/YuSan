@@ -64,7 +64,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
-        text_tool_bar_title.setText("任务详情");
+        text_tool_bar_title.setText(R.string.task_detail_title);
 
         initView();
     }
@@ -151,15 +151,18 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         calendar.setTimeInMillis((mTaskEntity.getStart_time() / 1000L));
 
 
-        text_task_date.setText(calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日");
-        text_task_time.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
+        text_task_date.setText(calendar.get(Calendar.MONTH + 1)
+                + getString(R.string.task_month_string)
+                + calendar.get(Calendar.DAY_OF_MONTH)
+                + getString(R.string.task_day_string));
+        text_task_time.setText(calendar.get(Calendar.HOUR_OF_DAY) + getString(R.string.task_dot) + calendar.get(Calendar.MINUTE));
 
         if (1 == mTaskEntity.getSex()) {
-            text_task_condition.setText("限男生");
+            text_task_condition.setText(R.string.task_only_man);
         } else if (2 == mTaskEntity.getSex()) {
-            text_task_condition.setText("限女生");
+            text_task_condition.setText(R.string.task_only_f);
         } else if (3 == mTaskEntity.getSex()) {
-            text_task_condition.setText("不限男女");
+            text_task_condition.setText(R.string.task_m_and_f);
         }
 
         text_task_location.setText(mTaskEntity.getAddress());
@@ -198,7 +201,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
             switch (mTaskEntity.getStatus()) {
                 case 0:
                     btn_task_commit.setEnabled(true);
-                    btn_task_commit.setText("关闭");
+                    btn_task_commit.setText(R.string.task_close);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.selector_close_task));
                     mTaskSatusType = 1;
 
@@ -206,26 +209,26 @@ public class DetailTaskActivity extends CommonToolBarActivity {
 
                 case 1:
                     btn_task_commit.setEnabled(false);
-                    btn_task_commit.setText("进行中");
+                    btn_task_commit.setText(R.string.task_running);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.selector_task_btn));
                     break;
 
                 case 2:
                     btn_task_commit.setEnabled(true);
-                    btn_task_commit.setText("确认完成");
+                    btn_task_commit.setText(R.string.task_commit);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.selector_task_btn));
                     mTaskSatusType = 2;
                     break;
 
                 case 3:
                     btn_task_commit.setEnabled(false);
-                    btn_task_commit.setText("已完成");
+                    btn_task_commit.setText(R.string.task_commited);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_task_btn));
                     break;
 
                 case 4:
                     btn_task_commit.setEnabled(false);
-                    btn_task_commit.setText("已失效");
+                    btn_task_commit.setText(R.string.task_expired);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_task_btn));
                     break;
             }
@@ -235,33 +238,33 @@ public class DetailTaskActivity extends CommonToolBarActivity {
             switch (mTaskEntity.getStatus()) {
                 case 0:
                     btn_task_commit.setEnabled(true);
-                    btn_task_commit.setText("领取任务");
+                    btn_task_commit.setText(R.string.task_receive_task);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.selector_task_btn));
                     mTaskSatusType = 3;
                     break;
 
                 case 1:
                     btn_task_commit.setEnabled(true);
-                    btn_task_commit.setText("确认完成");
+                    btn_task_commit.setText(R.string.task_commit);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.selector_task_btn));
                     mTaskSatusType = 2;
                     break;
 
                 case 2:
                     btn_task_commit.setEnabled(false);
-                    btn_task_commit.setText("待对方确认");
+                    btn_task_commit.setText(R.string.task_wait_for_comfirm);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.selector_task_btn));
                     break;
 
                 case 3:
                     btn_task_commit.setEnabled(false);
-                    btn_task_commit.setText("已完成");
+                    btn_task_commit.setText(R.string.task_commited);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_task_btn));
                     break;
 
                 case 4:
                     btn_task_commit.setEnabled(false);
-                    btn_task_commit.setText("已失效");
+                    btn_task_commit.setText(R.string.task_expired);
                     btn_task_commit.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_task_btn));
                     break;
             }

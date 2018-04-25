@@ -28,7 +28,7 @@ public class MyPacketActivity extends CommonToolBarActivity implements  View.OnC
     }
 
     private void initView() {
-        text_tool_bar_title.setText("钱包");
+        text_tool_bar_title.setText(R.string.packet_title);
         lin_mypacket_recharge = findViewById(R.id.lin_mypacket_recharge);
         lin_mypacket_withdrawals = findViewById(R.id.lin_mypacket_withdrawals);
         tv_mypacket_detail = findViewById(R.id.tv_mypacket_detail);

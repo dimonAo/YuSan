@@ -30,7 +30,7 @@
 
 
     <application
-        android:name="com.mob.MobApplication"
+        android:name="MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -110,8 +110,9 @@
 
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
 
+        <activity
             android:name=".activity.ModifyUserActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -123,6 +124,12 @@
         <activity
             android:name=".activity.LandPhoneActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
     </application>
 

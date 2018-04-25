@@ -37,7 +37,8 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
     private int[] mDrawables = {R.mipmap.redpacket_yue, R.mipmap.redpacket_zhifubao, R.mipmap.redpacket_wechat};
 
-    private String[] mRedPacketName = {"钱包余额(%1.2f)", "支付宝", "微信"};
+    //    private String[] mRedPacketName = {"钱包余额(%1.2f)", "支付宝", "微信"};
+    private String[] mRedPacketName;
 
     private List<RedPacketRecyclerEntity> mList = new ArrayList<>();
 
@@ -46,7 +47,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
-
+        mRedPacketName = getResources().getStringArray(R.array.payment);
         initView();
         getDate();
     }
@@ -69,7 +70,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
     }
 
     private void initView() {
-        text_tool_bar_title.setText("包红包");
+        text_tool_bar_title.setText(R.string.red_packet_title);
         text_task_cost = (TextView) findViewById(R.id.text_task_cost);
 
 

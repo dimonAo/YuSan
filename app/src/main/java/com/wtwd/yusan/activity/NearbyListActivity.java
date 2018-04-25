@@ -105,7 +105,7 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
     private void initView() {
 
-        text_tool_bar_title.setText("附近");
+        text_tool_bar_title.setText(R.string.nearby_title);
         easy_layout = (EasyRefreshLayout) findViewById(R.id.easy_layout);
         recycler_nearbylist = (RecyclerView) findViewById(R.id.recycler_nearbylist);
         recycler_nearbylist.setLayoutManager(new LinearLayoutManager(this));

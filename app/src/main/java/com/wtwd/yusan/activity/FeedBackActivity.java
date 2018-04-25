@@ -60,7 +60,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
      * 界面控件初始化
      */
     private void initView() {
-        text_tool_bar_title.setText("用户反馈");
+        text_tool_bar_title.setText(R.string.feedback_title);
         ed_feedback_content = (EditText)findViewById(R.id.ed_feedback_content);
         tv_feedback_num = (TextView)findViewById(R.id.tv_feedback_num);
         btn_feedback_submit = (Button)findViewById(R.id.btn_feedback_submit);
@@ -98,9 +98,9 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
                     Selection.setSelection(editable, selEndIndex);
                 }else{
                     if(!TextUtils.isEmpty(charSequence.toString())){
-                        tv_feedback_num.setText((200 - len)+"个字");
+                        tv_feedback_num.setText((200 - len)+getString(R.string.feedback_text_count));
                     }else{
-                        tv_feedback_num.setText(200+"个字");
+                        tv_feedback_num.setText(200+getString(R.string.feedback_text_count));
                     }
                 }
             }
@@ -129,7 +129,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
         String feedbackData = ed_feedback_content.getText().toString().trim();
         if(TextUtils.isEmpty(feedbackData)){
-            showToast("请输入反馈内容");
+            showToast(getString(R.string.feedback_input_content));
             return;
         }
 
@@ -146,7 +146,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
                     @Override
                     public void onResponse(String response, int id) {
-                        showToast("提交成功");
+                        showToast(getString(R.string.feedback_commit_success));
                         ed_feedback_content.setText("");
                     }
                 });

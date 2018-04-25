@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.wtwd.yusan.MyApplication;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.wxapi.WXEntryActivity;
 
 public class LandChooseActivity extends CommonToolBarActivity implements View.OnClickListener {
 
@@ -43,10 +45,7 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
             readyGo(LandPhoneActivity.class);
         } else if (R.id.img_choose_wechat_land == v.getId()) {
             //微信登录
-
-
-
-
+            WXEntryActivity.loginWeixin(this, MyApplication.api);
         }
 
     }

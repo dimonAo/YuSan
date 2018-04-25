@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/common_8"
-            android:text="任务还没有被领取哦!"
+            android:text="@string/task_not_comfirmed"
             android:textColor="@color/colorFailedReceiveTaskText"
             android:textSize="@dimen/text_14" />
 
@@ -249,7 +249,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/common_14"
-                android:text="任务编号:"
+                android:text="@string/task_number"
                 android:textColor="@color/colorTaskContent"
                 android:textSize="@dimen/text_12" />
 
@@ -277,7 +277,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/common_14"
-                android:text="任务创建时间:"
+                android:text="@string/task_creation_time"
                 android:textColor="@color/colorTaskContent"
                 android:textSize="@dimen/text_12" />
 
@@ -305,7 +305,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/common_14"
-                android:text="任务领取时间:"
+                android:text="@string/task_collection_time"
                 android:textColor="@color/colorTaskContent"
                 android:textSize="@dimen/text_12" />
 
@@ -334,7 +334,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/common_14"
-                android:text="任务完成时间:"
+                android:text="@string/task_completion_time"
                 android:textColor="@color/colorTaskContent"
                 android:textSize="@dimen/text_12" />
 
@@ -358,7 +358,7 @@
         android:layout_marginTop="@dimen/common_30"
         android:background="@drawable/selector_task_btn"
         android:gravity="center"
-        android:text="领取任务"
+        android:text="@string/task_receive_task"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_16"
 

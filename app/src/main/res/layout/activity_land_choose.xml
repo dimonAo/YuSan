@@ -19,7 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/common_34"
-        android:text="登录即代表您同意用户协议"
+        android:text="@string/land_protocol"
         android:textColor="@color/alpha_white_b3"
         android:textSize="@dimen/text_10" />
 
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/common_4"
             android:layout_marginRight="@dimen/common_4"
-            android:text="选择登录方式"
+            android:text="@string/land_choose_method"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_14" />
 

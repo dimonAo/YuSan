@@ -29,7 +29,10 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
     private String getDate(long mi) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis((mi));
-        String date = calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日";
+        String date = calendar.get(Calendar.MONTH + 1)
+                + mContext.getResources().getString(R.string.task_month_string)
+                + calendar.get(Calendar.DAY_OF_MONTH)
+                + mContext.getResources().getString(R.string.task_day_string);
         return date;
     }
 
@@ -79,11 +82,11 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
          * 任务限定接取人性别条件
          */
         if (2 == item.getSex()) {
-            helper.setText(R.id.text_task_condition, "限女生");
+            helper.setText(R.id.text_task_condition, R.string.task_only_f);
         } else if (1 == item.getSex()) {
-            helper.setText(R.id.text_task_condition, "限男生");
+            helper.setText(R.id.text_task_condition, R.string.task_only_man);
         } else {
-            helper.setText(R.id.text_task_condition, "不限男女");
+            helper.setText(R.id.text_task_condition, R.string.task_m_and_f);
         }
 
         /**
@@ -95,7 +98,7 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
                 helper.getView(R.id.btn_task).setEnabled(false);
                 helper.setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorTask));
                 helper.setBackgroundRes(R.id.btn_task, R.drawable.shape_stroke_btn)
-                        .setText(R.id.btn_task, "待领取");
+                        .setText(R.id.btn_task, R.string.task_to_receive);
                 break;
 
             case 1:
@@ -103,13 +106,13 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
 //                if (item.getPublisher().getUser_id() == getUserId()) {
                 if (item.getUser_id() == getUserId()) {
                     //我发布的任务
-                    helper.setText(R.id.btn_task, "进行中")
+                    helper.setText(R.id.btn_task, R.string.task_running)
                             .setBackgroundRes(R.id.btn_task, R.drawable.shape_stroke_btn)
                             .setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorTask));
                 } else {
                     //我接收的任务
                     helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
-                            .setText(R.id.btn_task, "确认完成")
+                            .setText(R.id.btn_task, R.string.task_commit)
                             .setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorWhite));
                 }
 
@@ -122,11 +125,11 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
                 if (item.getUser_id() == getUserId()) {
                     //我发布的任务
                     helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
-                            .setText(R.id.btn_task, "确认完成")
+                            .setText(R.id.btn_task, R.string.task_commit)
                             .setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorWhite));
                 } else {
                     //我接收的任务
-                    helper.setText(R.id.btn_task, "待对方确认")
+                    helper.setText(R.id.btn_task, R.string.task_wait_for_comfirm)
                             .setBackgroundRes(R.id.btn_task, R.drawable.shape_stroke_btn)
                             .setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorTask));
                 }
@@ -138,7 +141,7 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
                 helper.setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorWhite));
                 helper.setBackgroundRes(R.id.btn_task, R.drawable.shape_task_btn)
                         .addOnClickListener(R.id.btn_task)
-                        .setText(R.id.btn_task, "已完成");
+                        .setText(R.id.btn_task, R.string.task_commited);
                 break;
 
             case 4:
@@ -146,7 +149,7 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
 //                helper.getView(R.id.btn_task).setEnabled(false);
                 helper.setTextColor(R.id.btn_task, ContextCompat.getColor(mContext, R.color.colorWhite));
                 helper.setBackgroundRes(R.id.btn_task, R.drawable.shape_task_btn)
-                        .setText(R.id.btn_task, "已失效");
+                        .setText(R.id.btn_task, R.string.task_expired);
                 break;
         }
 

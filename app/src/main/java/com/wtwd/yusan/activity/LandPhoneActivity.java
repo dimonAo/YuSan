@@ -103,7 +103,7 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
     }
 
     private void initToolBar() {
-        text_tool_bar_title.setText("登录");
+        text_tool_bar_title.setText(R.string.land_title);
     }
 
     private void initView() {
@@ -113,7 +113,7 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
         edit_verify = (EditText) findViewById(R.id.edit_verify);
         btn_get_verification_code = (Button) findViewById(R.id.btn_get_verification_code);
         btn_land = (Button) findViewById(R.id.btn_land);
-        btn_get_verification_code.setText("获取验证码");
+        btn_get_verification_code.setText(R.string.land_get_verify_code);
         addListener();
     }
 
@@ -138,12 +138,12 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
     private boolean checkPhone() {
 
         if (TextUtils.isEmpty(getPhone())) {
-            showToast("请输入手机号码");
+            showToast(getString(R.string.land_input_phone));
             return false;
         }
 
         if (!Utils.isMobileNO(getPhone())) {
-            showToast("请输入正确手机号码");
+            showToast(getString(R.string.land_input_correct_number));
             return false;
         }
 
@@ -157,7 +157,7 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
      */
     private boolean checkVerification() {
         if (TextUtils.isEmpty(getVerification())) {
-            showToast("请输入验证码");
+            showToast(getString(R.string.land_input_verify_code));
             return false;
         }
 

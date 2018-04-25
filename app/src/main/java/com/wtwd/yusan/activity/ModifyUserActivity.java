@@ -75,7 +75,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 
         getHeightData();
 
-        text_tool_bar_title.setText("完善个人信息");
+        text_tool_bar_title.setText(R.string.modify_user_info_title);
         relative_head = (RelativeLayout) findViewById(R.id.relative_head);
         relative_name = (RelativeLayout) findViewById(R.id.relative_name);
         relative_sex = (RelativeLayout) findViewById(R.id.relative_sex);
@@ -171,8 +171,8 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 
     private void showHeadDialog() {
         List<String> names = new ArrayList<>();
-        names.add("拍照");
-        names.add("相册");
+        names.add(getString(R.string.modify_user_camera));
+        names.add(getString(R.string.modify_user_photo_album));
         showDialog(new SelectDialog.SelectDialogListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

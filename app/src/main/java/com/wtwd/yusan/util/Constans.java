@@ -41,6 +41,8 @@ public class Constans {
     public static final String WX_API_KEY="";
     public static final String WX_MCH_ID="";
 
+    public static final String WX_APP_SECRET="";
+
     public static final String GET_WX_PERPERID = REQUEST_URL+"";//传值后台获取preperId
 
     public static final int ORDER_TYPE_TRADE = 1;//交易类型：充值

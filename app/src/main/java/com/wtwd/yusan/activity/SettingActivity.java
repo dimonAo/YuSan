@@ -66,7 +66,7 @@ public class SettingActivity extends CommonToolBarActivity implements  View.OnCl
      * 初始化界面
      */
     private void initView() {
-        text_tool_bar_title.setText("设置");
+        text_tool_bar_title.setText(R.string.set_title);
         lin_setting_clear_temp = (LinearLayout)findViewById(R.id.lin_setting_clear_temp);
         lin_setting_loginout = (LinearLayout)findViewById(R.id.lin_setting_loginout);
         lin_setting_about_us = (LinearLayout)findViewById(R.id.lin_setting_about_us);
@@ -105,7 +105,7 @@ public class SettingActivity extends CommonToolBarActivity implements  View.OnCl
     private void clearTemp() {
         // TODO: 2018/4/11 清除缓存
 
-        showToast("清除成功");
+        showToast(getString(R.string.set_clear_success));
     }
 
     /**

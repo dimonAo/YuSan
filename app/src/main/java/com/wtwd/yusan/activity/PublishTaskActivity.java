@@ -90,7 +90,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
-        text_tool_bar_title.setText("发布");
+        text_tool_bar_title.setText(R.string.publish_title);
         mTaskNames = getResources().getStringArray(R.array.task_type);
 
         getDate();
@@ -135,7 +135,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                Log.e("TAG", "s : " + s);
 //                Log.e("TAG", "count : " + count);
-                text_count.setText(String.format("%S/15个字", s.length() + ""));
+                text_count.setText(String.format(getString(R.string.publish_content_count), s.length() + ""));
 
             }
 
@@ -230,12 +230,12 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
      */
     private void checkInputContent() {
         if ("选择时间".equals(getTaskStartTime())) {
-            showToast("请选择任务开始时间");
+            showToast(getString(R.string.publish_choose_start_time));
             return;
         }
 
         if (TextUtils.isEmpty(getTaskDetailContent())) {
-            showToast("请输入任务说明");
+            showToast(getString(R.string.publish_input_task_content));
             return;
         }
         publishTask(Pref.getInstance(this).getUserId(), "0");
@@ -384,7 +384,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
                         ResultEntity mEn = Utils.getResultEntity(response);
 
                         if (1 == mEn.getStatus()) {
-                            showToast("发布完成");
+                            showToast(getString(R.string.publish_commit));
                             finish();
                         } else {
                             String mError = Utils.getErrorString(mEn.getErrCode());

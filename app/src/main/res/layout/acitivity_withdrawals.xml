@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="提现微信账号"
+                android:text="@string/withdraw_wetchat_account"
                 android:textColor="#262626"
                 android:textSize="@dimen/text_14" />
 
@@ -45,7 +46,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/common_16"
-                    android:text="设置"
+                    android:text="@string/set_title"
                     android:textColor="#999999" />
 
                 <ImageView
@@ -62,8 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_46"
         android:layout_below="@+id/img_me_head_bg"
-        android:background="@drawable/selector_lin_click_bg"
         android:layout_marginTop="@dimen/common_10"
+        android:background="@drawable/selector_lin_click_bg"
         android:paddingLeft="@dimen/common_14"
         android:paddingRight="@dimen/common_14">
 
@@ -77,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="提现金额"
+                android:text="@string/withdraw_amount"
                 android:textColor="#262626"
                 android:textSize="@dimen/text_14" />
 
@@ -91,23 +92,26 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="可提现金额0元"
+                    android:text="@string/withdraw_0"
                     android:textColor="#999999" />
 
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_32"
         android:paddingLeft="@dimen/common_14">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_12"
             android:layout_gravity="center_vertical"
-            android:text="提现方式"/>
+            android:text="@string/withdraw_method"
+            android:textSize="@dimen/text_12" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/lin_me_setting"
         android:layout_width="match_parent"
@@ -133,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="微信"
+                android:text="@string/recharge_payment_for_wetchat"
                 android:textColor="#262626"
                 android:textSize="@dimen/text_14" />
 
@@ -147,51 +151,53 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:button="@drawable/selector_check_box"
-                    android:clickable="true"
                     android:checked="true"
-                    />
+                    android:clickable="true" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/common_14">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="邀请好友充值贵族或者消费分成收益达100,即可随时随意金额提现"/>
+            android:text="@string/withdraw_instruction" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/tv_withdrawals_rule"
-                android:layout_above="@+id/btn_withdrawals_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_above="@+id/btn_withdrawals_submit"
                 android:gravity="center"
-                android:text="提交规则"
+                android:text="@string/withdraw_submit_rules"
                 android:textColor="#999999"
-                android:textSize="@dimen/common_12"/>
+                android:textSize="@dimen/common_12" />
+
             <Button
                 android:id="@+id/btn_withdrawals_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/common_26"
                 android:layout_marginLeft="@dimen/common_14"
                 android:layout_marginRight="@dimen/common_14"
                 android:layout_marginTop="@dimen/common_14"
                 android:background="@drawable/selector_task_btn"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/common_26"
-                android:text="提交"
-                android:textColor="@color/colorWhite"
-                />
+                android:text="@string/feedback_commit"
+                android:textColor="@color/colorWhite" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

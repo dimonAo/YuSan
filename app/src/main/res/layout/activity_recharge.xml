@@ -35,7 +35,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="余额: "
+                    android:text="@string/recharge_balance"
                     android:textColor="#e7b7d5"
                     android:textSize="@dimen/text_18" />
 
@@ -51,7 +51,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="元"
+                    android:text="@string/packet_yuan"
                     android:textColor="#ffffff"
                     android:textSize="@dimen/text_14" />
             </LinearLayout>
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#262626"
                 android:textSize="@dimen/text_16"
-                android:text="充值"/>
+                android:text="@string/packet_recharge"/>
         </LinearLayout>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcl_recharge"
@@ -104,7 +104,7 @@
                 android:layout_width="@dimen/common_280"
                 android:textSize="@dimen/text_12"
                 android:paddingLeft="@dimen/common_12"
-                android:hint="手动输入充值金额"
+                android:hint="@string/recharge_input_amount"
                 android:layout_centerInParent="true"
                 android:textColorHint="#c7c7c7"
                 android:maxLength="8"
@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="支付方式"
+                android:text="@string/recharge_payment_method"
                 android:textColor="#262626"
                 android:textSize="@dimen/text_16" />
         </LinearLayout>
@@ -155,7 +155,7 @@
                 android:id="@+id/tv_redpacket_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="微信"
+                android:text="@string/recharge_payment_for_wetchat"
                 android:textColor="#262626"
                 android:textSize="@dimen/text_14" />
 
@@ -192,7 +192,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/selector_task_btn"
                 android:gravity="center"
-                android:text="充值"
+                android:text="@string/packet_recharge"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_14"
                 android:layout_marginBottom="@dimen/common_26"/>

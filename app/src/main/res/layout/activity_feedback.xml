@@ -23,7 +23,7 @@
            android:layout_height="wrap_content"
            android:textColor="#afb2b8"
            android:textSize="@dimen/text_12"
-           android:text="问题和意见"/>
+           android:text="@string/feedback_problem"/>
 
    </LinearLayout>
     <LinearLayout
@@ -50,7 +50,7 @@
                 android:paddingTop="@dimen/common_14"
                 android:background="@color/colorWhite"
                 android:gravity="start"
-                android:hint="我们期待您的反馈"
+                android:hint="@string/feedback_content_hint"
                 android:maxLines="200"
                 android:textColorHint="#d1d1d6"
                 android:textSize="@dimen/text_14" />
@@ -65,8 +65,8 @@
                 android:layout_marginRight="@dimen/common_14"
                 android:layout_marginBottom="@dimen/common_8"
                 android:textSize="@dimen/text_8"
-                android:text="200个字"
                 />
+            <!--android:text="200个字"-->
         </RelativeLayout>
     </LinearLayout>
     <LinearLayout
@@ -81,7 +81,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/selector_task_btn"
             android:gravity="center"
-            android:text="提交"
+            android:text="@string/feedback_commit"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_14" />
     </LinearLayout>

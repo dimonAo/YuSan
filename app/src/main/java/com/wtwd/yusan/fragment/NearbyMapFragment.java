@@ -178,7 +178,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         // LatLng centerBJPoint= new LatLng(22.381754,114.055235);//地图默认中心店
         // AMapOptions mapOptions = new AMapOptions(); // 定义了一个配置 AMap 对象的参数类
         //  mapOptions.camera(new CameraPosition(centerBJPoint, 15f, 0, 0));
-        text_tool_bar_title.setText("附近");
+        text_tool_bar_title.setText(R.string.main_nearby);
         img_location = (ImageView) view.findViewById(R.id.img_location);
         img_shang = (ImageView) view.findViewById(R.id.img_shang);
         img_nearbymap_list = (ImageView) view.findViewById(R.id.img_nearbymap_list);
@@ -428,11 +428,11 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void changeUserStatus() {
         if(mIsInVisiable == true){
-            tv_user_status.setText("隐身");
+            tv_user_status.setText(R.string.nearby_map_stealth);
             img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_invisible));
             mIsInVisiable = false;
         }else if(mIsInVisiable == false){
-            tv_user_status.setText("在线");
+            tv_user_status.setText(R.string.nearby_map_online);
             img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_visible));
             mIsInVisiable = true;
         }

@@ -61,7 +61,7 @@ public class PacketDetailActivity extends CommonToolBarActivity {
     }
 
     private void initView() {
-        text_tool_bar_title.setText("明细");
+        text_tool_bar_title.setText(R.string.packet_detail_title);
         recycler_packetdetail = findViewById(R.id.recycler_packetdetail);
         easylayout_packetdetail = findViewById(R.id.easylayout_packetdetail);
         recycler_packetdetail.setLayoutManager(new LinearLayoutManager(this));

@@ -31,7 +31,7 @@ public class WithdrawalsActivity extends CommonToolBarActivity implements View.O
     }
 
     private void initView() {
-        text_tool_bar_title.setText("提现");
+        text_tool_bar_title.setText(R.string.packet_withdraw);
         lin_withdrawals_wechat_set = findViewById(R.id.lin_withdrawals_wechat_set);
     }
 

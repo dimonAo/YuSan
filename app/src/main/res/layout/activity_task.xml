@@ -47,7 +47,7 @@
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="@dimen/common_14"
                 android:gravity="center"
-                android:text="发任务"
+                android:text="@string/task_send"
                 android:textColor="@color/colorTask"
                 android:textSize="@dimen/text_14" />
         </android.support.v7.widget.Toolbar>

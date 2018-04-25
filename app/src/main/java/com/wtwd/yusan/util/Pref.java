@@ -139,5 +139,23 @@ public class Pref {
         getSharedPreferencesCommon().edit().putString("city", city).apply();
     }
 
+    /**
+     * 存储微信登录的Token值
+     *
+     * @param accessToken
+     */
+    public void setLoginAccessToken(String accessToken) {
+        getSharedPreferencesCommon().edit().putString("accessToken", accessToken).apply();
+    }
+
+    /**
+     * 获取存储的Token值
+     *
+     * @return
+     */
+    public String getLoginAccessToken() {
+        return getSharedPreferencesCommon().getString("accessToken", "none");
+    }
+
 
 }

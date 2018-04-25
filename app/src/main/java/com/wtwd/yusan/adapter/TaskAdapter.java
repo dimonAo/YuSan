@@ -26,7 +26,7 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
 //                .into((CircleImageView) helper.getView(R.id.circle_img_task_publisher));
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(item.getStart_time()/1000);
+        calendar.setTimeInMillis(item.getStart_time());
 
 
         helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
@@ -34,7 +34,10 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
                 .setText(R.id.text_task_publisher_nick, item.getUser_name())
                 .setText(R.id.text_task_content, item.getContent())
 //                .setText(R.id.text_task_time, item.getTaskTime())
-                .setText(R.id.text_task_date, calendar.get(Calendar.MONTH + 1) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日")
+                .setText(R.id.text_task_date, calendar.get(Calendar.MONTH + 1)
+                        + mContext.getResources().getString(R.string.task_month_string)
+                        + calendar.get(Calendar.DAY_OF_MONTH)
+                        + mContext.getResources().getString(R.string.task_day_string))
                 .setText(R.id.text_task_time, calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE))
                 .setText(R.id.text_task_location, item.getAddress())
 //                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1)
@@ -65,11 +68,11 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
          * 任务限定接取人性别条件
          */
         if (2 == item.getSex()) {
-            helper.setText(R.id.text_task_condition, "限女生");
+            helper.setText(R.id.text_task_condition, mContext.getResources().getString(R.string.task_only_f));
         } else if (1 == item.getSex()) {
-            helper.setText(R.id.text_task_condition, "限男生");
+            helper.setText(R.id.text_task_condition, mContext.getResources().getString(R.string.task_only_man));
         } else {
-            helper.setText(R.id.text_task_condition, "不限男女");
+            helper.setText(R.id.text_task_condition, mContext.getResources().getString(R.string.task_m_and_f));
         }
 
         /**
@@ -80,12 +83,12 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
 //            helper.getView(R.id.btn_task).setEnabled(false);
             helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
 //                    .addOnClickListener(R.id.btn_task)
-                    .setText(R.id.btn_task, "待领取");
+                    .setText(R.id.btn_task, R.string.task_to_receive);
         } else {
 //            helper.getView(R.id.btn_task).setEnabled(true);
             helper.setBackgroundRes(R.id.btn_task, R.drawable.selector_task_btn)
 //                    .addOnClickListener(R.id.btn_task)
-                    .setText(R.id.btn_task, "领取任务");
+                    .setText(R.id.btn_task, R.string.task_receive_task);
         }
 
 //        if (0 == item.getStatus()) {

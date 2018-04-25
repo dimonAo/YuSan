@@ -72,7 +72,7 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
      * 初始化界面
      */
     private void initView() {
-        text_tool_bar_title.setText("充值");
+        text_tool_bar_title.setText(R.string.packet_recharge);
         rcl_recharge = (RecyclerView) findViewById(R.id.rcl_recharge);
         rcl_recharge.setLayoutManager(new GridLayoutManager(this, 2));
         ck_wechat_recharge = findViewById(R.id.ck_wechat_recharge);
@@ -168,7 +168,7 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
 
         int total_fee = Integer.parseInt((rechargData * 100) + "");
         OkHttpUtils.post()
-                .addParams("body", "用户充值")//商品描述
+                .addParams("body", getString(R.string.recharge_for_user))//商品描述
                 .addParams("total_fee", total_fee + "")
                 .addParams("spbill_create_ip", Utils.getIPAddress(this))
                 .addParams("trade_type", "APP")
