@@ -2,7 +2,9 @@ package com.wtwd.yusan.util.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.pm.ActivityInfo;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import java.util.List;
  */
 
 public class DialogUtil {
+
 
 //    private static String mSex;
 
@@ -82,6 +85,162 @@ public class DialogUtil {
     }
 
 
+    /**
+     * 滚轮选择日期
+     *
+     * @param mActivity
+     * @param mDialog
+     * @param mTextView
+     */
+    public static void dialogChooseBirthday(Activity mActivity, final Dialog mDialog, final TextView mTextView) {
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_date_choose, null, false);
+        final WheelPicker wheel_day = (WheelPicker) view.findViewById(R.id.wheel_day);
+        final WheelPicker wheel_year = (WheelPicker) view.findViewById(R.id.wheel_year);
+        final WheelPicker wheel_month = (WheelPicker) view.findViewById(R.id.wheel_month);
+
+        TextView text_commit = (TextView) view.findViewById(R.id.text_commit);
+
+        final List<String> mYears = new ArrayList<>();
+        final List<String> mMonths = new ArrayList<>();
+        final List<String> mDays = new ArrayList<>();
+
+        final Calendar mCalendar = Calendar.getInstance();
+        final int year = mCalendar.get(Calendar.YEAR);
+        final int month = mCalendar.get(Calendar.MONTH) + 1;
+        final int day = mCalendar.get(Calendar.DAY_OF_MONTH);
+        //                                     2018                       03                        26
+        Log.e("TAG", "year : --> " + year + "   month : --> " + month + "   day : --> " + day);
+
+        //year data
+        for (int i = (year - 100); i <= year; i++) {
+            mYears.add(Utils.addZeroBeforeString(i + ""));
+        }
+
+        for (int i = 1; i <= 12; i++) {
+            mMonths.add(Utils.addZeroBeforeString(i + ""));
+        }
+
+        for (int i = 1; i <= getDaysByYearMonth(2000, 1); i++) {
+            mDays.add(Utils.addZeroBeforeString(i + ""));
+        }
+
+        wheel_year.setData(mYears);
+        wheel_month.setData(mMonths);
+        wheel_day.setData(mDays);
+
+        //month data
+        wheel_year.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(WheelPicker picker, Object data, int position) {
+                mMonths.clear();
+                if (Integer.parseInt(mYears.get(position)) == year) {
+
+                    for (int i = 1; i <= month; i++) {
+                        mMonths.add(Utils.addZeroBeforeString(i + ""));
+                    }
+                    wheel_month.setData(mMonths);
+
+                    mDays.clear();
+                    Log.e("month", "month : ---> " + Integer.parseInt(mMonths.get(wheel_month.getCurrentItemPosition())));
+                    if ((Integer.parseInt(mYears.get(position)) == year)
+                            && (Integer.parseInt(mMonths.get(wheel_month.getCurrentItemPosition())) == month)) {
+                        for (int i = 1; i <= day; i++) {
+                            mDays.add(Utils.addZeroBeforeString(i + ""));
+                        }
+
+                    } else {
+                        Log.e("days", "days : ---> " + getDaysByYearMonth(Integer.parseInt(mYears.get(wheel_year.getCurrentItemPosition()))
+                                , Integer.parseInt(mMonths.get(wheel_month.getCurrentItemPosition()))));
+                        for (int i = 1;
+                             i <= getDaysByYearMonth(Integer.parseInt(mYears.get(position))
+                                     , Integer.parseInt(mMonths.get(wheel_month.getCurrentItemPosition())));
+                             i++) {
+                            mDays.add(Utils.addZeroBeforeString(i + ""));
+                        }
+                    }
+
+                    wheel_day.setData(mDays);
+                    wheel_day.setSelectedItemPosition(0, false);
+
+                } else {
+                    mDays.clear();
+                    for (int i = 1; i <= 12; i++) {
+                        mMonths.add(Utils.addZeroBeforeString(i + ""));
+                    }
+
+                    for (int i = 1;
+                         i <= getDaysByYearMonth(Integer.parseInt(mYears.get(position))
+                                 , Integer.parseInt(mMonths.get(wheel_month.getCurrentItemPosition())));
+                         i++) {
+                        mDays.add(Utils.addZeroBeforeString(i + ""));
+                    }
+
+                    wheel_month.setData(mMonths);
+                    wheel_day.setData(mDays);
+                }
+
+
+            }
+        });
+
+        //day data
+        wheel_month.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(WheelPicker picker, Object data, int position) {
+                mDays.clear();
+                if ((Integer.parseInt(mYears.get(wheel_year.getCurrentItemPosition())) == year)
+                        && (Integer.parseInt(mMonths.get(position)) == month)) {
+                    for (int i = 1; i <= day; i++) {
+                        mDays.add(Utils.addZeroBeforeString(i + ""));
+                    }
+
+                } else {
+                    for (int i = 1; i <= getDaysByYearMonth(Integer.parseInt(mYears.get(wheel_year.getCurrentItemPosition())), Integer.parseInt(mMonths.get(position))); i++) {
+                        mDays.add(Utils.addZeroBeforeString(i + ""));
+                    }
+                }
+
+                wheel_day.setData(mDays);
+//                wheel_day.setSelectedItemPosition(0);
+            }
+
+
+        });
+
+        wheel_year.setSelectedItemPosition(82, false);
+
+        mDialog.setContentView(view);
+        mDialog.setCanceledOnTouchOutside(true);
+
+        text_commit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTextView.setText(String.format("%s-%s-%s"
+                        , mYears.get(wheel_year.getCurrentItemPosition())
+                        , mMonths.get(wheel_month.getCurrentItemPosition())
+                        , mDays.get(wheel_day.getCurrentItemPosition())));
+                mDialog.dismiss();
+            }
+        });
+
+        mDialog.show();
+        setDialogMaxheightLayoutParams(mActivity, mDialog);
+    }
+
+    /**
+     * 根据年 月 获取对应的月份 天数
+     */
+    public static int getDaysByYearMonth(int year, int month) {
+
+        Calendar a = Calendar.getInstance();
+        a.set(Calendar.YEAR, year);
+        a.set(Calendar.MONTH, month - 1);
+        a.set(Calendar.DATE, 1);
+        a.roll(Calendar.DATE, -1);
+        int maxDate = a.get(Calendar.DATE);
+        return maxDate;
+    }
+
     public static void dialogShowDate(Activity mActivity, final Dialog mDialog, final TextView mTextView) {
         View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_day_hour_choose, null, false);
         final WheelPicker wheel_day = (WheelPicker) view.findViewById(R.id.wheel_day);
@@ -116,7 +275,7 @@ public class DialogUtil {
 
         wheel_day.setData(mMonth);
         Utils.setData(wheel_hour, wheel_minute, 0, mHours, mMinutes);
-//        Utils.setWheelHour(wheel_day, wheel_hour, wheel_minute, 0, mHours, mMinutes);
+        Utils.setWheelHour(wheel_day, wheel_hour, wheel_minute, 0, mHours, mMinutes);
         mDialog.setContentView(view);
         mDialog.setCanceledOnTouchOutside(true);
 

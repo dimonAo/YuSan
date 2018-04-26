@@ -1,6 +1,7 @@
 package com.wtwd.yusan.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -41,19 +42,24 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
                     if (result == SMSSDK.RESULT_COMPLETE) {
 
                         //验证码验证成功，将手机号发送到服务器
-                        showToast("验证码验证成功");
+                        showToast(getString(R.string.land_phone_verify_code_success));
+//                        readyGo(MainActivity.class);
+                        Intent intent = new Intent(LandPhoneActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
 
                     } else {
-                        showToast("验证码错误");
+                        showToast(getString(R.string.land_phone_verify_code_error));
                     }
                     break;
 
                 case SMSSDK.EVENT_GET_VERIFICATION_CODE:
                     if (result == SMSSDK.RESULT_COMPLETE) {
 
-                        showToast("获取验证码成功");
+                        showToast(getString(R.string.land_phone_get_verify_code_success));
                     } else {
-                        showToast("获取验证码失败，请重试");
+                        showToast(getString(R.string.land_phone_get_verify_code_error));
                     }
                     break;
             }
@@ -175,9 +181,12 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
             }
         } else if (R.id.btn_land == v.getId()) {
             //验证验证码登录
-            if (checkPhone() && checkVerification()) {
-                SMSSDK.submitVerificationCode("86", getPhone(), getVerification());
-            }
+//            if (checkPhone() && checkVerification()) {
+//                SMSSDK.submitVerificationCode("86", getPhone(), getVerification());
+//            }
+            Intent intent = new Intent(LandPhoneActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 

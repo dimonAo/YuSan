@@ -877,7 +877,8 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
             mScrollOffsetY = 0;
             computeFlingLimitY();
             requestLayout();
-            invalidate();
+//            invalidate();
+            postInvalidate();
         }
     }
 

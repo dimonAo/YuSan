@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YuSan</string>
+    <string name="app_name">CheeKat</string>
     <string-array name="task_title">
         <item>任务</item>
         <item>我的</item>
@@ -158,6 +158,11 @@
     <string name="me_help_and_feedback">帮助与反馈</string>
     <string name="nearby_map_stealth">隐身</string>
     <string name="nearby_map_online">在线</string>
+    <string name="land_phone_verify_code_success">验证码验证成功</string>
+    <string name="land_phone_verify_code_error">验证码错误</string>
+    <string name="land_phone_get_verify_code_success">获取验证码成功</string>
+    <string name="land_phone_get_verify_code_error">获取验证码失败,请重试</string>
+    <string name="cm">cm</string>
 
 
 </resources>

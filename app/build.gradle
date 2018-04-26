@@ -1,6 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'cheekat'
+            keyPassword 'cheekat'
+            storeFile file('E:/keystore/cheekat.jks')
+            storePassword 'cheekat'
+//            v1SigningEnabled false
+//            v2SigningEnabled false
+        }
+    }
     compileSdkVersion ANDROID_COMPILE_SDK_VERSION
     defaultConfig {
         applicationId "com.wtwd.yusan"
@@ -14,6 +24,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
     sourceSets {
@@ -63,12 +76,9 @@ dependencies {
     implementation 'com.zhy:okhttputils:2.6.2'
     implementation project(':WheelPicker')
     implementation project(':imagepicker')
-
     implementation files('libs/libammsdk.jar')
-
     implementation files('libs/SMSSDK-3.1.1.jar')
     implementation files('libs/MobTools-2018.0419.1211.jar')
     implementation files('libs/MobCommons-2018.0418.1102.jar')
-
-//    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    //    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 }

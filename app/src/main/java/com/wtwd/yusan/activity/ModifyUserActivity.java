@@ -50,11 +50,13 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
     private RelativeLayout relative_name;
     private RelativeLayout relative_sex;
     private RelativeLayout relative_height;
+    private RelativeLayout relative_birthday;
 
     private TextView tv_modifyuser_sex;
     private TextView tv_modifyuser_height;
     private TextView text_user_nick;
     private CircleImageView circle_img_head;
+    private TextView tv_modifyuser_birthday;
 
     //    private String[] mModifySex;
     private List<String> mModifySexList = new ArrayList<>();
@@ -80,11 +82,13 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         relative_name = (RelativeLayout) findViewById(R.id.relative_name);
         relative_sex = (RelativeLayout) findViewById(R.id.relative_sex);
         relative_height = (RelativeLayout) findViewById(R.id.relative_height);
+        relative_birthday = (RelativeLayout) findViewById(R.id.relative_birthday);
 
         tv_modifyuser_sex = (TextView) findViewById(R.id.tv_modifyuser_sex);
         tv_modifyuser_height = (TextView) findViewById(R.id.tv_modifyuser_height);
         text_user_nick = (TextView) findViewById(R.id.text_user_nick);
         circle_img_head = (CircleImageView) findViewById(R.id.circle_img_head);
+        tv_modifyuser_birthday = (TextView) findViewById(R.id.tv_modifyuser_birthday);
 
         addListener();
         initImagePicker();
@@ -96,6 +100,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         relative_name.setOnClickListener(this);
         relative_sex.setOnClickListener(this);
         relative_height.setOnClickListener(this);
+        relative_birthday.setOnClickListener(this);
 
     }
 
@@ -150,10 +155,16 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
             case R.id.relative_height:
                 Dialog mDialog = new Dialog(this, R.style.MyCommonDialog);
                 DialogUtil.dialogShowPublishSex(ModifyUserActivity.this, mDialog, mModifyHeight, tv_modifyuser_height);
+
                 break;
 
             case R.id.relative_sex:
                 DialogUtil.dialogShowPublishSex(ModifyUserActivity.this, mSelectorDialog, mModifySexList, tv_modifyuser_sex);
+                break;
+
+            case R.id.relative_birthday:
+                Dialog mBirDialog = new Dialog(this, R.style.MyCommonDialog);
+                DialogUtil.dialogChooseBirthday(ModifyUserActivity.this, mBirDialog, tv_modifyuser_birthday);
                 break;
         }
     }
@@ -178,13 +189,6 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0: // 直接调起相机
-                        /**
-                         * 0.4.7 目前直接调起相机不支持裁剪，如果开启裁剪后不会返回图片，请注意，后续版本会解决
-                         *
-                         * 但是当前直接依赖的版本已经解决，考虑到版本改动很少，所以这次没有上传到远程仓库
-                         *
-                         * 如果实在有所需要，请直接下载源码引用。
-                         */
                         //打开选择,本次允许选择的数量
                         ImagePicker.getInstance().setSelectLimit(1);
                         Intent intent = new Intent(ModifyUserActivity.this, ImageGridActivity.class);
@@ -224,11 +228,10 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                     mHandler.sendEmptyMessage(DISPLAY_BG);
                 }
             }
+        } else if (100 == resultCode) {
+            String nick = data.getStringExtra("nick_name");
+            text_user_nick.setText(nick);
         }
-//        else if (100 == resultCode) {
-//            String nick = data.getStringExtra("nick_name");
-//            text_user_nick.setText(nick);
-//        }
 
 
 //        else if (resultCode == ImagePicker.RESULT_CODE_BACK) {

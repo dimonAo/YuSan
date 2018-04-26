@@ -29,7 +29,7 @@ public class NickActivity extends CommonToolBarActivity implements View.OnClickL
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
-
+        tool_bar.setNavigationIcon(null);
         text_left = (TextView) findViewById(R.id.text_left);
         text_right = (TextView) findViewById(R.id.text_right);
         edit_nick = (EditText) findViewById(R.id.edit_nick);
