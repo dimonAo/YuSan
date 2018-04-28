@@ -29,6 +29,7 @@ import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.dialog.DialogUtil;
+import com.wtwd.yusan.widget.view.MoneyTextWatcher;
 import com.wtwd.yusan.widget.view.SwitchView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -61,6 +62,9 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
     private Button btn_publish;
     private SwitchView switchview_anonymous;
+
+    private EditText edit_money;
+    private TextView text_unit;
 
 
     private RecyclerView recycler_task_type;
@@ -124,6 +128,96 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         relative_cost = (RelativeLayout) findViewById(R.id.relative_cost);
         text_money = (TextView) findViewById(R.id.text_money);
 
+        text_unit = (TextView) findViewById(R.id.text_unit);
+        edit_money = (EditText) findViewById(R.id.edit_money);
+        edit_money.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                edit_money.setSelection(s.length());
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                //删除“.”后面超过2位后的数据
+                if (s.toString().contains(".")) {
+                    if (s.length() - 1 - s.toString().indexOf(".") > 2) {
+                        s = s.toString().subSequence(0,
+                                s.toString().indexOf(".") + 2 + 1);
+                        edit_money.setText(s);
+                        edit_money.setSelection(s.length()); //光标移到最后
+                    }
+                }
+                //如果"."在起始位置,则起始位置自动补0
+                if (s.toString().trim().substring(0).equals(".")) {
+                    s = "0" + s;
+                    edit_money.setText(s);
+                    edit_money.setSelection(2);
+                }
+
+                //如果起始位置为0,且第二位跟的不是".",则无法后续输入
+                if (s.toString().startsWith("0") && s.toString().trim().length() > 1) {
+                    if (!s.toString().substring(1, 2).equals(".")) {
+                        edit_money.setText(s.subSequence(0, 1));
+                        edit_money.setSelection(1);
+                        return;
+                    }
+                }
+
+//                if (getString(R.string.publish_choose_time).equals(text_time.getText().toString())
+//                        || edit_detail.getText().toString().isEmpty()
+//                        || ((!s.toString().isEmpty()) && (Double.parseDouble(s.toString()) > 200))
+//                        || ((!s.toString().isEmpty()) && (Double.parseDouble(s.toString()) <= 0))) {
+//                    btn_publish.setEnabled(false);
+//                } else {
+//                    btn_publish.setEnabled(true);
+//                }
+//
+//                if (getString(R.string.publish_choose_time).equals(text_time.getText().toString())) {
+//                    showToast("请先选择任务开始时间");
+////                    edit_money.setText("");
+//                    return;
+//                }
+//
+//                if (edit_detail.getText().toString().isEmpty()) {
+////                    showToast("");
+//                    return;
+//                }
+//
+                if ((!s.toString().isEmpty()) && (Double.parseDouble(s.toString()) > 200)) {
+                    showToast("金额不能大于200");
+                    return;
+                }
+
+                if ((!s.toString().isEmpty()) && (Double.parseDouble(s.toString()) <= 0)) {
+                    showToast("金额不能为0");
+                    return;
+                }
+
+//                if (getString(R.string.publish_choose_time).equals(text_time.getText().toString())
+//                        || edit_detail.getText().toString().isEmpty()
+//                        || (Double.parseDouble(s.toString()) > 200)
+//                        || (Double.parseDouble(s.toString()) <= 0)){
+//                    btn_publish.setEnabled(false);
+//                }else{
+//                    btn_publish.setEnabled(true);
+//                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(edit_money.getText().toString())) {
+                    text_unit.setVisibility(View.GONE);
+                } else {
+                    text_unit.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
         edit_detail = (EditText) findViewById(R.id.edit_detail);
         edit_detail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -136,6 +230,36 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 //                Log.e("TAG", "s : " + s);
 //                Log.e("TAG", "count : " + count);
                 text_count.setText(String.format(getString(R.string.publish_content_count), s.length() + ""));
+
+//                if (getString(R.string.publish_choose_time).equals(text_time.getText().toString())
+//                        || edit_detail.getText().toString().isEmpty()
+//                        || (Double.parseDouble(edit_money.getText().toString()) > 200)
+//                        || (Double.parseDouble(edit_money.getText().toString()) <= 0)) {
+//                    btn_publish.setEnabled(false);
+//                } else {
+//                    btn_publish.setEnabled(true);
+//                }
+//
+//                if (getString(R.string.publish_choose_time).equals(text_time.getText().toString())) {
+//                    showToast("请先选择任务开始时间");
+////                    edit_money.setText("");
+//                    return;
+//                }
+//
+//                if (edit_detail.getText().toString().isEmpty()) {
+////                    showToast("");
+//                    return;
+//                }
+//
+//                if ((Double.parseDouble(edit_money.getText().toString().trim()) > 200)) {
+//                    showToast("金额不能大于200");
+//                    return;
+//                }
+//
+//                if ((Double.parseDouble(edit_money.getText().toString().trim()) <= 0)) {
+//                    showToast("金额不能为0");
+//                    return;
+//                }
 
             }
 
@@ -162,7 +286,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         relative_sex.setOnClickListener(this);
         relative_location.setOnClickListener(this);
         relative_time.setOnClickListener(this);
-        relative_cost.setOnClickListener(this);
+//        relative_cost.setOnClickListener(this);
         btn_publish.setOnClickListener(this);
 
 
@@ -229,17 +353,42 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
      * 2.请求服务器
      */
     private void checkInputContent() {
-        if ("选择时间".equals(getTaskStartTime())) {
+
+        if (checkTaskDetail()) {
+            publishTask(Pref.getInstance(this).getUserId(), "0");
+        }
+//        publishTask(1L, "0");
+    }
+
+    private boolean checkTaskDetail() {
+
+        if ("选择时间".equals(text_time.getText().toString())) {
             showToast(getString(R.string.publish_choose_start_time));
-            return;
+            return false;
+        }
+
+        if (edit_money.getText().toString().isEmpty()) {
+            showToast("金额不能为空");
+            return false;
+        }
+
+        if ((!edit_money.getText().toString().isEmpty()) && (Double.parseDouble(edit_money.getText().toString().trim()) > 200)) {
+            showToast("金额不能大于200");
+            return false;
+        }
+
+        if ((!edit_money.getText().toString().isEmpty()) && (Double.parseDouble(edit_money.getText().toString().trim()) <= 0)) {
+            showToast("金额不能为0");
+            return false;
         }
 
         if (TextUtils.isEmpty(getTaskDetailContent())) {
             showToast(getString(R.string.publish_input_task_content));
-            return;
+            return false;
         }
-        publishTask(Pref.getInstance(this).getUserId(), "0");
-//        publishTask(1L, "0");
+
+
+        return true;
     }
 
 
@@ -289,7 +438,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
      * @return
      */
     private String getTaskMoney() {
-        return text_money.getText().toString();
+        return edit_money.getText().toString();
     }
 
     /**
@@ -349,51 +498,53 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
     }
 
     private void publishTask(long userId, String toId) {
-
-        Map<String, String> mPublishMap = new HashMap<>();
-        mPublishMap.put("userId", userId + "");
-        mPublishMap.put("content", getTaskDetailContent()); //任务描述
-        mPublishMap.put("type", getTaskType()); //任务类型
-        mPublishMap.put("sex", getSexType()); //接受者性别限制
-        mPublishMap.put("money", getTaskMoney());//任务金额
-        mPublishMap.put("address", getTaskAddress());//任务地址
-        mPublishMap.put("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
-        mPublishMap.put("to", toId); //发送给谁，0所有人，指定人传用户userid
-        mPublishMap.put("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
+        Bundle bundle = new Bundle();
+//        Map<String, String> mPublishMap = new HashMap<>();
+        bundle.putString("userId", userId + "");
+        bundle.putString("content", getTaskDetailContent()); //任务描述
+        bundle.putString("type", getTaskType()); //任务类型
+        bundle.putString("sex", getSexType()); //接受者性别限制
+        bundle.putString("money", getTaskMoney());//任务金额
+        bundle.putString("address", getTaskAddress());//任务地址
+        bundle.putString("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
+        bundle.putString("to", toId); //发送给谁，0所有人，指定人传用户userid
+        bundle.putString("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
         if (DEBUG) {
-            Log.e(TAG, "mPublishMap : " + mPublishMap.toString());
+            Log.e(TAG, "mPublishMap : " + bundle.toString());
         }
 
-        OkHttpUtils.get()
-                .url(Constans.PUBLISH_MISSION)
-                .params(mPublishMap)
-                .build()
-                .connTimeOut(Constans.TIME_OUT)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
+        readyGo(RedPacketActivity.class, bundle);
 
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        if (DEBUG) {
-                            Log.e(TAG, "publish task : " + response);
-                        }
-
-                        ResultEntity mEn = Utils.getResultEntity(response);
-
-                        if (1 == mEn.getStatus()) {
-                            showToast(getString(R.string.publish_commit));
-                            finish();
-                        } else {
-                            String mError = Utils.getErrorString(mEn.getErrCode());
-                            showToast(mError);
-                        }
-
-
-                    }
-                });
+//        OkHttpUtils.get()
+//                .url(Constans.PUBLISH_MISSION)
+//                .params(mPublishMap)
+//                .build()
+//                .connTimeOut(Constans.TIME_OUT)
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        if (DEBUG) {
+//                            Log.e(TAG, "publish task : " + response);
+//                        }
+//
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+//
+//                        if (1 == mEn.getStatus()) {
+//                            showToast(getString(R.string.publish_commit));
+//                            finish();
+//                        } else {
+//                            String mError = Utils.getErrorString(mEn.getErrCode());
+//                            showToast(mError);
+//                        }
+//
+//
+//                    }
+//                });
 
 
     }

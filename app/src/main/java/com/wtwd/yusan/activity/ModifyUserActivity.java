@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,16 +26,30 @@ import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.operation.DaoUtils;
+import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GlideImageLoader;
+import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.dialog.DialogUtil;
 import com.wtwd.yusan.util.dialog.SelectDialog;
 import com.wtwd.yusan.widget.view.CircleImageView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * time:2018/4/18
@@ -57,12 +73,24 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
     private TextView text_user_nick;
     private CircleImageView circle_img_head;
     private TextView tv_modifyuser_birthday;
+    private Button btn_withdrawals_submit;
 
     //    private String[] mModifySex;
     private List<String> mModifySexList = new ArrayList<>();
     private List<String> mModifyHeight = new ArrayList<>();
     private Dialog mSelectorDialog;
     private ImagePicker mImagePicker;
+
+    /**
+     * 账号
+     */
+    private String account;
+    /**
+     * isFirst 是否第一次登录
+     * isPhone 是否为手机号
+     */
+    private boolean isFirst, isPhone;
+
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
@@ -89,7 +117,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         text_user_nick = (TextView) findViewById(R.id.text_user_nick);
         circle_img_head = (CircleImageView) findViewById(R.id.circle_img_head);
         tv_modifyuser_birthday = (TextView) findViewById(R.id.tv_modifyuser_birthday);
-
+        btn_withdrawals_submit = (Button) findViewById(R.id.btn_withdrawals_submit);
         addListener();
         initImagePicker();
     }
@@ -101,8 +129,25 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         relative_sex.setOnClickListener(this);
         relative_height.setOnClickListener(this);
         relative_birthday.setOnClickListener(this);
+        btn_withdrawals_submit.setOnClickListener(this);
+
+        obtainIsFirstLogin();
 
     }
+
+
+    private void obtainIsFirstLogin() {
+        if (null == getIntent()) {
+            return;
+        }
+        Bundle bundle = getIntent().getExtras();
+        isFirst = bundle.getBoolean("isFirst");
+        if (isFirst) {
+            account = bundle.getString("account");
+            isPhone = bundle.getBoolean("isPhone");
+        }
+    }
+
 
     /**
      * 身高数据（20cm-239cm）
@@ -128,6 +173,131 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 
         mImagePicker.setFocusHeight((Utils.getDisplayHeight(this) * 2) / 5);
         mImagePicker.setFocusWidth(Utils.getDisplayWidth(this));
+    }
+
+    /**
+     * 获取昵称，在提交时判断空条件提示
+     *
+     * @return
+     */
+    private String getUserName() {
+
+        return text_user_nick.getText().toString();
+    }
+
+
+    /**
+     * 获取生日日期
+     *
+     * @return
+     */
+    private String getBirthday() {
+        return tv_modifyuser_birthday.getText().toString();
+    }
+
+    /**
+     * 获取身高
+     *
+     * @return
+     */
+    private String getHeight() {
+        return tv_modifyuser_height.getText().toString();
+    }
+
+    /**
+     * 获取性别
+     *
+     * @return
+     */
+    private String getSex() {
+        String sex = tv_modifyuser_sex.getText().toString();
+
+        if (getString(R.string.common_man).equals(sex)) {
+            return "1";
+        } else {
+            return "2";
+        }
+
+    }
+
+    /**
+     * 请求修改用户信息
+     */
+    private void modifyUserInfo() {
+        String url, type, phone, openId;
+        if (isFirst) {
+            url = Constans.REGISTER_USER;
+        } else {
+            url = Constans.EDIT_USER;
+        }
+
+        if (isPhone) {
+            type = "1"; //手机号登录
+            phone = account;
+            openId = "";
+        } else {
+            type = "2"; //微信登录
+            phone = "";
+            openId = account;
+        }
+
+
+        Map<String, String> mModifyMap = new HashMap<>();
+        mModifyMap.put("headImg", Utils.Bitmap2StrByBase64(getBitmapForCircleImg()));
+        mModifyMap.put("userName", getUserName());
+        mModifyMap.put("birth", getBirthday());
+        mModifyMap.put("height", getHeight());
+        mModifyMap.put("sex", getSex());
+        mModifyMap.put("phone", phone);
+        mModifyMap.put("openId", openId);
+        mModifyMap.put("type", type);
+
+        OkHttpUtils.post()
+                .url(url)
+                .params(mModifyMap)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            JSONObject mUserJson = new JSONObject(response);
+                            int mStatus = mUserJson.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == mStatus) {
+                                if (isFirst) {
+                                    //注册用户信息
+                                    String mObjectStr = mUserJson.optString("object");
+                                    JSONObject mObjectJson = new JSONObject(mObjectStr);
+                                    String mUser = mObjectJson.optString("user");
+                                    UserEntity mUserEn = GsonUtils.GsonToBean(mUser, UserEntity.class);
+                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
+
+                                    DaoUtils.getUserManager().insertObject(mUserEn);
+                                } else {
+                                    //修改用户信息
+                                    UserEntity mUser = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(ModifyUserActivity.this).getUserId());
+
+                                    finish();
+                                }
+                            } else {
+                                int mError = mUserJson.optInt("errCode");
+                                showToast(Utils.getErrorString(mError));
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
     }
 
 
@@ -165,6 +335,10 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
             case R.id.relative_birthday:
                 Dialog mBirDialog = new Dialog(this, R.style.MyCommonDialog);
                 DialogUtil.dialogChooseBirthday(ModifyUserActivity.this, mBirDialog, tv_modifyuser_birthday);
+                break;
+
+            case R.id.btn_withdrawals_submit:
+                modifyUserInfo();
                 break;
         }
     }
@@ -247,6 +421,19 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 //        }
 //    }
 
+    private Bitmap getBitmapForCircleImg() {
+        Bitmap bitmap;
+        if (images.size() <= 0) {
+            BitmapDrawable mDrawable = (BitmapDrawable) circle_img_head.getDrawable();
+            bitmap = mDrawable.getBitmap();
+        } else {
+            ImageItem item = images.get(0);
+            bitmap = BitmapFactory.decodeFile(item.path);
+        }
+        return bitmap;
+    }
+
+
     private static final int DISPLAY_BG = 0x01;
 
     @SuppressLint("HandlerLeak")
@@ -255,11 +442,11 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         public void handleMessage(Message msg) {
 
             if (DISPLAY_BG == msg.what) {
-                ImageItem item = images.get(0);
 //                Bitmap mBitmap = Bitmap.createBitmap(item.width, item.height, Bitmap.Config.ARGB_8888);
-                Bitmap mBitmap = BitmapFactory.decodeFile(item.path);
 //                mImagePicker.getImageLoader().displayImage(ModifyUserActivity.this, item.path, circle_img_head, item.width, item.height);
-                circle_img_head.setImageBitmap(mBitmap);
+//                ImageItem item = images.get(0);
+//                Bitmap mBitmap = BitmapFactory.decodeFile(item.path);
+                circle_img_head.setImageBitmap(getBitmapForCircleImg());
             }
 
         }

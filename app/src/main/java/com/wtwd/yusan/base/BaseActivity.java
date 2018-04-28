@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.util.Util;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 
 
@@ -33,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final boolean DEBUG = true;
     public static final int PURE_PICTURE_TITLE = 1;
     public static final int SOLID_COLOR_TITLE = 2;
+    public Pref mPref;
 
     Toast toast;
 
@@ -49,6 +51,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else {
             throw new IllegalArgumentException("You must return a right contentView layout resource Id");
         }
+
+        mPref = Pref.getInstance(this);
 
 //        tool_bar = (Toolbar) findViewById(R.id.tool_bar);
 //        img_tool_bar_right = (ImageView) findViewById(R.id.img_tool_bar_right);
@@ -217,6 +221,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             intent.putExtras(bundle);
         }
         startActivityForResult(intent, requestCode);
+    }
+
+
+    public void readyGoForNewTask(Class<? extends Activity> clazz) {
+        Intent intent = new Intent(this, clazz);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    public void readyGoForNewTask(Class<? extends Activity> clazz, Bundle bundle) {
+        Intent intent = new Intent(this, clazz);
+        if (null != bundle) {
+            intent.putExtras(bundle);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /**

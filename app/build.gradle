@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+
 
 android {
     signingConfigs {
@@ -29,6 +31,13 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.wtwd.yusan.entity.greendao'
+        targetGenDir 'src/main/java'
+    }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
@@ -70,6 +79,9 @@ dependencies {
     })
     implementation("com.github.ybq:Android-SpinKit:1.0.2", {
         exclude group: 'com.github.ybq', module: 'Android-SpinKit'
+    })
+    compile("org.greenrobot:greendao:3.2.0", {
+        exclude group: 'org.greenrobot', module: 'greendao'
     })
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.amap.api:location:3.8.0'

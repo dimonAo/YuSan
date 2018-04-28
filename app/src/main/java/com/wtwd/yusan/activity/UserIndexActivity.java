@@ -1,15 +1,19 @@
 package com.wtwd.yusan.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lzy.imagepicker.ImagePicker;
@@ -22,6 +26,7 @@ import com.wtwd.yusan.util.GlideImageLoader;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.view.SpaceItemDecoration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +43,11 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
     private RecyclerView recycler_pic;
     private MeAddPicAdapter mMeAddPicAdapter;
+
+    private String[] imgUrl = {"https://img-blog.csdn.net/20170428175617391?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
+            "https://img-blog.csdn.net/20170428175632797?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
+            "https://img-blog.csdn.net/20170428175637782?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
+            "https://img-blog.csdn.net/20170428175627934?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"};
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
@@ -67,7 +77,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
         initImagePicker();
         addListener();
-
+        getImgData();
     }
 
     private void addListener() {
@@ -101,6 +111,20 @@ public class UserIndexActivity extends CommonToolBarActivity {
         imagePicker.setImageLoader(new GlideImageLoader());
         imagePicker.setCrop(false);
         imagePicker.setMultiMode(false);
+        imagePicker.setCropCacheFolder(new File(Utils.getStorageDirectory(this)));
+
+    }
+
+    private void getImgData() {
+        images = new ArrayList<>();
+        for (int i = 0; i < imgUrl.length; i++) {
+            ImageItem item = new ImageItem();
+            item.path = imgUrl[i];
+            images.add(item);
+        }
+
+        mMeAddPicAdapter.getData().addAll(images);
+        mMeAddPicAdapter.notifyDataSetChanged();
 
     }
 
@@ -113,11 +137,25 @@ public class UserIndexActivity extends CommonToolBarActivity {
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data != null && requestCode == 100) {
                 images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                Log.e(TAG, "" + images.get(0).width + " : ---> " + images.get(0).height);
+                Log.e(TAG, "path : ---> " + images.get(0).path);
                 mMeAddPicAdapter.getData().addAll(images);
                 mMeAddPicAdapter.notifyDataSetChanged();
             } else {
 //                Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
                 showToast(getString(R.string.user_index_no_data));
+            }
+        } else if (resultCode == ImagePicker.RESULT_CODE_BACK) {
+            //预览图片返回
+            if (data != null && requestCode == REQUEST_CODE_PREVIEW) {
+                images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_IMAGE_ITEMS);
+                if (images != null) {
+                    mMeAddPicAdapter.getData().clear();
+                    mMeAddPicAdapter.getData().addAll(images);
+                    mMeAddPicAdapter.notifyDataSetChanged();
+
+
+                }
             }
         }
     }
@@ -130,8 +168,34 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
         @Override
         protected void convert(BaseViewHolder helper, ImageItem item) {
-            imagePicker.getImageLoader().displayImage(UserIndexActivity.this, item.path, (ImageView) helper.getView(R.id.img_item_recycler), item.width, item.height);
-
+//            imagePicker.getImageLoader().displayImage(UserIndexActivity.this,
+//                    item.path,
+//                    (ImageView) helper.getView(R.id.img_item_recycler),
+//                    item.width,
+//                    item.height);
+            Log.e(TAG, "item.path : ===> " + item.path);
+            Uri uri;
+            DiskCacheStrategy disk;
+            if (item.path.contains("http")) {
+                uri = Uri.parse(item.path);
+                disk = DiskCacheStrategy.RESULT;
+            } else {
+                uri = Uri.fromFile(new File(item.path));
+                disk = DiskCacheStrategy.NONE;
+            }
+//            if (item.path.contains("http")) {
+            Glide.with(mContext)
+                    .load(uri)
+                    .asBitmap()
+                    .diskCacheStrategy(disk)
+                    .into((ImageView) helper.getView(R.id.img_item_recycler));
+//            } else {
+//                Glide.with(mContext)
+//                        .load(Uri.fromFile(new File(item.path)))
+//                        .asBitmap()
+//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                        .into((ImageView) helper.getView(R.id.img_item_recycler));
+//            }
         }
     }
 }

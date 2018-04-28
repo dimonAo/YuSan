@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.BaseActivity;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.util.ViewUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -27,7 +29,7 @@ import okhttp3.Call;
  * Created by w77996
  */
 
-public class FeedBackActivity extends CommonToolBarActivity implements View.OnClickListener{
+public class FeedBackActivity extends CommonToolBarActivity implements View.OnClickListener {
     /**
      * 反馈的内容
      */
@@ -40,6 +42,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
      * 提交反馈
      */
     Button btn_feedback_submit;
+
     @Override
     public int getLayoutResourceId() {
         return R.layout.activity_feedback;
@@ -61,9 +64,9 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
      */
     private void initView() {
         text_tool_bar_title.setText(R.string.feedback_title);
-        ed_feedback_content = (EditText)findViewById(R.id.ed_feedback_content);
-        tv_feedback_num = (TextView)findViewById(R.id.tv_feedback_num);
-        btn_feedback_submit = (Button)findViewById(R.id.btn_feedback_submit);
+        ed_feedback_content = (EditText) findViewById(R.id.ed_feedback_content);
+        tv_feedback_num = (TextView) findViewById(R.id.tv_feedback_num);
+        btn_feedback_submit = (Button) findViewById(R.id.btn_feedback_submit);
 
         ed_feedback_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,7 +81,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
                 Editable editable = ed_feedback_content.getText();
                 int len = editable.length();
-                Log.e("length",len+"");
+                Log.e("length", len + "");
                 if (len > 200) {
                     //showToast("超出字数限制");
                     int selEndIndex = Selection.getSelectionEnd(editable);
@@ -96,11 +99,11 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
                     }
                     //设置新光标所在的位置
                     Selection.setSelection(editable, selEndIndex);
-                }else{
-                    if(!TextUtils.isEmpty(charSequence.toString())){
-                        tv_feedback_num.setText((200 - len)+getString(R.string.feedback_text_count));
-                    }else{
-                        tv_feedback_num.setText(200+getString(R.string.feedback_text_count));
+                } else {
+                    if (!TextUtils.isEmpty(charSequence.toString())) {
+                        tv_feedback_num.setText((200 - len) + getString(R.string.feedback_text_count));
+                    } else {
+                        tv_feedback_num.setText(200 + getString(R.string.feedback_text_count));
                     }
                 }
             }
@@ -115,7 +118,7 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_feedback_submit:
                 submitFeedback();
                 break;
@@ -128,16 +131,19 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
     private void submitFeedback() {
 
         String feedbackData = ed_feedback_content.getText().toString().trim();
-        if(TextUtils.isEmpty(feedbackData)){
+        if (TextUtils.isEmpty(feedbackData)) {
             showToast(getString(R.string.feedback_input_content));
             return;
         }
 
-        // TODO: 2018/4/11 提交反馈
+        // 2018/4/11 提交反馈
+        // 2018/4/28 0028 已修改接口
         OkHttpUtils.post()
                 .url(Constans.FEEDBACK)
-                .addParams("feedback",feedbackData)
+                .addParams("userId", Pref.getInstance(FeedBackActivity.this).getUserId() + "")
+                .addParams("content", feedbackData)
                 .build()
+                .connTimeOut(Constans.TIME_OUT)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -146,8 +152,11 @@ public class FeedBackActivity extends CommonToolBarActivity implements View.OnCl
 
                     @Override
                     public void onResponse(String response, int id) {
-                        showToast(getString(R.string.feedback_commit_success));
-                        ed_feedback_content.setText("");
+                        ResultEntity mEn = Utils.getResultEntity(response);
+                        if (Constans.REQUEST_SUCCESS == mEn.getStatus()) {
+                            showToast(getString(R.string.feedback_commit_success));
+                            ed_feedback_content.setText("");
+                        }
                     }
                 });
     }

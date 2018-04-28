@@ -167,11 +167,12 @@ public class TaskMeFragment extends BaseFragment {
                         ResultEntity mEn = Utils.getResultEntity(response);
 
                         String st = GsonUtils.GsonString(mEn.getObject());
-                        List<TaskEntity> mLists = GsonUtils.jsonToList(st,TaskEntity.class);
+                        List<TaskEntity> mLists = GsonUtils.jsonToList(st, TaskEntity.class);
 
                         if (1 == mEn.getStatus()) {
                             mList.addAll(mLists);
                             if (1 == mLoadTYpe) {
+                                mLoadCount++;
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
                                 int postion = mAdapter.getData().size();
@@ -179,9 +180,10 @@ public class TaskMeFragment extends BaseFragment {
                                 mAdapter.notifyDataSetChanged();
                                 recycler_task.scrollToPosition(postion);
                             } else if (2 == mLoadTYpe) {
+                                mLoadCount = 0;
                                 mAdapter.setNewData(mLists);
                                 easy_layout.refreshComplete();
-                            }else{
+                            } else {
                                 mAdapter.setNewData(mLists);
                             }
                         } else {
@@ -217,13 +219,12 @@ public class TaskMeFragment extends BaseFragment {
                 mLoadTYpe = 1;
                 getMeMission(mLoadCount * 20);
 
-                mLoadCount++;
+
             }
 
             @Override
             public void onRefreshing() {
                 mLoadTYpe = 2;
-                mLoadCount = 0;
                 getMeMission(0);
             }
         });

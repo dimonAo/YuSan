@@ -5,16 +5,20 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,6 +35,7 @@ import com.wtwd.yusan.R;
 import com.aigestudio.wheelpicker.WheelPicker;
 import com.wtwd.yusan.entity.ResultEntity;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -137,7 +142,6 @@ public class Utils {
 //        String telRegex = "[1][34578]\\d{9}";
         return !TextUtils.isEmpty(mobileNums) && mobileNums.matches("[1][34578]\\d{9}");
     }
-
 
 
     /**
@@ -615,6 +619,7 @@ public class Utils {
 
     /**
      * 获取用户IP地址
+     *
      * @param context
      * @return
      */
@@ -664,9 +669,10 @@ public class Utils {
 
     /**
      * 获取当前时间
+     *
      * @return
      */
-    public static String getNowDate(){
+    public static String getNowDate() {
         Date d = new Date();
         System.out.println(d);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -674,5 +680,28 @@ public class Utils {
         System.out.println("格式化后的日期：" + dateNowStr);
         return dateNowStr;
     }
+
+    /**
+     * 通过Base32将Bitmap转换成Base64字符串
+     *
+     * @param bit
+     * @return
+     */
+    public static String Bitmap2StrByBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
+        byte[] bytes = bos.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+
+    public static String getStorageDirectory(Context context) {
+        Log.e("TAG", "Environment.MEDIA_MOUNTED : ---> " + Environment.MEDIA_MOUNTED);
+        String appRootPath = context.getCacheDir().getPath();
+        String sdRootPath = Environment.getExternalStorageDirectory().getPath();
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
+                sdRootPath : appRootPath;
+    }
+
 
 }

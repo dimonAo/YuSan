@@ -13,15 +13,28 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.util.Utils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import okhttp3.Call;
 
 /**
  * Created by Administrator on 2018/4/14 0014.
@@ -35,7 +48,9 @@ public class RedPacketActivity extends CommonToolBarActivity {
     private Button btn_red_packet_commit;
     private TextView text_task_cost;
 
-    private int[] mDrawables = {R.mipmap.redpacket_yue, R.mipmap.redpacket_zhifubao, R.mipmap.redpacket_wechat};
+    private int[] mDrawables = {R.mipmap.redpacket_yue
+//            , R.mipmap.redpacket_zhifubao
+            , R.mipmap.redpacket_wechat};
 
     //    private String[] mRedPacketName = {"钱包余额(%1.2f)", "支付宝", "微信"};
     private String[] mRedPacketName;
@@ -49,15 +64,15 @@ public class RedPacketActivity extends CommonToolBarActivity {
     public void onCreateCommonView(Bundle saveInstanceState) {
         mRedPacketName = getResources().getStringArray(R.array.payment);
         initView();
-        getDate();
+//        getDate();
     }
 
-    private void getDate() {
+    private void getDate(String balance) {
         for (int i = 0; i < mRedPacketName.length; i++) {
             RedPacketRecyclerEntity redPacketRecyclerEntity = new RedPacketRecyclerEntity();
             if (0 == i) {
-
-                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[0], new Random().nextInt(10) + new Random().nextDouble()));
+//                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[0], new Random().nextInt(10) + new Random().nextDouble()));
+                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[0], balance));
             } else {
                 redPacketRecyclerEntity.setmRedPacketName(mRedPacketName[i]);
             }
@@ -96,22 +111,89 @@ public class RedPacketActivity extends CommonToolBarActivity {
             }
         });
 
+        text_task_cost.setText(getMissionParameterIntent().getString("money"));
+
+        getWalletBalance();
         addListener();
+    }
+
+    private Bundle getMissionParameterIntent() {
+
+        return getIntent().getExtras();
     }
 
     private void addListener() {
         btn_red_packet_commit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putString("money", text_task_cost.getText().toString());
-                intent.putExtras(bundle);
-                setResult(RED_PACKET_RESULT_CODE, intent);
-                finish();
+//                Intent intent = new Intent();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("money", text_task_cost.getText().toString());
+//                intent.putExtras(bundle);
+//                setResult(RED_PACKET_RESULT_CODE, intent);
+//                finish();
+
+//塞钱进红包，支付
+
+
             }
         });
     }
+
+    private void publishMission() {
+
+        //request service for publish mission
+//                bundle.putString("userId", userId + "");
+//                bundle.putString("content", getTaskDetailContent()); //任务描述
+//                bundle.putString("type", getTaskType()); //任务类型
+//                bundle.putString("sex", getSexType()); //接受者性别限制
+//                bundle.putString("money", getTaskMoney());//任务金额
+//                bundle.putString("address", getTaskAddress());//任务地址
+//                bundle.putString("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
+//                bundle.putString("to", toId); //发送给谁，0所有人，指定人传用户userid
+//                bundle.putString("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
+
+
+        Bundle bundle = getMissionParameterIntent();
+
+        Map<String, String> mPublishMap = new HashMap<>();
+        mPublishMap.put("userId", bundle.getString("userId"));
+        mPublishMap.put("content", bundle.getString("content"));
+        mPublishMap.put("type", bundle.getString("type"));
+        mPublishMap.put("sex", bundle.getString("sex"));
+        mPublishMap.put("money", bundle.getString("money"));
+        mPublishMap.put("address", bundle.getString("address"));
+        mPublishMap.put("startTime", bundle.getString("startTime"));
+        mPublishMap.put("to", bundle.getString("to"));
+        mPublishMap.put("anonymous", bundle.getString("anonymous"));
+
+        OkHttpUtils.get()
+                .url(Constans.PUBLISH_MISSION)
+                .params(mPublishMap)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                        ResultEntity mEn = Utils.getResultEntity(response);
+
+                        if (Constans.REQUEST_SUCCESS == mEn.getErrCode()) {
+                            //request success
+                            finish();
+                        } else {
+                            showToast("发布任务失败");
+                        }
+
+
+                    }
+                });
+    }
+
 
     @Override
     public int getLayoutResourceId() {
@@ -121,6 +203,42 @@ public class RedPacketActivity extends CommonToolBarActivity {
     @Override
     public View getSnackView() {
         return null;
+    }
+
+    /**
+     * 获取账户余额
+     */
+    private void getWalletBalance() {
+        OkHttpUtils.get()
+                .addParams("userId", Pref.getInstance(this).getUserId() + "")
+                .url(Constans.MY_WALLET)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                        try {
+                            JSONObject mWalletJson = new JSONObject(response);
+                            int mStatus = mWalletJson.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == mStatus) {
+                                String balance = mWalletJson.optString("balance");
+                                getDate(balance);
+                            } else {
+                                showToast(Utils.getErrorString(mStatus));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
     }
 
 

@@ -14,6 +14,7 @@ import com.wtwd.yusan.activity.FeedBackActivity;
 import com.wtwd.yusan.activity.ModifyUserActivity;
 import com.wtwd.yusan.activity.MyPacketActivity;
 import com.wtwd.yusan.activity.SettingActivity;
+import com.wtwd.yusan.activity.UserIndexActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.widget.view.ArcImageView;
 import com.wtwd.yusan.widget.view.CircleImageView;
@@ -87,6 +88,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         lin_me_money.setOnClickListener(this);
         lin_me_help_feedback.setOnClickListener(this);
         img_tool_bar_right.setOnClickListener(this);
+        img_head_me.setOnClickListener(this);
     }
 
     @Override
@@ -105,7 +107,12 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 break;
 
             case R.id.img_tool_bar_right:
-                readyGo(ModifyUserActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isFirst", false);
+                readyGo(ModifyUserActivity.class, bundle);
+                break;
+            case R.id.img_head_me:
+                readyGo(UserIndexActivity.class);
                 break;
 
         }

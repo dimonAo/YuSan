@@ -5,6 +5,7 @@ import android.content.Context;
 import com.mob.MobApplication;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.wxapi.WXEntryActivity;
 
@@ -22,6 +23,7 @@ public class MyApplication extends MobApplication {
         super.onCreate();
         mInstance = this;
         initWeiXin();
+        DaoUtils.init(this);
     }
 
     private void initWeiXin() {

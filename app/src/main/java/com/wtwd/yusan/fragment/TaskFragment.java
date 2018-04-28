@@ -156,15 +156,22 @@ public class TaskFragment extends BaseFragment {
                         ResultEntity<TaskEntity> mEn = Utils.getResultEntity(response);
                         List<TaskEntity> mL = mEn.getObject();
                         String st = GsonUtils.GsonString(mL);
-                        List<TaskEntity> mLists = GsonUtils.jsonToList(st,TaskEntity.class);
+                        List<TaskEntity> mLists = GsonUtils.jsonToList(st, TaskEntity.class);
 
 
                         if (DEBUG) {
 //                            Log.e(TAG, "okhttp getAllMission response : " + mLists.toString());
-                            Log.e(TAG, "okhttp getAllMission mLoadTYpe : " +mLoadTYpe);
+                            Log.e(TAG, "okhttp getAllMission mLoadTYpe : " + mLoadTYpe);
                         }
                         if (1 == mEn.getStatus()) {
                             mList.addAll(mLists);
+
+                            if (mList.size() < 20) {
+                                easy_layout.setLoadMoreModel(LoadModel.NONE); //取消加载更多
+                            } else {
+                                easy_layout.setLoadMoreModel(LoadModel.COMMON_MODEL);
+                            }
+
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();

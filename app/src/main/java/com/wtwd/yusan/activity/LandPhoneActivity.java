@@ -13,12 +13,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.bumptech.glide.util.Util;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.operation.DaoUtils;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.Utils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import okhttp3.Call;
 
 public class LandPhoneActivity extends CommonToolBarActivity implements View.OnClickListener {
     private EditText edit_phone;
@@ -42,12 +54,13 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
                     if (result == SMSSDK.RESULT_COMPLETE) {
 
                         //验证码验证成功，将手机号发送到服务器
-                        showToast(getString(R.string.land_phone_verify_code_success));
-//                        readyGo(MainActivity.class);
-                        Intent intent = new Intent(LandPhoneActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
 
+//                        readyGo(MainActivity.class);
+//                        Intent intent = new Intent(LandPhoneActivity.this, MainActivity.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent);
+
+                        loginUserExist(getPhone());
 
                     } else {
                         showToast(getString(R.string.land_phone_verify_code_error));
@@ -202,6 +215,96 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
             }
         };
         SMSSDK.registerEventHandler(eh);
+    }
+
+    private void loginUserExist(String phone) {
+        OkHttpUtils.get()
+                .url(Constans.LOGIN_USER_EXIST)
+                .addParams("phone", phone)
+                .addParams("type", "1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                        try {
+                            JSONObject mLoginResponse = new JSONObject(response);
+
+                            int mStatus = mLoginResponse.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == mStatus) {
+                                String mObject = mLoginResponse.optString("object");
+
+                                JSONObject mObjectJson = new JSONObject(mObject);
+
+                                boolean mIsFirst = mObjectJson.optBoolean("isFirst");
+                                if (mIsFirst) {
+                                    //第一次登录，需要跳转到ModifyUserActivity界面
+                                    //phone 手机号码
+                                    //isFirst 是否第一次登录
+                                    //isPhone 是否是手机号码
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("account", getPhone());
+                                    bundle.putBoolean("isFirst", true);
+                                    bundle.putBoolean("isPhone", true);
+                                    readyGo(ModifyUserActivity.class, bundle);
+                                    showToast(getString(R.string.land_phone_verify_code_success));
+
+                                } else {
+                                    //直接登录到主界面，需要解析UserEntity对象，存在本地
+                                    UserEntity mUserEntity = GsonUtils.GsonToBean(mObjectJson.optString("user"), UserEntity.class);
+                                    //User插入数据库
+                                    DaoUtils.getUserManager().insertObject(mUserEntity);
+                                    readyGoForNewTask(MainActivity.class);
+                                }
+
+                            } else {
+                                showToast(Utils.getErrorString(mStatus));
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+    }
+
+
+    private class UserExistEntity {
+        private boolean isFirst;
+        private UserEntity user;
+
+        public boolean isFirst() {
+            return isFirst;
+        }
+
+        public void setFirst(boolean first) {
+            isFirst = first;
+        }
+
+        public UserEntity getUser() {
+            return user;
+        }
+
+        public void setUser(UserEntity user) {
+            this.user = user;
+        }
+
+        @Override
+        public String toString() {
+            return "UserExist{" +
+                    "isFirst=" + isFirst +
+                    ", user=" + user +
+                    '}';
+        }
     }
 
 }

@@ -32,7 +32,7 @@
     <application
         android:name="MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/cheekat_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -48,6 +48,10 @@
         <meta-data
             android:name="Mob-AppSecret"
             android:value="3605bf95f4aceb7a3322eac16f265e87" />
+
+        <meta-data
+            android:name="com.wtwd.yusan.util.GlideCache"
+            android:value="GlideModule" />
 
         <service android:name="com.amap.api.location.APSService" />
 
@@ -107,11 +111,10 @@
             android:name=".activity.PacketDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop" />
-
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ModifyUserActivity"
             android:screenOrientation="portrait" />
