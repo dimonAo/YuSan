@@ -125,6 +125,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        Utils.StatusBarLightMode(this);
     }
 
+    public String getErrorString(int type) {
+        return Utils.getErrorString(this, type);
+    }
+
     public void setTitleToolbarStyle(Toolbar tool_bar) {
 
         changeTitleBarColor();

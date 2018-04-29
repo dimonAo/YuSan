@@ -264,7 +264,7 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
                                 }
 
                             } else {
-                                showToast(Utils.getErrorString(mStatus));
+                                showToast(getErrorString(mStatus));
                             }
 
 

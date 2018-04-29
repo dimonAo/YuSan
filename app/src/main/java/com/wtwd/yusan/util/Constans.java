@@ -46,6 +46,8 @@ public class Constans {
     public static final String LOGIN_USER_EXIST = REQUEST_URL + "/userExist"; //登录判断用户是否存在/是否已注册
     public static final String REGISTER_USER = REQUEST_URL + "/registUser"; //注册，即第一次修改信息后请求服务器接口
     public static final String EDIT_USER = REQUEST_URL + "/editUser";
+    public static final String UPLOAD_IMG = REQUEST_URL + "/uploadImg"; //上传主页图片
+    public static final String RECEIVE_HOME_INFO = REQUEST_URL + "/getUserIndex";
 
     public static final String MY_WALLET = REQUEST_URL + "/myWallet";
     public static final String GET_NEAYBY_USER = REQUEST_URL + "/getNearBy";//获取附近的人

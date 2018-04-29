@@ -189,7 +189,7 @@ public class NearbyListActivity extends CommonToolBarActivity {
                                 easy_layout.refreshComplete();
                             }
                         }else{
-                            String mError = Utils.getErrorString(mEn.getErrCode());
+                            String mError = getErrorString(mEn.getErrCode());
                             Log.e(TAG,mError);
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();

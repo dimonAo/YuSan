@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 
 
@@ -31,6 +32,7 @@ public abstract class BaseFragment extends Fragment {
     public ImageView img_tool_bar_right;
     public TextView text_tool_bar_title;
     private Toast toast;
+    public Pref mPref;
 
     @Nullable
     @Override
@@ -44,13 +46,17 @@ public abstract class BaseFragment extends Fragment {
             img_tool_bar_right.setVisibility(View.GONE);
             Utils.setMargins(tool_bar, 0, Utils.getStatusBarHeight(getActivity()), 0, 0);
             setTitleToolbarStyle(tool_bar);
-
+            mPref = Pref.getInstance(getActivity());
             initFragmentView(savedInstanceState, mView);
 
             return mView;
         } else {
             throw new IllegalArgumentException("You must return a right contentView layout resource Id for Fragment");
         }
+    }
+
+    public String getErrorString(int type) {
+        return Utils.getErrorString(getActivity(), type);
     }
 
     public abstract int getLayoutResourceId();

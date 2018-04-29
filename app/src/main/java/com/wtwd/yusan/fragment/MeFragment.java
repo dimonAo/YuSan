@@ -93,6 +93,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        Bundle bundle = new Bundle();
+
         switch (v.getId()) {
             case R.id.lin_me_setting:
                 readyGo(SettingActivity.class);
@@ -107,12 +109,12 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 break;
 
             case R.id.img_tool_bar_right:
-                Bundle bundle = new Bundle();
                 bundle.putBoolean("isFirst", false);
                 readyGo(ModifyUserActivity.class, bundle);
                 break;
             case R.id.img_head_me:
-                readyGo(UserIndexActivity.class);
+                bundle.putLong("userId",mPref.getUserId());
+                readyGo(UserIndexActivity.class,bundle);
                 break;
 
         }

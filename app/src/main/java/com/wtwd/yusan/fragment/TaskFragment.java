@@ -186,7 +186,7 @@ public class TaskFragment extends BaseFragment {
                                 mAdapter.setNewData(mLists);
                             }
                         } else {
-                            String mError = Utils.getErrorString(mEn.getErrCode());
+                            String mError =getErrorString(mEn.getErrCode());
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();

@@ -134,7 +134,7 @@ public class PacketDetailActivity extends CommonToolBarActivity {
                                 easylayout_packetdetail.refreshComplete();
                             }
                         }else{
-                            String mError = Utils.getErrorString(mEn.getErrCode());
+                            String mError = getErrorString(mEn.getErrCode());
                             //Log.e(TAG,mError);
                             if (1 == mLoadTYpe) {
                                 easylayout_packetdetail.loadMoreComplete();

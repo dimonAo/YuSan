@@ -60,30 +60,172 @@ public class Utils {
     }
 
 
-    public static String getErrorString(int errorCode) {
+    /**
+     * 0 参数为空
+     * 1 系统繁忙
+     * 2 该用户已经存在
+     * 3 密码错误
+     * 4 该用户不存在
+     * 5 数据有误
+     * 6 该任务不适合您
+     * 7 无法建立群聊，因为存在不是互关的成员
+     * 8 任务id不存在
+     * 9 该任务已被领取
+     * 10 您不具备操作该任务的权限
+     * 11 不能领取自己的任务
+     * 12 数据异常，无法确认完成
+     * 13 群主id不存在
+     * 14 你不是群主
+     * 15 成员id不存在
+     * <p>
+     * 16红包id不存在
+     * 17红包被领取
+     * 18红包领取失败
+     * 19订单生成失败
+     * 20订单生成成功
+     * 21余额不足
+     * 22红包发送失败
+     * 23提现额度错误
+     * 24图片上传失败
+     * 25群id不存在
+     * 26群成员账号不存在
+     * 27环信群创建失败
+     * 28环信群修改失败
+     * 29环信群成员删除失败
+     * 30成员已存在
+     * 31环信群成员添加失败
+     * 32群组成员不能小于3个
+     * 33该群已存在
+     * 34注册失败
+     * 35权限错误
+     *
+     * @param errorCode
+     * @return
+     */
+
+    public static String getErrorString(Context context, int errorCode) {
         String mErrorInfo = "";
         switch (errorCode) {
             case 0:
-                mErrorInfo = "参数为空";
+                mErrorInfo = context.getString(R.string.util_parameter_null);
                 break;
             case 1:
-                mErrorInfo = "系统繁忙";
+                mErrorInfo = context.getString(R.string.util_system_busy);
                 break;
             case 2:
-                mErrorInfo = "该用户已存在";
+                mErrorInfo = context.getString(R.string.util_user_exists);
 
                 break;
             case 3:
-                mErrorInfo = "密码错误";
+                mErrorInfo = context.getString(R.string.util_password_error);
                 break;
             case 4:
-                mErrorInfo = "该用户不存在";
+                mErrorInfo = context.getString(R.string.util_user_not_exist);
                 break;
             case 5:
-                mErrorInfo = "数据有误";
+                mErrorInfo = context.getString(R.string.util_incorrect_data);
                 break;
             case 6:
-                mErrorInfo = "该任务不适合你";
+                mErrorInfo = context.getString(R.string.util_task_not_suitable);
+                break;
+
+            case 7:
+                mErrorInfo = context.getString(R.string.util_not_mutual_concern);
+                break;
+
+            case 8:
+                mErrorInfo = context.getString(R.string.util_task_id_not_exists);
+                break;
+
+            case 9:
+                mErrorInfo = context.getString(R.string.util_task_received);
+                break;
+
+            case 10:
+                mErrorInfo = context.getString(R.string.util_operation_permission);
+                break;
+            case 11:
+                mErrorInfo = context.getString(R.string.util_can_not_get_own_task);
+                break;
+            case 12:
+                mErrorInfo = context.getString(R.string.util_abnormal_data);
+
+                break;
+            case 13:
+                mErrorInfo = context.getString(R.string.util_group_owner_id_not_exists);
+                break;
+            case 14:
+                mErrorInfo = context.getString(R.string.util_not_group_owner);
+                break;
+            case 15:
+                mErrorInfo = context.getString(R.string.util_group_member_id_not_exists);
+                break;
+            case 16:
+                mErrorInfo = context.getString(R.string.util_red_packet_id_not_exists);
+                break;
+
+            case 17:
+                mErrorInfo = context.getString(R.string.util_red_packet_picked_up);
+                break;
+
+            case 18:
+                mErrorInfo = context.getString(R.string.util_failed_receive_red_packet);
+                break;
+
+            case 19:
+                mErrorInfo = context.getString(R.string.util_order_generation_failed);
+                break;
+
+            case 20:
+                mErrorInfo = context.getString(R.string.util_order_generation_success);
+                break;
+            case 21:
+                mErrorInfo = context.getString(R.string.util_insufficient_balance);
+                break;
+            case 22:
+                mErrorInfo = context.getString(R.string.util_red_packet_sended_failed);
+                break;
+            case 23:
+                mErrorInfo = context.getString(R.string.util_withdrawal_quota_wrong);
+                break;
+            case 24:
+                mErrorInfo = context.getString(R.string.util_picture_upload_failed);
+                break;
+            case 25:
+                mErrorInfo = context.getString(R.string.util_group_id_not_exists);
+                break;
+            case 26:
+                mErrorInfo = context.getString(R.string.util_group_account_not_exists);
+                break;
+
+            case 27:
+                mErrorInfo = context.getString(R.string.util_group_create_failed);
+                break;
+
+            case 28:
+                mErrorInfo = context.getString(R.string.util_group_update_failed);
+                break;
+
+            case 29:
+                mErrorInfo = context.getString(R.string.util_group_member_deleted_failed);
+                break;
+            case 30:
+                mErrorInfo = context.getString(R.string.util_group_member_exists);
+                break;
+            case 31:
+                mErrorInfo = context.getString(R.string.util_add_group_member_failed);
+                break;
+            case 32:
+                mErrorInfo = context.getString(R.string.util_group_member_can_not_less_than_three);
+                break;
+            case 33:
+                mErrorInfo = context.getString(R.string.util_group_exists);
+                break;
+            case 34:
+                mErrorInfo = context.getString(R.string.util_register_fail);
+                break;
+            case 35:
+                mErrorInfo = context.getString(R.string.util_permission_error);
                 break;
         }
         return mErrorInfo;

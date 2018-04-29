@@ -287,7 +287,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                                 }
                             } else {
                                 int mError = mUserJson.optInt("errCode");
-                                showToast(Utils.getErrorString(mError));
+                                showToast(getErrorString(mError));
                             }
 
 

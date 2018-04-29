@@ -230,7 +230,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
                                 String balance = mWalletJson.optString("balance");
                                 getDate(balance);
                             } else {
-                                showToast(Utils.getErrorString(mStatus));
+                                showToast(getErrorString(mStatus));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -165,6 +165,42 @@
     <string name="cm">cm</string>
     <string name="common_man">男</string>
     <string name="common_woman">女</string>
+    <string name="util_parameter_null">参数为空</string>
+    <string name="util_system_busy">系统繁忙</string>
+    <string name="util_user_exists">该用户已存在</string>
+    <string name="util_password_error">密码错误</string>
+    <string name="util_user_not_exist">该用户不存在</string>
+    <string name="util_incorrect_data">数据有误</string>
+    <string name="util_task_not_suitable">该任务不适合你</string>
+    <string name="util_not_mutual_concern">无法建立群聊,因为存在不是互关的成员</string>
+    <string name="util_task_id_not_exists">任务id不存在</string>
+    <string name="util_task_received">该任务已被领取</string>
+    <string name="util_operation_permission">您不具备操作该任务的权限</string>
+    <string name="util_can_not_get_own_task">不能领取自己的任务</string>
+    <string name="util_abnormal_data">数据异常,无法确认完成</string>
+    <string name="util_group_owner_id_not_exists">群主id不存在</string>
+    <string name="util_not_group_owner">你不是群主</string>
+    <string name="util_group_member_id_not_exists">成员id不存在</string>
+    <string name="util_red_packet_id_not_exists">红包id不存在</string>
+    <string name="util_red_packet_picked_up">红包被领取</string>
+    <string name="util_failed_receive_red_packet">红包领取失败</string>
+    <string name="util_order_generation_failed">订单生成失败</string>
+    <string name="util_order_generation_success">订单生成成功</string>
+    <string name="util_insufficient_balance">余额不足</string>
+    <string name="util_red_packet_sended_failed">红包发送失败</string>
+    <string name="util_withdrawal_quota_wrong">提现额度错误</string>
+    <string name="util_picture_upload_failed">图片上传失败</string>
+    <string name="util_group_id_not_exists">群id不存在</string>
+    <string name="util_group_account_not_exists">群成员账号不存在</string>
+    <string name="util_group_create_failed">环信群创建失败</string>
+    <string name="util_group_update_failed">环信群修改失败</string>
+    <string name="util_group_member_deleted_failed">环信群成员删除失败</string>
+    <string name="util_group_member_exists">成员已存在</string>
+    <string name="util_add_group_member_failed">环信群成员添加失败</string>
+    <string name="util_group_member_can_not_less_than_three">群组成员不能小于3个</string>
+    <string name="util_group_exists">该群已存在</string>
+    <string name="util_register_fail">注册失败</string>
+    <string name="util_permission_error">权限错误</string>
 
 
 </resources>
