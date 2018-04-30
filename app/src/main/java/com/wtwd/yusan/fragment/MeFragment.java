@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.activity.FeedBackActivity;
 import com.wtwd.yusan.activity.ModifyUserActivity;
@@ -16,6 +21,8 @@ import com.wtwd.yusan.activity.MyPacketActivity;
 import com.wtwd.yusan.activity.SettingActivity;
 import com.wtwd.yusan.activity.UserIndexActivity;
 import com.wtwd.yusan.base.BaseFragment;
+import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.widget.view.ArcImageView;
 import com.wtwd.yusan.widget.view.CircleImageView;
 
@@ -77,8 +84,33 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
 
         addListener();
 
+        displayUserInfo();
 
     }
+
+    private void displayUserInfo() {
+        UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
+        Log.e(TAG, "mEn : " + mEn.toString());
+
+        if (null != mEn) {
+            Glide.with(this)
+                    .load(Uri.parse(mEn.getHead_img()))
+                    .asBitmap()
+
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            img_head_me.setImageBitmap(resource);
+                            img_me_head_bg.setBitmap(resource);
+                        }
+                    });
+
+
+        }
+
+
+    }
+
 
     /**
      * 监听器
@@ -113,8 +145,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 readyGo(ModifyUserActivity.class, bundle);
                 break;
             case R.id.img_head_me:
-                bundle.putLong("userId",mPref.getUserId());
-                readyGo(UserIndexActivity.class,bundle);
+                bundle.putLong("userId", mPref.getUserId());
+                readyGo(UserIndexActivity.class, bundle);
                 break;
 
         }

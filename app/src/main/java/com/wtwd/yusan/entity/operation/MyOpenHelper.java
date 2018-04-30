@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 
 import com.wtwd.yusan.entity.greendao.DaoMaster;
+import com.wtwd.yusan.entity.greendao.UserEntityDao;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -28,7 +29,7 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
         if (oldVersion < newVersion) {
             //后面一个参数可以写多个参数,原方法(void migrate(Database db, Class<? extends AbstractDao<?, ?>>... daoClasses))
-//            MigrationHelper.getInstance().migrate(db, LandUserDao.class
+//            MigrationHelper.getInstance().migrate(db, UserEntity.class);
 //                    , SmartDeviceEnDao.class
 //                    , SmartDeviceAirQEnDao.class
 //                    , CommonProblemEnDao.class
@@ -38,6 +39,9 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
 //                    , LightDeviceEnDao.class
 //                    , NormalMessageDao.class
 //            );
+
+            MigrationHelper.getInstance().migrate(db, UserEntityDao.class);
+
 
         }
     }

@@ -317,4 +317,31 @@ public class TaskEntity implements Parcelable {
         dest.writeString(country);
         dest.writeInt(invisible);
     }
+
+    @Override
+    public String toString() {
+        return "TaskEntity{" +
+                "mission_id=" + mission_id +
+                ", content='" + content + '\'' +
+                ", type=" + type +
+                ", sex=" + sex +
+                ", address='" + address + '\'' +
+                ", money=" + money +
+                ", create_time='" + create_time + '\'' +
+                ", start_time=" + start_time +
+                ", status=" + status +
+                ", accept_time='" + accept_time + '\'' +
+                ", finish_time='" + finish_time + '\'' +
+                ", anonymous=" + anonymous +
+                ", publish_id=" + publish_id +
+                ", userIdStr='" + userIdStr + '\'' +
+                ", head_img='" + head_img + '\'' +
+                ", birth='" + birth + '\'' +
+                ", user_name='" + user_name + '\'' +
+                ", password='" + password + '\'' +
+                ", user_sex=" + user_sex +
+                ", country='" + country + '\'' +
+                ", invisible=" + invisible +
+                '}';
+    }
 }

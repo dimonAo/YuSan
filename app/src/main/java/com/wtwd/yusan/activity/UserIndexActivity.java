@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,13 +29,21 @@ import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.adapter.MeAddPicAdapter;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GlideImageLoader;
+import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
+import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
+import com.wtwd.yusan.widget.recycler.LoadModel;
 import com.wtwd.yusan.widget.view.SpaceItemDecoration;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,10 +67,13 @@ public class UserIndexActivity extends CommonToolBarActivity {
     private RecyclerView recycler_pic;
     private MeAddPicAdapter mMeAddPicAdapter;
     long receiveUserId;
-    private String[] imgUrl = {"https://img-blog.csdn.net/20170428175617391?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
-            "https://img-blog.csdn.net/20170428175632797?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
-            "https://img-blog.csdn.net/20170428175637782?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
-            "https://img-blog.csdn.net/20170428175627934?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"};
+    ArrayList<ImageItem> images = new ArrayList<>();
+    private EasyRefreshLayout refresh_img;
+//    private String[] imgUrl;
+//            = {"https://img-blog.csdn.net/20170428175617391?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
+//            "https://img-blog.csdn.net/20170428175632797?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
+//            "https://img-blog.csdn.net/20170428175637782?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
+//            "https://img-blog.csdn.net/20170428175627934?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"};
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
@@ -71,6 +83,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
     }
 
     private void initView() {
+        refresh_img = (EasyRefreshLayout) findViewById(R.id.refresh_img);
         recycler_pic = (RecyclerView) findViewById(R.id.recycler_pic);
         recycler_pic.setLayoutManager(new GridLayoutManager(this, GRID_COUNT));
         RecyclerView.ItemDecoration mDi = new SpaceItemDecoration(Utils.dip2px(this, 1), GRID_COUNT);
@@ -96,10 +109,12 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
         recycler_pic.setAdapter(mMeAddPicAdapter);
 
+
         initImagePicker();
         addListener();
-        getImgData();
     }
+
+    private int mLoadCount;
 
     private void addListener() {
         mMeAddPicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -110,6 +125,20 @@ public class UserIndexActivity extends CommonToolBarActivity {
                 intentPreview.putExtra(ImagePicker.EXTRA_SELECTED_IMAGE_POSITION, position);
                 intentPreview.putExtra(ImagePicker.EXTRA_FROM_ITEMS, true);
                 startActivityForResult(intentPreview, REQUEST_CODE_PREVIEW);
+            }
+        });
+
+        refresh_img.setLoadMoreModel(LoadModel.ADVANCE_MODEL, 0);
+        refresh_img.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
+            @Override
+            public void onLoadMore() {
+                getImgData(20 * mLoadCount, 20);
+                mLoadCount++;
+            }
+
+            @Override
+            public void onRefreshing() {
+
             }
         });
     }
@@ -183,21 +212,78 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
     }
 
-    private void getImgData() {
-        images = new ArrayList<>();
-        for (int i = 0; i < imgUrl.length; i++) {
-            ImageItem item = new ImageItem();
-            item.path = imgUrl[i];
-            images.add(item);
-        }
+    private void getImgData(int startIndex, int count) {
+//        images = new ArrayList<>();
+        Map<String, String> mImgMap = new HashMap<>();
+        mImgMap.put("userId", receiveUserId + "");
+        mImgMap.put("start", startIndex + "");
+        mImgMap.put("count", count + "");
+
+        OkHttpUtils.get()
+                .params(mImgMap)
+                .url(Constans.RECEIVE_HOME_IMG)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+//                        ResultEntity<TaskEntity> mEn = Utils.getResultEntity(response);
+                        List<ImageItem> mLists = new ArrayList<>();
+                        try {
+                            JSONObject mImgJson = new JSONObject(response);
+                            int resultCode = mImgJson.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == resultCode) {
+
+                                String mImg = mImgJson.optString("object");
+
+                                List<ImageInfo> mImgList = GsonUtils.GsonToList(mImg, ImageInfo.class);
+
+                                if (mImgList.size() > 0) {
+                                    for (int i = 0; i < mImgList.size(); i++) {
+                                        ImageItem mItem = new ImageItem();
+                                        mItem.path = mImgList.get(i).getImg();
+                                        mLists.add(mItem);
+                                    }
+                                }
+
+                                mMeAddPicAdapter.getData().addAll(mLists);
+                                mMeAddPicAdapter.notifyDataSetChanged();
+                                refresh_img.loadMoreComplete();
+                                refresh_img.closeLoadView();
+
+                                if (mImgList.size() < 20) {
+                                    refresh_img.setLoadMoreModel(LoadModel.NONE);
+                                }
+
+                            } else {
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+//        for (int i = 0; i < imgUrl.length; i++) {
+//            ImageItem item = new ImageItem();
+//            item.path = imgUrl[i];
+//            images.add(item);
+//        }
 
         mMeAddPicAdapter.getData().addAll(images);
         mMeAddPicAdapter.notifyDataSetChanged();
 
     }
 
-
-    ArrayList<ImageItem> images = null;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -302,4 +388,59 @@ public class UserIndexActivity extends CommonToolBarActivity {
 //            }
         }
     }
+
+
+    private class ImageInfo {
+        private Long user_img_id;                 //图片ID
+
+        private String userIndexImgIdStr;
+
+        private Long user_id;
+
+        private String img;         //图片
+
+        private String create_time;             //生成时间
+
+
+        public Long getUser_img_id() {
+            return user_img_id;
+        }
+
+        public void setUser_img_id(Long user_img_id) {
+            this.user_img_id = user_img_id;
+        }
+
+        public String getUserIndexImgIdStr() {
+            return userIndexImgIdStr;
+        }
+
+        public void setUserIndexImgIdStr(String userIndexImgIdStr) {
+            this.userIndexImgIdStr = userIndexImgIdStr;
+        }
+
+        public Long getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(Long user_id) {
+            this.user_id = user_id;
+        }
+
+        public String getImg() {
+            return img;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
+        }
+
+        public String getCreate_time() {
+            return create_time;
+        }
+
+        public void setCreate_time(String create_time) {
+            this.create_time = create_time;
+        }
+    }
+
 }

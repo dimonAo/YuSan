@@ -23,8 +23,9 @@ public class Constans {
      * 请求http地址
      */
 //    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat";
-//    public static final String REQUEST_URL = "http://192.168.13.192:8080/CheeKat/open";
-    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat/open";
+    public static final String REQUEST_URL = "http://192.168.13.235:8080/open";
+//    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat/open";
+//    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
 
     /**
      * 请求http端口
@@ -48,8 +49,10 @@ public class Constans {
     public static final String EDIT_USER = REQUEST_URL + "/editUser";
     public static final String UPLOAD_IMG = REQUEST_URL + "/uploadImg"; //上传主页图片
     public static final String RECEIVE_HOME_INFO = REQUEST_URL + "/getUserIndex";
+    public static final String RECEIVE_HOME_IMG = REQUEST_URL + "/getUserIndexImg";
 
-    public static final String MY_WALLET = REQUEST_URL + "/myWallet";
+    //    public static final String MY_WALLET = REQUEST_URL + "/myWallet";
+    public static final String MY_WALLET = REQUEST_URL + "/getBalance";
     public static final String GET_NEAYBY_USER = REQUEST_URL + "/getNearBy";//获取附近的人
     public static final String FEEDBACK = REQUEST_URL + "/feedback";//反馈
     public static final String GET_PACKETDETAIL = REQUEST_URL + "/packetdetail";//钱包详情

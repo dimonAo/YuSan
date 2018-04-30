@@ -27,6 +27,9 @@ import com.wtwd.yusan.widget.recycler.LoadModel;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -164,37 +167,53 @@ public class TaskMeFragment extends BaseFragment {
                     @Override
                     public void onResponse(String response, int id) {
 
-                        ResultEntity mEn = Utils.getResultEntity(response);
+                        try {
+                            JSONObject mTaskJson = new JSONObject(response);
+                            int status = mTaskJson.optInt("status");
 
-                        String st = GsonUtils.GsonString(mEn.getObject());
-                        List<TaskEntity> mLists = GsonUtils.jsonToList(st, TaskEntity.class);
+                            String mTaskJsonArray = mTaskJson.optString("object");
+                            Log.e(TAG, "mTaskJsonArray --> " + mTaskJsonArray);
+                            List<TaskEntity> mLists = GsonUtils.jsonToList(mTaskJsonArray, TaskEntity.class);
 
-                        if (1 == mEn.getStatus()) {
-                            mList.addAll(mLists);
-                            if (1 == mLoadTYpe) {
-                                mLoadCount++;
-                                easy_layout.loadMoreComplete();
-                                easy_layout.closeLoadView();
-                                int postion = mAdapter.getData().size();
-                                mAdapter.getData().addAll(mLists);
-                                mAdapter.notifyDataSetChanged();
-                                recycler_task.scrollToPosition(postion);
-                            } else if (2 == mLoadTYpe) {
-                                mLoadCount = 0;
-                                mAdapter.setNewData(mLists);
-                                easy_layout.refreshComplete();
+                            if (DEBUG) {
+//                            Log.e(TAG, "okhttp getAllMission response : " + mLists.toString());
+                                Log.e(TAG, "okhttp getAllMission mLoadTYpe : " + mLoadTYpe);
+                            }
+//                            if (1 == mEn.getStatus()) {
+                            if (1 == status) {
+                                mList.addAll(mLists);
+
+                                if (mList.size() < 20) {
+                                    easy_layout.setLoadMoreModel(LoadModel.NONE); //取消加载更多
+                                } else {
+                                    easy_layout.setLoadMoreModel(LoadModel.COMMON_MODEL);
+                                }
+
+                                if (1 == mLoadTYpe) {
+                                    easy_layout.loadMoreComplete();
+                                    easy_layout.closeLoadView();
+                                    int postion = mAdapter.getData().size();
+                                    mAdapter.getData().addAll(mLists);
+                                    mAdapter.notifyDataSetChanged();
+                                    recycler_task.scrollToPosition(postion);
+                                } else if (2 == mLoadTYpe) {
+                                    mAdapter.setNewData(mLists);
+                                    easy_layout.refreshComplete();
+                                } else {
+                                    mAdapter.setNewData(mLists);
+                                }
                             } else {
-                                mAdapter.setNewData(mLists);
-                            }
-                        } else {
-                            String mError = getErrorString(mEn.getErrCode());
-                            if (1 == mLoadTYpe) {
-                                easy_layout.loadMoreComplete();
-                                easy_layout.closeLoadView();
+//                                String mError = getErrorString(mEn.getErrCode());
+                                if (1 == mLoadTYpe) {
+                                    easy_layout.loadMoreComplete();
+                                    easy_layout.closeLoadView();
 
-                            } else if (2 == mLoadTYpe) {
-                                easy_layout.refreshComplete();
+                                } else if (2 == mLoadTYpe) {
+                                    easy_layout.refreshComplete();
+                                }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -240,14 +259,6 @@ public class TaskMeFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        getData();
-//
         initListener();
 
         addListener();
@@ -255,5 +266,13 @@ public class TaskMeFragment extends BaseFragment {
         mLoadTYpe = 0;
         mLoadCount = 0;
         getMeMission(0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        getData();
+//
+
     }
 }

@@ -32,9 +32,11 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
         public final static Property User_name = new Property(5, String.class, "user_name", false, "USER_NAME");
         public final static Property Password = new Property(6, String.class, "password", false, "PASSWORD");
         public final static Property Sex = new Property(7, int.class, "sex", false, "SEX");
-        public final static Property Country = new Property(8, String.class, "country", false, "COUNTRY");
-        public final static Property Create_time = new Property(9, String.class, "create_time", false, "CREATE_TIME");
-        public final static Property Invisible = new Property(10, int.class, "invisible", false, "INVISIBLE");
+        public final static Property Height = new Property(8, String.class, "height", false, "HEIGHT");
+        public final static Property Nick_name = new Property(9, String.class, "nick_name", false, "NICK_NAME");
+        public final static Property Country = new Property(10, String.class, "country", false, "COUNTRY");
+        public final static Property Create_time = new Property(11, String.class, "create_time", false, "CREATE_TIME");
+        public final static Property Invisible = new Property(12, int.class, "invisible", false, "INVISIBLE");
     }
 
 
@@ -58,9 +60,11 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
                 "\"USER_NAME\" TEXT," + // 5: user_name
                 "\"PASSWORD\" TEXT," + // 6: password
                 "\"SEX\" INTEGER NOT NULL ," + // 7: sex
-                "\"COUNTRY\" TEXT," + // 8: country
-                "\"CREATE_TIME\" TEXT," + // 9: create_time
-                "\"INVISIBLE\" INTEGER NOT NULL );"); // 10: invisible
+                "\"HEIGHT\" TEXT," + // 8: height
+                "\"NICK_NAME\" TEXT," + // 9: nick_name
+                "\"COUNTRY\" TEXT," + // 10: country
+                "\"CREATE_TIME\" TEXT," + // 11: create_time
+                "\"INVISIBLE\" INTEGER NOT NULL );"); // 12: invisible
     }
 
     /** Drops the underlying database table. */
@@ -109,16 +113,26 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
         }
         stmt.bindLong(8, entity.getSex());
  
+        String height = entity.getHeight();
+        if (height != null) {
+            stmt.bindString(9, height);
+        }
+ 
+        String nick_name = entity.getNick_name();
+        if (nick_name != null) {
+            stmt.bindString(10, nick_name);
+        }
+ 
         String country = entity.getCountry();
         if (country != null) {
-            stmt.bindString(9, country);
+            stmt.bindString(11, country);
         }
  
         String create_time = entity.getCreate_time();
         if (create_time != null) {
-            stmt.bindString(10, create_time);
+            stmt.bindString(12, create_time);
         }
-        stmt.bindLong(11, entity.getInvisible());
+        stmt.bindLong(13, entity.getInvisible());
     }
 
     @Override
@@ -161,16 +175,26 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
         }
         stmt.bindLong(8, entity.getSex());
  
+        String height = entity.getHeight();
+        if (height != null) {
+            stmt.bindString(9, height);
+        }
+ 
+        String nick_name = entity.getNick_name();
+        if (nick_name != null) {
+            stmt.bindString(10, nick_name);
+        }
+ 
         String country = entity.getCountry();
         if (country != null) {
-            stmt.bindString(9, country);
+            stmt.bindString(11, country);
         }
  
         String create_time = entity.getCreate_time();
         if (create_time != null) {
-            stmt.bindString(10, create_time);
+            stmt.bindString(12, create_time);
         }
-        stmt.bindLong(11, entity.getInvisible());
+        stmt.bindLong(13, entity.getInvisible());
     }
 
     @Override
@@ -189,9 +213,11 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // user_name
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // password
             cursor.getInt(offset + 7), // sex
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // country
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // create_time
-            cursor.getInt(offset + 10) // invisible
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // height
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // nick_name
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // country
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // create_time
+            cursor.getInt(offset + 12) // invisible
         );
         return entity;
     }
@@ -206,9 +232,11 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
         entity.setUser_name(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setPassword(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setSex(cursor.getInt(offset + 7));
-        entity.setCountry(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setCreate_time(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setInvisible(cursor.getInt(offset + 10));
+        entity.setHeight(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setNick_name(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setCountry(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setCreate_time(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setInvisible(cursor.getInt(offset + 12));
      }
     
     @Override

@@ -28,6 +28,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +49,9 @@ public class RedPacketActivity extends CommonToolBarActivity {
     private Button btn_red_packet_commit;
     private TextView text_task_cost;
 
-    private int[] mDrawables = {R.mipmap.redpacket_yue
+    private int[] mDrawables = {R.mipmap.redpacket_wechat
 //            , R.mipmap.redpacket_zhifubao
-            , R.mipmap.redpacket_wechat};
+            , R.mipmap.redpacket_yue};
 
     //    private String[] mRedPacketName = {"钱包余额(%1.2f)", "支付宝", "微信"};
     private String[] mRedPacketName;
@@ -59,6 +60,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
     private RedPacketAdapter mRedPacketAdapter;
 
+    private int pos;
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
@@ -70,9 +72,12 @@ public class RedPacketActivity extends CommonToolBarActivity {
     private void getDate(String balance) {
         for (int i = 0; i < mRedPacketName.length; i++) {
             RedPacketRecyclerEntity redPacketRecyclerEntity = new RedPacketRecyclerEntity();
-            if (0 == i) {
+            if (1 == i) {
 //                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[0], new Random().nextInt(10) + new Random().nextDouble()));
-                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[0], balance));
+                Log.e(TAG, "double balance : " + balance);
+                Log.e(TAG, "double balance : " + Double.parseDouble(balance));
+                redPacketRecyclerEntity.setmRedPacketName(String.format(mRedPacketName[i], Float.parseFloat(balance)));
+//                redPacketRecyclerEntity.setmRedPacketName("钱包余额(" + balance + ")");
             } else {
                 redPacketRecyclerEntity.setmRedPacketName(mRedPacketName[i]);
             }
@@ -102,6 +107,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Log.e("dd", "ddd" + position);
+                pos = position;
                 for (int i = 0; i < mList.size(); i++) {
                     mList.get(i).setCheck(false);
                 }
@@ -126,6 +132,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
         btn_red_packet_commit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 //                Intent intent = new Intent();
 //                Bundle bundle = new Bundle();
 //                bundle.putString("money", text_task_cost.getText().toString());
@@ -134,7 +141,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
 //                finish();
 
 //塞钱进红包，支付
-
+                publishMission();
 
             }
         });
@@ -165,8 +172,11 @@ public class RedPacketActivity extends CommonToolBarActivity {
         mPublishMap.put("address", bundle.getString("address"));
         mPublishMap.put("startTime", bundle.getString("startTime"));
         mPublishMap.put("to", bundle.getString("to"));
+        mPublishMap.put("toId", "0");
         mPublishMap.put("anonymous", bundle.getString("anonymous"));
+        mPublishMap.put("payType", pos + "");
 
+        Log.e(TAG, "publish map : " + mPublishMap.toString());
         OkHttpUtils.get()
                 .url(Constans.PUBLISH_MISSION)
                 .params(mPublishMap)
@@ -179,16 +189,20 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-
-                        ResultEntity mEn = Utils.getResultEntity(response);
-
-                        if (Constans.REQUEST_SUCCESS == mEn.getErrCode()) {
-                            //request success
-                            finish();
-                        } else {
-                            showToast("发布任务失败");
+                        Log.e(TAG, "publish mission : " + response);
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+                        try {
+                            JSONObject mMissionJson = new JSONObject(response);
+                            int status = mMissionJson.optInt("status");
+                            if (Constans.REQUEST_SUCCESS == status) {
+                                //request success
+                                finish();
+                            } else {
+                                showToast("发布任务失败");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
 
                     }
                 });
@@ -213,6 +227,7 @@ public class RedPacketActivity extends CommonToolBarActivity {
                 .addParams("userId", Pref.getInstance(this).getUserId() + "")
                 .url(Constans.MY_WALLET)
                 .build()
+                .connTimeOut(Constans.TIME_OUT)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -221,14 +236,17 @@ public class RedPacketActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        Log.e(TAG, "balance : " + response);
                         try {
                             JSONObject mWalletJson = new JSONObject(response);
                             int mStatus = mWalletJson.optInt("status");
 
                             if (Constans.REQUEST_SUCCESS == mStatus) {
-                                String balance = mWalletJson.optString("balance");
-                                getDate(balance);
+                                JSONObject mObjectJson = new JSONObject(mWalletJson.optString("object"));
+
+                                double balance = mObjectJson.optDouble("balance");
+                                Log.e(TAG, "request balance : " + balance);
+                                getDate(balance + "");
                             } else {
                                 showToast(getErrorString(mStatus));
                             }

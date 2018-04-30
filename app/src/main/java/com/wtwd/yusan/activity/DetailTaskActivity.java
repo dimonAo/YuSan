@@ -1,5 +1,6 @@
 package com.wtwd.yusan.activity;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.TaskEntity;
@@ -22,6 +25,8 @@ import com.wtwd.yusan.widget.view.CircleImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.Calendar;
@@ -119,10 +124,18 @@ public class DetailTaskActivity extends CommonToolBarActivity {
             return;
         }
 
+        Log.e(TAG, "mTaskEntity : ---> " + mTaskEntity.toString());
+
 //        Glide.with(this)
 ////                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
 //                .load(Uri.parse(mTaskEntity.getHead_img()))
-//                .into(circle_img_task_publisher);
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        circle_img_task_publisher.setImageBitmap(resource);
+//                    }
+//                });
 
         mMissionId = mTaskEntity.getMission_id() + "";
 
@@ -188,9 +201,10 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         text_task_close_time.setText(mTaskEntity.getFinish_time());
 
 //        long publishUserId = mTaskEntity.getPublisher().getUser_id();
+
         long publishUserId = mTaskEntity.getUser_id();
 
-        long userId = Pref.getInstance(this).getUserId();
+        long userId = mPref.getUserId();
 
         if (DEBUG) {
             Log.e(TAG, "detail task id : " + publishUserId + "---->" + userId);
@@ -318,6 +332,18 @@ public class DetailTaskActivity extends CommonToolBarActivity {
                             Log.e(TAG, "complet : " + response);
                         }
 
+                        try {
+                            JSONObject mCloseJson = new JSONObject(response);
+                            int status = mCloseJson.optInt("status");
+                            if (Constans.REQUEST_SUCCESS == status) {
+                                finish();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 });
 
@@ -350,6 +376,19 @@ public class DetailTaskActivity extends CommonToolBarActivity {
                         if (DEBUG) {
                             Log.e(TAG, "accept : " + response);
                         }
+
+                        try {
+                            JSONObject mCloseJson = new JSONObject(response);
+                            int status = mCloseJson.optInt("status");
+                            if (Constans.REQUEST_SUCCESS == status) {
+                                finish();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 });
     }
@@ -381,6 +420,18 @@ public class DetailTaskActivity extends CommonToolBarActivity {
                         if (DEBUG) {
                             Log.e(TAG, "close : " + response);
                         }
+
+                        try {
+                            JSONObject mCloseJson = new JSONObject(response);
+                            int status = mCloseJson.optInt("status");
+                            if (Constans.REQUEST_SUCCESS == status) {
+                                finish();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 });
     }

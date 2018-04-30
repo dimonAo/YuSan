@@ -27,6 +27,10 @@ import com.wtwd.yusan.widget.recycler.LoadModel;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,6 +101,7 @@ public class TaskFragment extends BaseFragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 List<TaskEntity> mList = mAdapter.getData();
+                Log.e(TAG, "enenenen :----> " + mList.get(position).toString());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("task_entity", mList.get(position));
                 readyGo(DetailTaskActivity.class, bundle);
@@ -153,49 +158,57 @@ public class TaskFragment extends BaseFragment {
                         if (DEBUG) {
                             Log.e(TAG, "okhttp getAllMission response : " + response);
                         }
-                        ResultEntity<TaskEntity> mEn = Utils.getResultEntity(response);
-                        List<TaskEntity> mL = mEn.getObject();
-                        String st = GsonUtils.GsonString(mL);
-                        List<TaskEntity> mLists = GsonUtils.jsonToList(st, TaskEntity.class);
 
+                        try {
+                            JSONObject mTaskJson = new JSONObject(response);
+                            int status = mTaskJson.optInt("status");
 
-                        if (DEBUG) {
+                            String mTaskJsonArray = mTaskJson.optString("object");
+                            Log.e(TAG, "mTaskJsonArray --> " + mTaskJsonArray);
+                            List<TaskEntity> mLists= GsonUtils.jsonToList(mTaskJsonArray,TaskEntity.class);
+
+                            if (DEBUG) {
 //                            Log.e(TAG, "okhttp getAllMission response : " + mLists.toString());
-                            Log.e(TAG, "okhttp getAllMission mLoadTYpe : " + mLoadTYpe);
-                        }
-                        if (1 == mEn.getStatus()) {
-                            mList.addAll(mLists);
+                                Log.e(TAG, "okhttp getAllMission mLoadTYpe : " + mLoadTYpe);
+                            }
+//                            if (1 == mEn.getStatus()) {
+                            if (1 == status) {
+                                mList.addAll(mLists);
 
-                            if (mList.size() < 20) {
-                                easy_layout.setLoadMoreModel(LoadModel.NONE); //取消加载更多
+                                if (mList.size() < 20) {
+                                    easy_layout.setLoadMoreModel(LoadModel.NONE); //取消加载更多
+                                } else {
+                                    easy_layout.setLoadMoreModel(LoadModel.COMMON_MODEL);
+                                }
+
+                                if (1 == mLoadTYpe) {
+                                    easy_layout.loadMoreComplete();
+                                    easy_layout.closeLoadView();
+                                    int postion = mAdapter.getData().size();
+                                    mAdapter.getData().addAll(mLists);
+                                    mAdapter.notifyDataSetChanged();
+                                    recycler_task.scrollToPosition(postion);
+                                } else if (2 == mLoadTYpe) {
+                                    mAdapter.setNewData(mLists);
+                                    easy_layout.refreshComplete();
+                                } else {
+                                    mAdapter.setNewData(mLists);
+                                }
                             } else {
-                                easy_layout.setLoadMoreModel(LoadModel.COMMON_MODEL);
-                            }
+//                                String mError = getErrorString(mEn.getErrCode());
+                                if (1 == mLoadTYpe) {
+                                    easy_layout.loadMoreComplete();
+                                    easy_layout.closeLoadView();
 
-                            if (1 == mLoadTYpe) {
-                                easy_layout.loadMoreComplete();
-                                easy_layout.closeLoadView();
-                                int postion = mAdapter.getData().size();
-                                mAdapter.getData().addAll(mLists);
-                                mAdapter.notifyDataSetChanged();
-                                recycler_task.scrollToPosition(postion);
-                            } else if (2 == mLoadTYpe) {
-                                mAdapter.setNewData(mLists);
-                                easy_layout.refreshComplete();
-                            } else {
-                                mAdapter.setNewData(mLists);
+                                } else if (2 == mLoadTYpe) {
+                                    easy_layout.refreshComplete();
+                                }
                             }
-                        } else {
-                            String mError =getErrorString(mEn.getErrCode());
-                            if (1 == mLoadTYpe) {
-                                easy_layout.loadMoreComplete();
-                                easy_layout.closeLoadView();
-
-                            } else if (2 == mLoadTYpe) {
-                                easy_layout.refreshComplete();
-                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
+
                 });
 
 //        return mList;

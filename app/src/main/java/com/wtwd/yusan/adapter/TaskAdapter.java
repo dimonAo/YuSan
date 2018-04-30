@@ -1,7 +1,10 @@
 package com.wtwd.yusan.adapter;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
@@ -28,8 +31,12 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(item.getStart_time());
 
+        Glide.with(mContext)
+                .load(Uri.parse(item.getHead_img()))
+                .into((ImageView) helper.getView(R.id.circle_img_task_publisher));
 
-        helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
+        helper
+//                .setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
 //                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
                 .setText(R.id.text_task_publisher_nick, item.getUser_name())
                 .setText(R.id.text_task_content, item.getContent())

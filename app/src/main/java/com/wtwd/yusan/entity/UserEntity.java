@@ -2,6 +2,7 @@ package com.wtwd.yusan.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.widget.CircularProgressDrawable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -37,6 +38,11 @@ public class UserEntity implements Parcelable {
 
     @Property(nameInDb = "SEX")
     private int sex;                 //性别
+    @Property(nameInDb = "HEIGHT")
+    private String height;
+
+    @Property(nameInDb = "NICK_NAME")
+    private String nick_name;
 
     @Property(nameInDb = "COUNTRY")
     private String country;
@@ -50,6 +56,7 @@ public class UserEntity implements Parcelable {
     public UserEntity() {
 
     }
+
 
     protected UserEntity(Parcel in) {
         if (in.readByte() == 0) {
@@ -68,15 +75,18 @@ public class UserEntity implements Parcelable {
         user_name = in.readString();
         password = in.readString();
         sex = in.readInt();
+        height = in.readString();
+        nick_name = in.readString();
         country = in.readString();
         create_time = in.readString();
         invisible = in.readInt();
     }
 
-    @Generated(hash = 1303072583)
+
+    @Generated(hash = 1581628794)
     public UserEntity(Long id, Long user_id, String userIdStr, String head_img,
-            String birth, String user_name, String password, int sex,
-            String country, String create_time, int invisible) {
+                      String birth, String user_name, String password, int sex, String height,
+                      String nick_name, String country, String create_time, int invisible) {
         this.id = id;
         this.user_id = user_id;
         this.userIdStr = userIdStr;
@@ -85,6 +95,8 @@ public class UserEntity implements Parcelable {
         this.user_name = user_name;
         this.password = password;
         this.sex = sex;
+        this.height = height;
+        this.nick_name = nick_name;
         this.country = country;
         this.create_time = create_time;
         this.invisible = invisible;
@@ -101,6 +113,22 @@ public class UserEntity implements Parcelable {
             return new UserEntity[size];
         }
     };
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
 
     public Long getId() {
         return id;
@@ -190,6 +218,7 @@ public class UserEntity implements Parcelable {
         this.invisible = invisible;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -215,8 +244,29 @@ public class UserEntity implements Parcelable {
         dest.writeString(user_name);
         dest.writeString(password);
         dest.writeInt(sex);
+        dest.writeString(height);
+        dest.writeString(nick_name);
         dest.writeString(country);
         dest.writeString(create_time);
         dest.writeInt(invisible);
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", user_id=" + user_id +
+                ", userIdStr='" + userIdStr + '\'' +
+                ", head_img='" + head_img + '\'' +
+                ", birth='" + birth + '\'' +
+                ", user_name='" + user_name + '\'' +
+                ", password='" + password + '\'' +
+                ", sex=" + sex +
+                ", height='" + height + '\'' +
+                ", nick_name='" + nick_name + '\'' +
+                ", country='" + country + '\'' +
+                ", create_time='" + create_time + '\'' +
+                ", invisible=" + invisible +
+                '}';
     }
 }

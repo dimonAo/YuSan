@@ -158,4 +158,12 @@ public class Pref {
     }
 
 
+    public void setIsPhone(boolean flag){
+        getSharedPreferencesCommon().edit().putBoolean("phone",flag).apply();
+    }
+
+    public boolean getIsPhone(){
+        return getSharedPreferencesCommon().getBoolean("phone",false);
+    }
+
 }

@@ -491,7 +491,9 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, mPosition);
 
-        mStartDateAndTime = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + " " + mStartTime;
+        mStartDateAndTime = calendar.get(Calendar.YEAR) + "-"
+                + Utils.addZeroBeforeString((calendar.get(Calendar.MONTH) + 1) + "")
+                + "-" + calendar.get(Calendar.DAY_OF_MONTH) + " " + mStartTime;
 
 
         return mStartDateAndTime;

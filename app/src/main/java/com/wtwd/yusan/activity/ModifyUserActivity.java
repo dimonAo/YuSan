@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.util.Util;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -27,6 +31,7 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.operation.DaoManager;
 import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GlideImageLoader;
@@ -146,6 +151,34 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
             account = bundle.getString("account");
             isPhone = bundle.getBoolean("isPhone");
         }
+
+        displayUserInfo();
+    }
+
+    private void displayUserInfo() {
+        UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
+        Log.e(TAG, "mEn : " + mEn.toString());
+
+        if (null != mEn) {
+            Glide.with(this)
+                    .load(Uri.parse(mEn.getHead_img()))
+                    .asBitmap()
+
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            circle_img_head.setImageBitmap(resource);
+                        }
+                    });
+
+            text_user_nick.setText(mEn.getNick_name());
+            tv_modifyuser_birthday.setText(mEn.getBirth());
+            tv_modifyuser_sex.setText(mEn.getSex() + "");
+            tv_modifyuser_height.setText(mEn.getHeight());
+
+        }
+
+
     }
 
 
@@ -220,16 +253,79 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 
     }
 
+
+    private void editUserInfo() {
+        Map<String, String> mModifyMap = new HashMap<>();
+        mModifyMap.put("userId", mPref.getUserId() + "");
+        mModifyMap.put("headImg", Utils.Bitmap2StrByBase64(getBitmapForCircleImg()));
+        mModifyMap.put("userName", getUserName());
+        mModifyMap.put("birth", getBirthday());
+        mModifyMap.put("height", getHeight());
+        mModifyMap.put("sex", getSex());
+
+        OkHttpUtils.post()
+                .params(mModifyMap)
+                .url(Constans.EDIT_USER)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "modify user info : " + response);
+                        try {
+                            JSONObject mUserJson = new JSONObject(response);
+
+                            int mStatus = mUserJson.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == mStatus) {
+//                                if (isFirst) {
+//                                    //注册用户信息
+//                                    String mObjectStr = mUserJson.optString("object");
+////                                    JSONObject mObjectJson = new JSONObject(mObjectStr);
+////                                    String mUser = mObjectJson.optString("user");
+//                                    UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
+////                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
+//
+//                                    mPref.setUserId(mUserEn.getUser_id());
+//                                    DaoUtils.getUserManager().insertObject(mUserEn);
+//
+//                                    readyGoForNewTask(MainActivity.class);
+//
+//
+//                                } else {
+                                    //修改用户信息
+                                    UserEntity mUser = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(ModifyUserActivity.this).getUserId());
+
+                                    DaoUtils.getUserManager().updateObject(mUser);
+
+                                    finish();
+//                                }
+                            } else {
+                                int mError = mUserJson.optInt("errCode");
+                                showToast(getErrorString(mError));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+
+    }
+
+
     /**
      * 请求修改用户信息
      */
     private void modifyUserInfo() {
         String url, type, phone, openId;
-        if (isFirst) {
-            url = Constans.REGISTER_USER;
-        } else {
-            url = Constans.EDIT_USER;
-        }
+        url = Constans.REGISTER_USER;
 
         if (isPhone) {
             type = "1"; //手机号登录
@@ -243,6 +339,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 
 
         Map<String, String> mModifyMap = new HashMap<>();
+        mModifyMap.put("userId", mPref.getUserId() + "");
         mModifyMap.put("headImg", Utils.Bitmap2StrByBase64(getBitmapForCircleImg()));
         mModifyMap.put("userName", getUserName());
         mModifyMap.put("birth", getBirthday());
@@ -252,20 +349,24 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         mModifyMap.put("openId", openId);
         mModifyMap.put("type", type);
 
+//        Log.e(TAG, "mModifyMap : " + mModifyMap.toString());
+
         OkHttpUtils.post()
                 .url(url)
+                .tag(this)
                 .params(mModifyMap)
                 .build()
                 .connTimeOut(Constans.TIME_OUT)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        Log.e(TAG, "modify e : " + e.toString());
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         try {
+                            Log.e(TAG, "modify user info : " + response);
                             JSONObject mUserJson = new JSONObject(response);
                             int mStatus = mUserJson.optInt("status");
 
@@ -273,18 +374,24 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                                 if (isFirst) {
                                     //注册用户信息
                                     String mObjectStr = mUserJson.optString("object");
-                                    JSONObject mObjectJson = new JSONObject(mObjectStr);
-                                    String mUser = mObjectJson.optString("user");
-                                    UserEntity mUserEn = GsonUtils.GsonToBean(mUser, UserEntity.class);
-                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
+//                                    JSONObject mObjectJson = new JSONObject(mObjectStr);
+//                                    String mUser = mObjectJson.optString("user");
+                                    UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
+//                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
 
+                                    mPref.setUserId(mUserEn.getUser_id());
                                     DaoUtils.getUserManager().insertObject(mUserEn);
-                                } else {
-                                    //修改用户信息
-                                    UserEntity mUser = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(ModifyUserActivity.this).getUserId());
 
-                                    finish();
+                                    readyGoForNewTask(MainActivity.class);
+
+
                                 }
+//                                else {
+//                                    //修改用户信息
+//                                    UserEntity mUser = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(ModifyUserActivity.this).getUserId());
+//
+//                                    finish();
+//                                }
                             } else {
                                 int mError = mUserJson.optInt("errCode");
                                 showToast(getErrorString(mError));
@@ -338,7 +445,12 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                 break;
 
             case R.id.btn_withdrawals_submit:
-                modifyUserInfo();
+                if (isFirst) {
+                    modifyUserInfo();
+                } else {
+                    editUserInfo();
+                }
+
                 break;
         }
     }
@@ -387,7 +499,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         }, names);
     }
 
-    ArrayList<ImageItem> images = null;
+    ArrayList<ImageItem> images = new ArrayList<>();
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -399,7 +511,19 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                 if (images != null) {
                     Log.e(TAG, "images : ---> " + images.get(0).toString());
                     Log.e(TAG, "images size : ---> " + images.size());
-                    mHandler.sendEmptyMessage(DISPLAY_BG);
+//                    mHandler.sendEmptyMessage(DISPLAY_BG);
+
+//                    circle_img_head.setImageBitmap(getBitmapForCircleImg());
+                    Glide.with(ModifyUserActivity.this)
+                            .load(images.get(0).path)
+                            .asBitmap()
+
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    circle_img_head.setImageBitmap(resource);
+                                }
+                            });
                 }
             }
         } else if (100 == resultCode) {
@@ -446,10 +570,18 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 //                mImagePicker.getImageLoader().displayImage(ModifyUserActivity.this, item.path, circle_img_head, item.width, item.height);
 //                ImageItem item = images.get(0);
 //                Bitmap mBitmap = BitmapFactory.decodeFile(item.path);
+
                 circle_img_head.setImageBitmap(getBitmapForCircleImg());
+
             }
 
         }
     };
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkHttpUtils.getInstance().cancelTag(this);
+    }
 }

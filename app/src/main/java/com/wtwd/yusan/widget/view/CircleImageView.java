@@ -238,7 +238,8 @@ public class CircleImageView extends ImageView {
         mDrawableRadius = Math.min(mDrawableRect.height() / 2, mDrawableRect.width() / 2);
 
         updateShaderMatrix();
-        invalidate();
+//        invalidate();
+        postInvalidate();
     }
 
     private void updateShaderMatrix() {

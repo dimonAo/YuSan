@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -197,9 +198,12 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
 //            if (checkPhone() && checkVerification()) {
 //                SMSSDK.submitVerificationCode("86", getPhone(), getVerification());
 //            }
-            Intent intent = new Intent(LandPhoneActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+//            Intent intent = new Intent(LandPhoneActivity.this, MainActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+
+            loginUserExist(getPhone());
+
         }
     }
 
@@ -231,7 +235,7 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        Log.e(TAG, "land phont : " + response);
                         try {
                             JSONObject mLoginResponse = new JSONObject(response);
 
@@ -258,10 +262,22 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
                                 } else {
                                     //直接登录到主界面，需要解析UserEntity对象，存在本地
                                     UserEntity mUserEntity = GsonUtils.GsonToBean(mObjectJson.optString("user"), UserEntity.class);
+                                    Log.e(TAG, "mUserEntity : " + mUserEntity.toString());
+                                    mPref.setUserId(mUserEntity.getUser_id());
                                     //User插入数据库
-                                    DaoUtils.getUserManager().insertObject(mUserEntity);
+                                    UserEntity mOldEn = DaoUtils.getUserManager().queryUserForUserId(mUserEntity.getUser_id());
+
+                                    if ((null != mOldEn) && ((mUserEntity.getUser_id()).equals(mOldEn.getUser_id()))) {
+                                        DaoUtils.getUserManager().updateObject(mUserEntity);
+                                    } else {
+                                        DaoUtils.getUserManager().insertObject(mUserEntity);
+
+                                    }
+
                                     readyGoForNewTask(MainActivity.class);
                                 }
+
+                                mPref.setIsPhone(true);
 
                             } else {
                                 showToast(getErrorString(mStatus));
