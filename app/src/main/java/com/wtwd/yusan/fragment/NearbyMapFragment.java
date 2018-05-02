@@ -1,19 +1,14 @@
 package com.wtwd.yusan.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -40,14 +35,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.google.gson.Gson;
 import com.wtwd.yusan.R;
-import com.wtwd.yusan.activity.MainActivity;
 import com.wtwd.yusan.activity.NearbyListActivity;
 import com.wtwd.yusan.activity.TaskActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.Pref;
@@ -128,7 +123,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
 
     float mScale;
 
-    Boolean mIsInVisiable = false;
+    int mIsInVisible = 0;
 
     BitmapDescriptor bitmapDescriptor;
 
@@ -164,7 +159,17 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     @Override
     public void initFragmentView(Bundle savedInstanceState, View mView) {
         initView(savedInstanceState, mView);
+        initData();
         addListener();
+    }
+
+    /**
+     * 拿到用户状态
+     */
+    private void initData() {
+        UserEntity user = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(getActivity()).getUserId());
+        mIsInVisible = user.getInvisible();
+        setUserInvisible(mIsInVisible);
     }
 
     /**
@@ -213,7 +218,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             public boolean onMarkerClick(Marker marker) {
                 if (marker.getObject().getClass().equals(LastVersionEntity.class)) {
                     LastVersionEntity lastVersionEntity = (LastVersionEntity) marker.getObject();
-                    Toast.makeText(getActivity(), "这是自定义marker，代号" + lastVersionEntity.getUser().getUser_id(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "这是自定义marker，代号" + lastVersionEntity.getUser_id(), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -233,12 +238,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 mScale = mAMap.getScalePerPixel();
                 Log.e(TAG,"range "+range);
                 int pixel = Math.round( range/ mAMap.getScalePerPixel());
-                if(mIsInVisiable == false){
-
-                }else if(mIsInVisiable == true){
+                if(0 == mIsInVisible ){
+                    //在线
+                    getNearbyUser(cameraPosition.target.latitude,cameraPosition.target.longitude,mAMap.getScalePerPixel());
+                }else if(1 == mIsInVisible){
 
                 }
-                getNearbyUser(cameraPosition.target.latitude,cameraPosition.target.longitude,mAMap.getScalePerPixel());
+
 
             }
         });
@@ -269,6 +275,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 Log.e(TAG, "onLocationChanged 定位成功 ----------------------- :" + "aMapLocation 信息 " + aMapLocation.getLongitude() + " " + aMapLocation.getLatitude());
                 mOnLocationChangedListener.onLocationChanged(aMapLocation);//显示定位
                 mMyLocation = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//构造位置
+                uploadLocation(aMapLocation.getLatitude()+"", aMapLocation.getLongitude()+"");
                 Pref.getInstance(getActivity()).setCity(aMapLocation.getCity());
                /* MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.neaby_map_location_point))
                         .position(latLng)
@@ -355,12 +362,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 startActivity(taskIntent);
                 break;
             case R.id.img_nearbymap_list:
-                if(mIsInVisiable == true){
+                if(1 == mIsInVisible){
                    showToast("隐身状态");
                     return;
                 }
                 Intent nearbyListIntent = new Intent(getActivity(), NearbyListActivity.class);
-                nearbyListIntent.putExtra("location",mMyLocation);
+                nearbyListIntent.putExtra("lat",mMyLocation.latitude+"");
+                nearbyListIntent.putExtra("lng",mMyLocation.longitude+"");
                 nearbyListIntent.putExtra("scale",mScale);
                 startActivity(nearbyListIntent);
                 break;
@@ -418,43 +426,92 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     }
 
     /**
-     * 获取用户状态
+     * 上传定位数据
+     * @param lat
+     * @param lng
      */
-    private void getUsreStatus(){
+    private void uploadLocation(String lat,String lng){
 
+        OkHttpUtils.get()
+                .url(Constans.UPLOAD_LOCATION)
+                .addParams("lat",lat)
+                .addParams("lng",lng)
+                .addParams("userId",Pref.getInstance(getActivity()).getUserId()+"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("uploadLocation",e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e("uploadLocation",response.toString());
+                        ResultEntity mEn = Utils.getResultEntity(response);
+                        if(1 == mEn.getStatus()){
+
+                        }
+                    }
+                });
+    }
+    /**
+     * 设置用户状态
+     */
+    private void setUserInvisible(int  isInVisible){
+        if(1 == isInVisible){
+            tv_user_status.setText(R.string.nearby_map_stealth);
+            img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_invisible));
+        }else if(0 == isInVisible){
+            tv_user_status.setText(R.string.nearby_map_online);
+            img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_visible));
+        }
     }
     /**
      * 改变用户状态
      */
     private void changeUserStatus() {
-        if(mIsInVisiable == true){
-            tv_user_status.setText(R.string.nearby_map_stealth);
-            img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_invisible));
-            mIsInVisiable = false;
-        }else if(mIsInVisiable == false){
-            tv_user_status.setText(R.string.nearby_map_online);
-            img_user_status.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_visible));
-            mIsInVisiable = true;
+
+        int inVisibleParam = 0;
+        if(0 == mIsInVisible){
+            inVisibleParam = 1;
+        }else{
+            inVisibleParam = 0;
         }
-       /* OkHttpUtils.get()
-                .url(Constans.REQUEST_URL)
+
+        OkHttpUtils.get()
+                .url(Constans.SET_INVISIBLE)
+                .addParams("invisible",inVisibleParam+"")
+                .addParams("userId",Pref.getInstance(getActivity()).getUserId()+"")
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
 
+                        showToast(getString(R.string.nearby_map_setting_error));
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e("setInvisible",response.toString());
                         ResultEntity mEn = Utils.getResultEntity(response);
                         if(1 == mEn.getStatus()){
-
+                            UserEntity user =  DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(getActivity()).getUserId());
+                            if(0 == mIsInVisible){
+                                mIsInVisible = 1;
+                                clearMarkers();
+                            }else{
+                                mIsInVisible = 0;
+                            }
+                            user.setInvisible(mIsInVisible);
+                            DaoUtils.getUserManager().updateObject(user);
+                            setUserInvisible(mIsInVisible);
+                           // changeUserStatus();
+                            showToast(getString(R.string.nearby_map_setting_success));
                         }else {
-
+                            showToast(getString(R.string.nearby_map_setting_error));
                         }
                     }
-                });*/
+                });
     }
 
     /**
@@ -531,10 +588,13 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             @Override
             public void markerIconLoadingFinished(View view) {
                 //bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
-                Marker marker;
-                markerOptions.icon(bitmapDescriptor);
-                marker = mAMap.addMarker(markerOptions);
-                marker.setObject(lastVersionEntity);
+                if(lastVersionEntity.getUser_id()!=Pref.getInstance(getActivity()).getUserId()){
+                    Marker marker;
+                    markerOptions.icon(bitmapDescriptor);
+                    marker = mAMap.addMarker(markerOptions);
+                    marker.setObject(lastVersionEntity);
+                }
+
             }
         });
 
@@ -579,10 +639,16 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
      */
     private void customizeMarkerIcon(LastVersionEntity lastVersionEntity, final OnMarkerIconLoadListener listener) {
         final View markerView;
-        String url = "http://ucardstorevideo.b0.upaiyun.com/test/e8c8472c-d16d-4f0a-8a7b-46416a79f4c6.png";
-        markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_bg, null);
-        RelativeLayout rl = markerView.findViewById(R.id.rl_map_bg);
-        rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_man_bg));
+        //String url = "http://ucardstorevideo.b0.upaiyun.com/test/e8c8472c-d16d-4f0a-8a7b-46416a79f4c6.png";
+        Log.e(TAG,lastVersionEntity.toString());
+        if(lastVersionEntity.getSex() == 1){
+            markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_man_bg, null);
+        }else{
+            markerView = LayoutInflater.from(getActivity()).inflate(R.layout.marker_female_bg, null);
+        }
+
+       // RelativeLayout rl = markerView.findViewById(R.id.rl_map_bg);
+      //  rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_man_bg));
        /* if (lastVersionEntity.getUser().getSex() == 0) {
            rl.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.nearby_map_man_bg));
         } else {
@@ -590,7 +656,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
         }*/
         final CircleImageView icon = (CircleImageView) markerView.findViewById(R.id.marker_item_icon);
         Glide.with(this)
-                .load(url)
+                .load(lastVersionEntity.getHead_img())
                 .asBitmap()
                 .thumbnail(0.2f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

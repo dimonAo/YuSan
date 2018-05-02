@@ -21,10 +21,21 @@ import com.wtwd.yusan.activity.MyPacketActivity;
 import com.wtwd.yusan.activity.SettingActivity;
 import com.wtwd.yusan.activity.UserIndexActivity;
 import com.wtwd.yusan.base.BaseFragment;
+import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.entity.UserEntity;
 import com.wtwd.yusan.entity.operation.DaoUtils;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
+import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.view.ArcImageView;
 import com.wtwd.yusan.widget.view.CircleImageView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONObject;
+
+import okhttp3.Call;
 
 /**
  * Created by Administrator on 2018/4/10 0010.
@@ -85,9 +96,13 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         addListener();
 
         displayUserInfo();
+        getUserBalance();
 
     }
 
+    /**
+     * 展示用户图片
+     */
     private void displayUserInfo() {
         UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
         Log.e(TAG, "mEn : " + mEn.toString());
@@ -107,6 +122,29 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
 
 
         }
+    }
+
+    /**
+     * 获取余额
+     */
+    private void getUserBalance(){
+        OkHttpUtils.get()
+                .url(Constans.GET_BALANCE)
+                .addParams("userId", Pref.getInstance(getActivity()).getUserId()+"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG,response.toString());
+
+
+                    }
+                });
 
 
     }

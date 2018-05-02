@@ -28,10 +28,10 @@ public class NearbyListAdapter extends BaseQuickAdapter<LastVersionEntity,BaseVi
     @Override
     protected void convert(BaseViewHolder helper, LastVersionEntity item) {
         helper.setBackgroundRes(R.id.circle_img_nearbylist_publisher, R.mipmap.task_head)
-                .setText(R.id.tv_nearbylist_publisher_nick, item.getUser().getUser_name())
+                .setText(R.id.tv_nearbylist_publisher_nick, item.getUser_name())
                 .setText(R.id.tv_nearbylist_distance,"fsadf");
 
-        if ("0".equals(item.getUser().getSex())) {
+        if ("0".equals(item.getSex()+"")){
             helper.setBackgroundRes(R.id.img_nearbylist_publisher_sex, R.mipmap.task_f);
         } else {
             helper.setBackgroundRes(R.id.img_nearbylist_publisher_sex, R.mipmap.task_m);

@@ -24,6 +24,7 @@ import com.wtwd.yusan.entity.NearbyEntity;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
@@ -62,9 +63,13 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
     private LatLng mMyLatLng;
 
+    private String mLatitude;
+
+    private String mLongitude;
+
     private LatLng mMyLocation;
 
-    private Double mScale;
+    private String mScale;
 
     private int start = 0;
 
@@ -113,12 +118,13 @@ public class NearbyListActivity extends CommonToolBarActivity {
         mNearbyListAdapter = new NearbyListAdapter(R.layout.item_nearby_list, null);
         recycler_nearbylist.setAdapter(mNearbyListAdapter);
 
-        Bundle bundle = getIntent().getExtras();
-        mMyLocation = bundle.getParcelable("location");
-        mScale = bundle.getParcelable("scale");
-        Log.e(TAG,mMyLocation.latitude+"");
+        mLatitude = getIntent().getStringExtra("lat");
+        mLongitude = getIntent().getStringExtra("lng");
+       // mScale = Float.parseFloat(getIntent().getStringExtra("scale"));
+        Log.e(TAG,mLatitude+"");
 
         initListener();
+        getNearbyUser(mLoadCount * 20, 20);
     }
 
     /**
@@ -155,9 +161,12 @@ public class NearbyListActivity extends CommonToolBarActivity {
         HashMap<String,String> params = new HashMap<>();
         params.put("start",start+"");
         params.put("count",count+"");
+        params.put("userId", Pref.getInstance(this).getUserId()+"");
+        params.put("lat",mLatitude+"");
+        params.put("lng",mLongitude+"");
 
         OkHttpUtils.get()
-                .url(Constans.REQUEST_URL)
+                .url(Constans.GET_ALL_NEAYBY_USER)
                 .params(params)
                 .build()
                 .connTimeOut(Constans.TIME_OUT)
@@ -174,6 +183,7 @@ public class NearbyListActivity extends CommonToolBarActivity {
                     }
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e(TAG,response.toString());
                         ResultEntity mEn = Utils.getResultEntity(response);
                         if(1 == mEn.getStatus()){
                            // list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
