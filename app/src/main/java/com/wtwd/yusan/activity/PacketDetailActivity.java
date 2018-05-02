@@ -16,6 +16,7 @@ import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
 import com.wtwd.yusan.widget.recycler.EasyRefreshLayout;
 import com.wtwd.yusan.widget.recycler.LoadModel;
@@ -100,6 +101,7 @@ public class PacketDetailActivity extends CommonToolBarActivity {
         HashMap<String,String> params = new HashMap<>();
         params.put("start",start+"");
         params.put("count",count+"");
+        params.put("userId", Pref.getInstance(this).getUserId()+"");
 
         OkHttpUtils.get()
                 .url(Constans.GET_PACKETDETAIL)
@@ -119,9 +121,10 @@ public class PacketDetailActivity extends CommonToolBarActivity {
                     }
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e(TAG,response.toString());
                         ResultEntity mEn = Utils.getResultEntity(response);
                         if(1 == mEn.getStatus()){
-                           // list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
+                            //list.addAll(GsonUtils.getInstance().GsonToList(mEn.getObject(),LastVersionEntity.class));
                             if(1 == mLoadTYpe){
                                 easylayout_packetdetail.loadMoreComplete();
                                 easylayout_packetdetail.closeLoadView();

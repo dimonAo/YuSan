@@ -158,6 +158,8 @@
     <string name="me_help_and_feedback">帮助与反馈</string>
     <string name="nearby_map_stealth">隐身</string>
     <string name="nearby_map_online">在线</string>
+    <string name="nearby_map_setting_error">设置失败</string>
+    <string name="nearby_map_setting_success">设置成功</string>
     <string name="land_phone_verify_code_success">验证码验证成功</string>
     <string name="land_phone_verify_code_error">验证码错误</string>
     <string name="land_phone_get_verify_code_success">获取验证码成功</string>
@@ -201,6 +203,7 @@
     <string name="util_group_exists">该群已存在</string>
     <string name="util_register_fail">注册失败</string>
     <string name="util_permission_error">权限错误</string>
+
 
 
 </resources>
