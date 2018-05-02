@@ -126,16 +126,16 @@ public class DetailTaskActivity extends CommonToolBarActivity {
 
         Log.e(TAG, "mTaskEntity : ---> " + mTaskEntity.toString());
 
-//        Glide.with(this)
-////                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
-//                .load(Uri.parse(mTaskEntity.getHead_img()))
-//                .asBitmap()
-//                .into(new SimpleTarget<Bitmap>() {
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                        circle_img_task_publisher.setImageBitmap(resource);
-//                    }
-//                });
+        Glide.with(this)
+//                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
+                .load(Uri.parse(mTaskEntity.getHead_img()))
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        circle_img_task_publisher.setImageBitmap(resource);
+                    }
+                });
 
         mMissionId = mTaskEntity.getMission_id() + "";
 
@@ -161,7 +161,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
          * 任务开始日期和时间
          */
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis((mTaskEntity.getStart_time() / 1000L));
+        calendar.setTimeInMillis((mTaskEntity.getStart_time()));
 
 
         text_task_date.setText(calendar.get(Calendar.MONTH + 1)
@@ -188,18 +188,41 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         /**
          * 任务创建时间
          */
-        text_task_create_time.setText(mTaskEntity.getCreate_time());
+
+        calendar.setTimeInMillis(Long.parseLong(mTaskEntity.getCreate_time()));
+
+        text_task_create_time.setText(calendar.get(Calendar.YEAR) + "年"
+                + (calendar.get(Calendar.MONTH) + 1) + "月"
+                + calendar.get(Calendar.DAY_OF_MONTH) + "日"
+                + " " + calendar.get(Calendar.HOUR_OF_DAY) + getString(R.string.task_dot) + calendar.get(Calendar.MINUTE));
 
         /**
          * 任务领取时间
          */
-        text_task_receive_time.setText(mTaskEntity.getAccept_time());
-
+        if ((null != mTaskEntity.getAccept_time()) && (!"null".equals(mTaskEntity.getAccept_time()))) {
+            calendar.setTimeInMillis(Long.parseLong(mTaskEntity.getAccept_time()));
+            text_task_receive_time.setText(calendar.get(Calendar.YEAR) + "年"
+                    + (calendar.get(Calendar.MONTH) + 1) + "月"
+                    + calendar.get(Calendar.DAY_OF_MONTH) + "日"
+                    + " " + calendar.get(Calendar.HOUR_OF_DAY) + getString(R.string.task_dot) + calendar.get(Calendar.MINUTE));
+        } else {
+            text_task_receive_time.setText("");
+        }
         /**
          * 任务完成时间
          */
-        text_task_close_time.setText(mTaskEntity.getFinish_time());
 
+        if ((null != mTaskEntity.getFinish_time()) && (!"null".equals(mTaskEntity.getFinish_time()))) {
+
+
+            calendar.setTimeInMillis(Long.parseLong(mTaskEntity.getFinish_time()));
+            text_task_close_time.setText(calendar.get(Calendar.YEAR) + "年"
+                    + (calendar.get(Calendar.MONTH) + 1) + "月"
+                    + calendar.get(Calendar.DAY_OF_MONTH) + "日"
+                    + " " + calendar.get(Calendar.HOUR_OF_DAY) + getString(R.string.task_dot) + calendar.get(Calendar.MINUTE));
+        } else {
+            text_task_close_time.setText("");
+        }
 //        long publishUserId = mTaskEntity.getPublisher().getUser_id();
 
         long publishUserId = mTaskEntity.getUser_id();
@@ -396,7 +419,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
 
     /**
      * 关闭任务
-     *
+     *调试完成
      * @param userId
      */
     private void closeMission(String userId, String missionId) {

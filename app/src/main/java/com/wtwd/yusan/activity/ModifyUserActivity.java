@@ -163,7 +163,6 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
             Glide.with(this)
                     .load(Uri.parse(mEn.getHead_img()))
                     .asBitmap()
-
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

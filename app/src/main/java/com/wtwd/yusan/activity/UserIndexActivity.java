@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,11 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPoolAdapter;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -31,6 +35,7 @@ import com.wtwd.yusan.adapter.MeAddPicAdapter;
 import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.entity.TaskEntity;
+import com.wtwd.yusan.entity.UserEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GlideImageLoader;
 import com.wtwd.yusan.util.GsonUtils;
@@ -66,6 +71,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
     private RecyclerView recycler_pic;
     private MeAddPicAdapter mMeAddPicAdapter;
+    private RelativeLayout relative_index_user_bg;
     long receiveUserId;
     ArrayList<ImageItem> images = new ArrayList<>();
     private EasyRefreshLayout refresh_img;
@@ -83,6 +89,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
     }
 
     private void initView() {
+        relative_index_user_bg = (RelativeLayout)findViewById(R.id.relative_index_user_bg);
         refresh_img = (EasyRefreshLayout) findViewById(R.id.refresh_img);
         recycler_pic = (RecyclerView) findViewById(R.id.recycler_pic);
         recycler_pic.setLayoutManager(new GridLayoutManager(this, GRID_COUNT));
@@ -176,6 +183,40 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        try {
+                            JSONObject mHomeInfoJson = new JSONObject(response);
+
+                            int status = mHomeInfoJson.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == status) {
+
+                                String mUserJson = mHomeInfoJson.optString("object");
+                                UserEntity mUser = GsonUtils.GsonToBean(mUserJson,UserEntity.class);
+                                Glide.with(UserIndexActivity.this)
+                                    .load(Uri.parse(mUser.getHead_img()))
+                                        .asBitmap()
+                                        .into(new SimpleTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                                relative_index_user_bg.setBackground(new BitmapDrawable(resource));
+                                            }
+                                        });
+//                                Glide.with(UserIndexActivity.this)
+//                                        .load(Uri.parse(mUser.getHead_img()))
+//                                        .into(relative_index_user_bg);
+
+                            }else{
+                                int errorCode = mHomeInfoJson.optInt("errCode");
+                                showToast(Utils.getErrorString(UserIndexActivity.this,errorCode));
+                            }
+
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
 
                     }
                 });
@@ -255,7 +296,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
                                 mMeAddPicAdapter.getData().addAll(mLists);
                                 mMeAddPicAdapter.notifyDataSetChanged();
                                 refresh_img.loadMoreComplete();
-                                refresh_img.closeLoadView();
+//                                refresh_img.closeLoadView();
 
                                 if (mImgList.size() < 20) {
                                     refresh_img.setLoadMoreModel(LoadModel.NONE);
