@@ -588,6 +588,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             @Override
             public void markerIconLoadingFinished(View view) {
                 //bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
+                Log.e(TAG,lastVersionEntity.toString());
                 if(lastVersionEntity.getUser_id()!=Pref.getInstance(getActivity()).getUserId()){
                     Marker marker;
                     markerOptions.icon(bitmapDescriptor);

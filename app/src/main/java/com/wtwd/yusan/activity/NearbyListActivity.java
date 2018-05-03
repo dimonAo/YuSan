@@ -120,8 +120,8 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
         mLatitude = getIntent().getStringExtra("lat");
         mLongitude = getIntent().getStringExtra("lng");
-       // mScale = Float.parseFloat(getIntent().getStringExtra("scale"));
-        Log.e(TAG,mLatitude+"");
+        // mScale = Float.parseFloat(getIntent().getStringExtra("scale"));
+        Log.e(TAG, mLatitude + "");
 
         initListener();
         getNearbyUser(mLoadCount * 20, 20);
@@ -153,17 +153,19 @@ public class NearbyListActivity extends CommonToolBarActivity {
 
     /**
      * 获取附近的人
+     *
      * @param start
      * @param count
      */
-    private void getNearbyUser(int start,int count){
+    private void getNearbyUser(int start, int count) {
         final List<LastVersionEntity> list = new ArrayList<>();
-        HashMap<String,String> params = new HashMap<>();
-        params.put("start",start+"");
-        params.put("count",count+"");
-        params.put("userId", Pref.getInstance(this).getUserId()+"");
-        params.put("lat",mLatitude+"");
-        params.put("lng",mLongitude+"");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("start", start + "");
+        params.put("count", count + "");
+        params.put("userId", Pref.getInstance(this).getUserId() + "");
+        params.put("lat", mLatitude + "");
+        params.put("lng", mLongitude + "");
+        final List<LastVersionEntity> mList = new ArrayList<LastVersionEntity>();
 
         OkHttpUtils.get()
                 .url(Constans.GET_ALL_NEAYBY_USER)
@@ -181,37 +183,83 @@ public class NearbyListActivity extends CommonToolBarActivity {
                             easy_layout.refreshComplete();
                         }
                     }
+
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG,response.toString());
-                        ResultEntity mEn = Utils.getResultEntity(response);
-                        if(1 == mEn.getStatus()){
-                           // list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(),LastVersionEntity.class));
-                            if(1 == mLoadTYpe){
+                        Log.e(TAG, response.toString());
+
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                            int status = result.getInt("status");
+                            if (1 == status) {
+                                String objectResult = result.getString("object");
+                               List<LastVersionEntity> list = GsonUtils.jsonToList(objectResult,LastVersionEntity.class);
+                                if(null != list && list.size() > 0){
+                                    mList.addAll(list);
+                                }
+                                if (mList.size() < 20) {
+                                    easy_layout.setLoadMoreModel(LoadModel.NONE); //取消加载更多
+                                } else {
+                                    easy_layout.setLoadMoreModel(LoadModel.COMMON_MODEL);
+                                }
+                                Log.e(TAG,mLoadTYpe+"");
+                                if (1 == mLoadTYpe) {
+                                    easy_layout.loadMoreComplete();
+                                    easy_layout.closeLoadView();
+                                    int position = mNearbyListAdapter.getData().size();
+                                    mNearbyListAdapter.getData().addAll(mList);
+                                    mNearbyListAdapter.notifyDataSetChanged();
+                                    recycler_nearbylist.scrollToPosition(position);
+                                } else if (2 == mLoadTYpe) {
+                                    mNearbyListAdapter.setNewData(mList);
+                                    easy_layout.refreshComplete();
+                                }else {
+                                    mNearbyListAdapter.setNewData(mList);
+                                }
+                            } if (1 == mLoadTYpe) {
+                                easy_layout.loadMoreComplete();
+                                easy_layout.closeLoadView();
+                            } else if (2 == mLoadTYpe) {
+                                easy_layout.refreshComplete();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                      /*  ResultEntity mEn = Utils.getResultEntity(response);
+                        if (1 == mEn.getStatus()) {
+                            list.addAll(GsonUtils.getInstance().jsonToList(mEn.getObject(), LastVersionEntity.class));
+                            if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
                                 int position = mNearbyListAdapter.getData().size();
                                 mNearbyListAdapter.getData().addAll(list);
                                 mNearbyListAdapter.notifyDataSetChanged();
                                 recycler_nearbylist.scrollToPosition(position);
-                            }else if(2 == mEn.getStatus()){
+                            } else if (2 == mEn.getStatus()) {
                                 mNearbyListAdapter.setNewData(list);
                                 easy_layout.refreshComplete();
                             }
-                        }else{
+                        } else {
                             String mError = getErrorString(mEn.getErrCode());
-                            Log.e(TAG,mError);
+                            Log.e(TAG, mError);
                             if (1 == mLoadTYpe) {
                                 easy_layout.loadMoreComplete();
                                 easy_layout.closeLoadView();
                             } else if (2 == mLoadTYpe) {
                                 easy_layout.refreshComplete();
                             }
-                        }
+                        }*/
                     }
                 });
 
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

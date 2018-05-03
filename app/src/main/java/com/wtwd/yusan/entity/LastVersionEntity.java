@@ -26,6 +26,8 @@ public class LastVersionEntity {
 
     private String birth;               //生日
 
+    private String nick_name;
+
     private String user_name;          //用户名
 
     private String password;          //密码
@@ -37,6 +39,8 @@ public class LastVersionEntity {
 //    private String create_time;
 
     private int invisible;           //是否隐身
+
+    private float distance;
 
 
     public Long getLoc_id() {
@@ -119,6 +123,14 @@ public class LastVersionEntity {
         this.birth = birth;
     }
 
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
+
     public String getUser_name() {
         return user_name;
     }
@@ -159,6 +171,14 @@ public class LastVersionEntity {
         this.invisible = invisible;
     }
 
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
     @Override
     public String toString() {
         return "LastVersionEntity{" +
@@ -172,11 +192,13 @@ public class LastVersionEntity {
                 ", userIdStr='" + userIdStr + '\'' +
                 ", head_img='" + head_img + '\'' +
                 ", birth='" + birth + '\'' +
+                ", nick_name='" + nick_name + '\'' +
                 ", user_name='" + user_name + '\'' +
                 ", password='" + password + '\'' +
                 ", sex=" + sex +
                 ", country='" + country + '\'' +
                 ", invisible=" + invisible +
+                ", distance=" + distance +
                 '}';
     }
 }
