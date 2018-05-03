@@ -19,10 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.util.Util;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 
 /**
@@ -273,5 +279,52 @@ public abstract class BaseActivity extends AppCompatActivity {
             toast.cancel();
             toast = null;
         }
+    }
+
+    public <T> T getObject(String response, Class<T> clazz) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int status = jsonObject.getInt("status");
+            if (status == 1) {
+                String obj = jsonObject.has("object") ? jsonObject.getString("object") : "";
+                if (TextUtils.isEmpty(obj)) {
+                    String msg = jsonObject.getString("msg");
+                    Toast.makeText(this, msg + "", Toast.LENGTH_SHORT);
+                    return null;
+                }
+                return JSON.parseObject(obj, clazz);
+            } else {
+                String msg = jsonObject.getString("msg");
+                Toast.makeText(this, msg + "", Toast.LENGTH_SHORT);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    ;
+
+    public <T> List<T> getListObject(String response, Class<T> clazz) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int status = jsonObject.getInt("status");
+            if (status == 1) {
+                String obj = jsonObject.has("object") ? jsonObject.getString("object") : "";
+                if (TextUtils.isEmpty(obj)) {
+                    String msg = jsonObject.getString("msg");
+                    Toast.makeText(this, msg + "", Toast.LENGTH_SHORT);
+                    return null;
+                }
+                return JSON.parseArray(obj, clazz);
+            } else {
+                String msg = jsonObject.getString("msg");
+                Toast.makeText(this, msg + "", Toast.LENGTH_SHORT);
+            }
+        } catch (JSONException e) {
+            Toast.makeText(this, e + "", Toast.LENGTH_SHORT);
+            e.printStackTrace();
+        }
+        return null;
     }
 }

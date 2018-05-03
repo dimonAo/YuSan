@@ -79,7 +79,7 @@ public class Pref {
      */
     public long getUserId() {
 //        return getSharedPreferencesCommon().getLong("user_id", 1);
-        return getSharedPreferencesCommon().getLong("user_id", 1L);
+        return getSharedPreferencesCommon().getLong("user_id", 0L);
     }
 
 

@@ -18,18 +18,26 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.util.Util;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.wtwd.yusan.MyApplication;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.ease.Constant;
+import com.wtwd.yusan.ease.IMHelper;
+import com.wtwd.yusan.ease.db.DemoDBManager;
 import com.wtwd.yusan.entity.UserEntity;
 import com.wtwd.yusan.entity.operation.DaoManager;
 import com.wtwd.yusan.entity.operation.DaoUtils;
@@ -157,7 +165,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 
     private void displayUserInfo() {
         UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
-        Log.e(TAG, "mEn : " + mEn.toString());
+       // Log.e(TAG, "mEn : " + mEn.toString());
 
         if (null != mEn) {
             Glide.with(this)
@@ -377,11 +385,14 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 //                                    String mUser = mObjectJson.optString("user");
                                     UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
 //                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
+                                    Constant.CONSTANT_USER_ID = mUserEn.getUser_id()+"";
+                                    Constant.CONSTANT_USER_NAME = mUserEn.getUser_id()+"";
 
                                     mPref.setUserId(mUserEn.getUser_id());
                                     DaoUtils.getUserManager().insertObject(mUserEn);
+                                    //向环信注册
+                                    login(mUserEn.getUser_name());
 
-                                    readyGoForNewTask(MainActivity.class);
 
 
                                 }
@@ -582,5 +593,76 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
         OkHttpUtils.getInstance().cancelTag(this);
+    }
+
+    /**
+     * login
+     *
+     * @param
+     */
+    public void login(String username) {
+        if (!EaseCommonUtils.isNetWorkConnected(this)) {
+            Toast.makeText(this, R.string.network_isnot_available, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // After logout，the DemoDB may still be accessed due to async callback, so the DemoDB will be re-opened again.
+        // close it before login to make sure DemoDB not overlap
+        DemoDBManager.getInstance().closeDB();
+
+        // reset current user name before login
+        IMHelper.getInstance().setCurrentUserName(username);
+
+        final long start = System.currentTimeMillis();
+        // call login method
+        Log.d(TAG, "EMClient.getInstance().login");
+        EMClient.getInstance().login(username, "123456", new EMCallBack() {
+
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "login: onSuccess");
+
+                // ** manually load all local groups and conversation
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+
+                // update current user's display name for APNs
+                boolean updatenick = EMClient.getInstance().pushManager().updatePushNickname(
+                        MyApplication.currentUserNick.trim());
+                if (!updatenick) {
+                    Log.e("LoginActivity", "update current user nick fail");
+                }
+
+              /*  if (!LoginActivity.this.isFinishing() && pd.isShowing()) {
+                    pd.dismiss();
+                }*/
+                // get user's info (this should be get from App's server or 3rd party service)
+                IMHelper.getInstance().getUserProfileManager().asyncGetCurrentUserInfo();
+                readyGoForNewTask(MainActivity.class);
+               /* Intent intent = new Intent(ModifyUserActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                finish();*/
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                Log.d(TAG, "login: onProgress");
+            }
+
+            @Override
+            public void onError(final int code, final String message) {
+                Log.d(TAG, "login: onError: " + code);
+              /*  if (!progressShow) {
+                    return;
+                }*/
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        //pd.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.Login_failed) + message,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 }
