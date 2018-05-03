@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -33,7 +34,10 @@ import com.wtwd.yusan.widget.view.CircleImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DecimalFormat;
 
 import okhttp3.Call;
 
@@ -57,6 +61,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout lin_me_help_feedback;
 
     private LinearLayout lin_me_setting;
+
+    private TextView tv_yue;
 
     public static MeFragment getMeFragment() {
         if (null == mInstance) {
@@ -83,6 +89,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         img_head_me = (CircleImageView) mView.findViewById(R.id.img_head_me);
 //        img_head_me.setBorderColor(R.color.color_grey);
 //        img_head_me.setBorderWidth(10);
+        tv_yue = mView.findViewById(R.id.tv_yue);
         img_me_head_bg = (ArcImageView) mView.findViewById(R.id.img_me_head_bg);
         BitmapDrawable mDrawable = (BitmapDrawable) img_head_me.getDrawable();
         Bitmap mBitmap = mDrawable.getBitmap();
@@ -141,7 +148,22 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG,response.toString());
+                        DecimalFormat    df   = new DecimalFormat("######0.00");
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(response);
+                            int status = jsonObject.getInt("status");
+                            if(1 == status ){
+                                JSONObject result = jsonObject.getJSONObject("object");
+                                Double balance = Double.parseDouble(result.getString("balance"));
+                                String dfBalance = df.format(balance);
+                                tv_yue.setText("余额"+dfBalance);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
+                       // tv_yue.setText();
 
                     }
                 });

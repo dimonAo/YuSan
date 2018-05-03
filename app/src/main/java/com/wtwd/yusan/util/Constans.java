@@ -22,8 +22,8 @@ public class Constans {
     /**
      * 请求http地址
      */
-    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
-//    public static final String REQUEST_URL = "http://192.168.13.235:8080/open";
+   // public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
+    public static final String REQUEST_URL = "http://192.168.13.235:8080/open";
 //    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat/open";
 //    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
 
@@ -76,7 +76,7 @@ public class Constans {
     public static final int ORDER_TYPE_TASK = 4;//交易类型：任务
 
     public static final int LOG_RECHARGE = 1;//充值
-    public static final int LOG_WITHDRAW= 1;//提现
+    public static final int LOG_WITHDRAW= 2;//提现
     public static final int LOG_AWARD_REDPACKET = 3;//发红包
     public static final int LOG_FETCH_REDPACKET = 4;//接红包
     public static final int LOG_AWARD_TASK = 5;//发任务

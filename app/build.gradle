@@ -3,16 +3,16 @@ apply plugin: 'org.greenrobot.greendao'
 
 
 android {
-//    signingConfigs {
-//        config {
-//            keyAlias 'cheekat'
-//            keyPassword 'cheekat'
-//            storeFile file('E:/keystore/cheekat.jks')
-//            storePassword 'cheekat'
-////            v1SigningEnabled false
-////            v2SigningEnabled false
-//        }
-//    }
+    signingConfigs {
+        config {
+            keyAlias 'cheekat'
+            keyPassword 'cheekat'
+            storeFile file('E:/keystore/cheekat.jks')
+            storePassword 'cheekat'
+           /* v1SigningEnabled false
+            v2SigningEnabled false*/
+        }
+    }
     compileSdkVersion ANDROID_COMPILE_SDK_VERSION
     defaultConfig {
         applicationId "com.wtwd.yusan"
@@ -27,9 +27,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-//        debug {
-//            signingConfig signingConfigs.config
-//        }
+        debug {
+            signingConfig signingConfigs.config
+        }
     }
 
     greendao {

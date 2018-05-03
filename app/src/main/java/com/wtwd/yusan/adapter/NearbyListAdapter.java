@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.entity.NearbyEntity;
+import com.wtwd.yusan.util.Utils;
 
 import java.util.List;
 
@@ -28,10 +29,10 @@ public class NearbyListAdapter extends BaseQuickAdapter<LastVersionEntity,BaseVi
     @Override
     protected void convert(BaseViewHolder helper, LastVersionEntity item) {
         helper.setBackgroundRes(R.id.circle_img_nearbylist_publisher, R.mipmap.task_head)
-                .setText(R.id.tv_nearbylist_publisher_nick, item.getUser_name())
-                .setText(R.id.tv_nearbylist_distance,"fsadf");
+                .setText(R.id.tv_nearbylist_publisher_nick, item.getNick_name())
+                .setText(R.id.tv_nearbylist_distance,(int) item.getDistance()+"");
 
-        if ("0".equals(item.getSex()+"")){
+        if ("2".equals(item.getSex()+"")){
             helper.setBackgroundRes(R.id.img_nearbylist_publisher_sex, R.mipmap.task_f);
         } else {
             helper.setBackgroundRes(R.id.img_nearbylist_publisher_sex, R.mipmap.task_m);
