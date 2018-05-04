@@ -1,5 +1,6 @@
 package com.wtwd.yusan.ease.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.RedPacketActivity;
 import com.wtwd.yusan.ease.util.EditInputFilter;
 
 
@@ -27,6 +29,9 @@ public class SendRedPacketActivity extends BaseActivity implements View.OnClickL
     private Button mBtSend;
     private TextView mTvMoney;
     private EditInputFilter mEditInputFilter;
+    private String toCharUsername;
+    private String to;
+    private static final int REQUEST_CODE_PAY_PACKET = 11;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -44,6 +49,8 @@ public class SendRedPacketActivity extends BaseActivity implements View.OnClickL
         mEditText.addTextChangedListener(editWatcher);
         mEditText.setFilters(filters);
         mEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        to = getIntent().getExtras().getString("to");
+        toCharUsername = getIntent().getExtras().getString("toid");
     }
 
     private TextWatcher editWatcher = new TextWatcher() {
@@ -84,14 +91,32 @@ public class SendRedPacketActivity extends BaseActivity implements View.OnClickL
             case R.id.btn_send:
                 String money = mTvMoney.getText().toString().trim();
                 if (!TextUtils.isEmpty(money) && !money.equals("0.00")) {
-                    setResult(RESULT_OK, new Intent().putExtra("money", money));
+                    //// TODO: 2018/5/4 跳转至支付界面
+                    Bundle bundle = new Bundle();
+                    bundle.putString("money",money);
+                    bundle.putInt("trade_type",1);
+                    bundle.putString("to",to);
+                    bundle.putString("toid",toCharUsername);
+                    Intent intent = new Intent(this,RedPacketActivity.class);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent,REQUEST_CODE_PAY_PACKET);
+                  //  setResult(RESULT_OK, new Intent().putExtra("money", money));
                 }
-                finish();
+               // finish();
                 break;
             case R.id.rl_edit:
                 mEditText.setFocusable(true);
                 mEditText.setFocusableInTouchMode(true);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_PAY_PACKET&&resultCode == 200){
+            setResult( Activity.RESULT_OK,data);
+            finish();
         }
     }
 }

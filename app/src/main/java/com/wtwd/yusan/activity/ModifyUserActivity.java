@@ -306,9 +306,18 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 //
 //                                } else {
                                     //修改用户信息
+
+                                    String mObjectStr = mUserJson.optString("object");
+                                    UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
+                                    Log.e(TAG,mUserEn.toString());
+                                    //mPref.(mUserEn.getHead_img());
+                                    UserEntity user = DaoUtils.getUserManager().queryUserForUserId(mUserEn.getUser_id());
+                                    user.setHead_img(mUserEn.getHead_img());
+                                    DaoUtils.getUserManager().updateObject(user);
+                                /*
                                     UserEntity mUser = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(ModifyUserActivity.this).getUserId());
 
-                                    DaoUtils.getUserManager().updateObject(mUser);
+                                    DaoUtils.getUserManager().updateObject(mUser);*/
 
                                     finish();
 //                                }
@@ -386,7 +395,7 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                                     UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
 //                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
                                     Constant.CONSTANT_USER_ID = mUserEn.getUser_id()+"";
-                                    Constant.CONSTANT_USER_NAME = mUserEn.getUser_id()+"";
+                                    Constant.CONSTANT_USER_NAME = mUserEn.getUser_name()+"";
 
                                     mPref.setUserId(mUserEn.getUser_id());
                                     DaoUtils.getUserManager().insertObject(mUserEn);

@@ -1,5 +1,6 @@
 package com.wtwd.yusan.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.ease.Constant;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.Pref;
@@ -86,6 +88,10 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
     private String[] mTaskNames;
     private int mSelectPos, mSelectSex;
     private List<TaskRecyclerEntity> mTasks = new ArrayList<>();
+    private String toCharUsername = "0";
+    private String to;
+
+    private static final int REQUEST_CODE_PAY_TASK = 11;
 
     @Override
     public int getLayoutResourceId() {
@@ -278,6 +284,10 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         //设置性别条件缺省值
         text_sex.setText(mSexChoose.get(2));
         text_province.setText(Pref.getInstance(this).getCity());
+        to = getIntent().getExtras().getString("to");
+        if(!"0".equals(to)){
+            toCharUsername = getIntent().getExtras().getString("toid");
+        }
 
         getTaskTypeData();
     }
@@ -355,7 +365,15 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
     private void checkInputContent() {
 
         if (checkTaskDetail()) {
-            publishTask(Pref.getInstance(this).getUserId(), "0");
+            //publishTask(Pref.getInstance(this).getUserId(), "0");
+            Intent intent = new Intent(this,RedPacketActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("money",getTaskMoney());
+            bundle.putString("to",to);
+            bundle.putString("toId",toCharUsername);
+            bundle.putInt("trade_type",2);
+            intent.putExtras(bundle);
+            startActivityForResult(intent,REQUEST_CODE_PAY_TASK);
         }
 //        publishTask(1L, "0");
     }
@@ -509,7 +527,8 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         bundle.putString("money", getTaskMoney());//任务金额
         bundle.putString("address", getTaskAddress());//任务地址
         bundle.putString("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
-        bundle.putString("to", toId); //发送给谁，0所有人，指定人传用户userid
+        bundle.putString("to", to); //发送给谁，0所有人，指定人传用户userid
+        bundle.putString("toId", toCharUsername); //发送给谁，0所有人，指定人传用户userid
         bundle.putString("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
         if (DEBUG) {
             Log.e(TAG, "mPublishMap : " + bundle.toString());
@@ -564,6 +583,25 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
                     String money = bundle.getString("money");
                     text_money.setText(money);
                 }
+            }else if(REQUEST_CODE_PAY_TASK == requestCode && 200 == resultCode){
+                Bundle taskbundle = new Bundle();
+                Intent intent = new Intent();
+//        Map<String, String> mPublishMap = new HashMap<>();
+              //  Bundle tadkbundle = new Bundle();
+                taskbundle.putString("userId", Constant.CONSTANT_USER_ID);
+                taskbundle.putString("content", getTaskDetailContent()); //任务描述
+                taskbundle.putString("type", getTaskType()); //任务类型
+                taskbundle.putString("sex", getSexType()); //接受者性别限制
+                taskbundle.putString("money", getTaskMoney());//任务金额
+                taskbundle.putString("address", getTaskAddress());//任务地址
+                taskbundle.putString("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
+                taskbundle.putString("to", to); //发送给谁，0所有人，指定人传用户userid
+                taskbundle.putString("toId", toCharUsername); //发送给谁，0所有人，指定人传用户userid
+                taskbundle.putString("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
+
+                intent.putExtras(taskbundle);
+                setResult(Activity.RESULT_OK,intent);
+                finish();
             }
         }
 

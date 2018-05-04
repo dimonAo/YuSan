@@ -12,12 +12,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.ease.Constant;
+import com.wtwd.yusan.ease.net.ApiInterface;
+import com.wtwd.yusan.ease.util.JsonUtil;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.Pref;
@@ -49,6 +53,8 @@ public class RedPacketActivity extends CommonToolBarActivity {
     private Button btn_red_packet_commit;
     private TextView text_task_cost;
 
+    private static final int REQUEST_CODE_PAY_PACKET = 11;
+
     private int[] mDrawables = {R.mipmap.redpacket_wechat
 //            , R.mipmap.redpacket_zhifubao
             , R.mipmap.redpacket_yue};
@@ -61,6 +67,11 @@ public class RedPacketActivity extends CommonToolBarActivity {
     private RedPacketAdapter mRedPacketAdapter;
 
     private int pos;
+
+    private int trade_type;
+    private String toChatUsername;
+    private String money;
+    private String to;
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
@@ -116,9 +127,11 @@ public class RedPacketActivity extends CommonToolBarActivity {
                 mRedPacketAdapter.notifyDataSetChanged();
             }
         });
-
-        text_task_cost.setText(getMissionParameterIntent().getString("money"));
-
+        money = getMissionParameterIntent().getString("money");
+        text_task_cost.setText(money);
+        trade_type = getMissionParameterIntent().getInt("trade_type");
+        to = getMissionParameterIntent().getString("to");
+        toChatUsername = getMissionParameterIntent().getString("toid");
         getWalletBalance();
         addListener();
     }
@@ -141,8 +154,66 @@ public class RedPacketActivity extends CommonToolBarActivity {
 //                finish();
 
 //塞钱进红包，支付
-                publishMission();
+                if(1 == trade_type){
+                    //红包
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("userName",Constant.CONSTANT_USER_NAME);
+                    bundle.putString("payType","1");
+                    bundle.putString("money",money);
+                    bundle.putString("type","3");
+                    bundle.putString("to",to);
+                    bundle.putString("to",toChatUsername);
+                    intent.putExtras(bundle);
+                    setResult(200,intent);
+                    finish();
+                    //publishRedPacket();
+                }else if(2 == trade_type){
+                    //任务
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("payType","1");
+                    bundle.putString("money",money);
+                    intent.putExtras(bundle);
+                    setResult(200,intent);
+                    finish();
+                  //  publishMission();
+                }
 
+
+            }
+        });
+    }
+
+    private void publishRedPacket() {
+        Map<String, String> params = new HashMap<String, String>();
+//        params.put("userId", userId);
+        params.put("userName", Constant.CONSTANT_USER_NAME);
+        params.put("payType", "1");
+        params.put("money", money);
+        params.put("type", "3");
+        params.put("to", to);
+        params.put("to_id", toChatUsername);
+        ApiInterface.payRedPacket(params, new com.wtwd.yusan.ease.net.callback.StringCallback() {
+
+            @Override
+            public void onSuccess(String response) {
+                Log.i("IMDemo", "sendRedPacket response:" + response);
+                if("1".equals(to)) {
+                  /*  EMMessage msg = EMMessage.createSendMessage(EMMessage.Type.TXT);
+                    msg.setDirection(EMMessage.Direct.SEND);
+                    msg.setTo(toChatUsername);
+                    EMTextMessageBody body = new EMTextMessageBody(WTWD_REDPACKET_TXT+":NULL"+":0");
+                    msg.addBody(body);
+                    sendLocalMessage(msg);*/
+                }
+                //Toast.makeText(getActivity(), JsonUtil.getJsonUtil().getStatusStr(response), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.i("IMDemo", "sendRedPacket error:" + error);
+               // Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
             }
         });
     }

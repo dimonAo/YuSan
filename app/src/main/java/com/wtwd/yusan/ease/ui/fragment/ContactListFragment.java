@@ -21,10 +21,16 @@ import com.wtwd.yusan.ease.net.response.ContactListInfo;
 import com.wtwd.yusan.ease.ui.ChatActivity;
 import com.wtwd.yusan.ease.ui.GroupsActivity;
 import com.wtwd.yusan.ease.util.JsonUtil;
+import com.wtwd.yusan.util.Constans;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+
+import static android.util.Log.e;
 
 /**
  * Created by XJM on 2018/4/23.
@@ -108,7 +114,41 @@ public class ContactListFragment extends BaseFragment {
         List<ContactListInfo> infos = null;
         Map<String, String> params = new HashMap<String, String>();
         params.put("userId", UserId);
-        ApiInterface.getAddressList(params, new StringCallback() {
+        Log.e("dfasdfa",UserId+"");
+
+        OkHttpUtils.get()
+                .params(params)
+                .url(Constans.REQUEST_URL + "/getFriend")
+                .build()
+                .execute(new com.zhy.http.okhttp.callback.StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        e("contactListFragment", e.toString() + "");
+                        Toast.makeText(getActivity(), "错误", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        e("changle", response);
+                        if (!TextUtils.isEmpty(response) && JsonUtil.getJsonUtil().isRequestSeccess(response)) {
+                            List<ContactListInfo> infos = getListObject(response, ContactListInfo.class);
+                            adapter = new ContactListSortAdapter(getActivity(), infos, false);
+                            listView.setAdapter(adapter);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                            if (0 < adapter.getCount()) {
+                                adapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "获取失败", Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                    }
+                });
+    }
+       /* ApiInterface.getAddressList(params, new StringCallback() {
             @Override
             public void onSuccess(String response) {
                 Log.e("changle", response);
@@ -117,14 +157,15 @@ public class ContactListFragment extends BaseFragment {
                     adapter = new ContactListSortAdapter(getActivity(), infos, false);
                     listView.setAdapter(adapter);
                     swipeRefreshLayout.setRefreshing(false);
+                    if(0 < adapter.getCount()){
+                        adapter.notifyDataSetChanged();
+                    }
                 } else {
                     Toast.makeText(getActivity(), "获取失败", Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
-                if(adapter.getCount()>0){
-                    adapter.notifyDataSetChanged();
-                }
+
 
             }
 
@@ -133,7 +174,7 @@ public class ContactListFragment extends BaseFragment {
                 Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     public void refresh() {
         getContactList(Constant.CONSTANT_USER_ID);
