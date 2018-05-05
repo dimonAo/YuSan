@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
@@ -32,6 +33,7 @@ import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EasyUtils;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.DetailTaskActivity;
 import com.wtwd.yusan.activity.PublishTaskActivity;
 import com.wtwd.yusan.ease.Constant;
 import com.wtwd.yusan.ease.IMHelper;
@@ -41,12 +43,15 @@ import com.wtwd.yusan.ease.net.ApiInterface;
 import com.wtwd.yusan.ease.net.callback.StringCallback;
 import com.wtwd.yusan.ease.util.JsonUtil;
 import com.wtwd.yusan.ease.util.MessageUtil;
+import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -245,7 +250,7 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
 
 //                        Log.e("to",to);
 
-                        publishMission(Constant.CONSTANT_USER_ID, content, money,type, "3",address,startTime, to, toChatUsername,anonymous,"1");
+                        publishMission(Constant.CONSTANT_USER_ID, content, type,"3", money,address,startTime, to, toChatUsername,anonymous,"1");
                     }
 
                     break;
@@ -313,16 +318,55 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
                         startActivity(new Intent(getActivity(), RedPacketDetailActivity.class)
                                 .putExtra("packet_id", packet_id));
                     }
-                } else if (MessageUtil.getMessageUtil().isMissionMsg(msg)) {
-                    String mission_id = MessageUtil.getMessageUtil().getMissionMsgId(msg);
-                    startActivity(new Intent(getActivity(), MissionReceiveActivity.class)
-                            .putExtra("mission_id", mission_id));
                 }
+            }else if (MessageUtil.getMessageUtil().isMissionMsg(msg)) {
+                String mission_id = MessageUtil.getMessageUtil().getMissionMsgId(msg);
+                getMission(mission_id);
+
             } else {
                 Toast.makeText(getActivity(), "本人不可打开", Toast.LENGTH_SHORT).show();
             }
         }
         return false;
+    }
+
+    private void getMission(String mission_id) {
+
+        OkHttpUtils.get()
+               .addParams("missionId",mission_id)
+                .url(Constans.GET_MISSION)
+                .build()
+                .execute(new com.zhy.http.okhttp.callback.StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "publish mission : " + response);
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+                        try {
+                            JSONObject mTaskJson = new JSONObject(response);
+
+                            int status = mTaskJson.optInt("status");
+                            //com.alibaba.fastjson.JSONObject taskResult = mTaskJson.get("object");
+                            String mTaskJsonArray = mTaskJson.optString("object");
+                            Log.e(TAG, "mTaskJsonArray --> " + mTaskJsonArray);
+                            List<TaskEntity> list= new ArrayList<>();
+                            list = GsonUtils.jsonToList(mTaskJsonArray,TaskEntity.class);
+                            Log.e(TAG, "enenenen :----> " + list.get(0).toString());
+                           // TaskEntity taskEntity = list.get(0);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("task_entity", list.get(0));
+                            startActivity(new Intent(getActivity(), DetailTaskActivity.class)
+                                    .putExtras(bundle));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
     }
 
     @Override

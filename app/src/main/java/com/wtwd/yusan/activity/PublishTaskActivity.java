@@ -89,7 +89,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
     private int mSelectPos, mSelectSex;
     private List<TaskRecyclerEntity> mTasks = new ArrayList<>();
     private String toCharUsername = "0";
-    private String to;
+    private String to ="0";
 
     private static final int REQUEST_CODE_PAY_TASK = 11;
 
@@ -284,7 +284,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         //设置性别条件缺省值
         text_sex.setText(mSexChoose.get(2));
         text_province.setText(Pref.getInstance(this).getCity());
-        to = getIntent().getExtras().getString("to");
+        to = getIntent().getStringExtra("to");
         if(!"0".equals(to)){
             toCharUsername = getIntent().getExtras().getString("toid");
         }
@@ -372,6 +372,11 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
             bundle.putString("to",to);
             bundle.putString("toId",toCharUsername);
             bundle.putInt("trade_type",2);
+            if("0".equals(to)){
+                publishTask(Long.parseLong(Constant.CONSTANT_USER_ID),"0");
+                finish();
+                return;
+            }
             intent.putExtras(bundle);
             startActivityForResult(intent,REQUEST_CODE_PAY_TASK);
         }
@@ -519,7 +524,7 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
 
     private void publishTask(long userId, String toId) {
         Bundle bundle = new Bundle();
-//        Map<String, String> mPublishMap = new HashMap<>();
+        Map<String, String> mPublishMap = new HashMap<>();
         bundle.putString("userId", userId + "");
         bundle.putString("content", getTaskDetailContent()); //任务描述
         bundle.putString("type", getTaskType()); //任务类型
@@ -528,44 +533,45 @@ public class PublishTaskActivity extends CommonToolBarActivity implements View.O
         bundle.putString("address", getTaskAddress());//任务地址
         bundle.putString("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
         bundle.putString("to", to); //发送给谁，0所有人，指定人传用户userid
-        bundle.putString("toId", toCharUsername); //发送给谁，0所有人，指定人传用户userid
+        bundle.putString("toId", "0"); //发送给谁，0所有人，指定人传用户userid
         bundle.putString("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
+        bundle.putInt("trade_type",2);
         if (DEBUG) {
             Log.e(TAG, "mPublishMap : " + bundle.toString());
         }
 
         readyGo(RedPacketActivity.class, bundle);
 
-//        OkHttpUtils.get()
-//                .url(Constans.PUBLISH_MISSION)
-//                .params(mPublishMap)
-//                .build()
-//                .connTimeOut(Constans.TIME_OUT)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        if (DEBUG) {
-//                            Log.e(TAG, "publish task : " + response);
-//                        }
-//
-//                        ResultEntity mEn = Utils.getResultEntity(response);
-//
-//                        if (1 == mEn.getStatus()) {
-//                            showToast(getString(R.string.publish_commit));
-//                            finish();
-//                        } else {
-//                            String mError = Utils.getErrorString(mEn.getErrCode());
-//                            showToast(mError);
-//                        }
-//
-//
-//                    }
-//                });
+     /*   OkHttpUtils.get()
+                .url(Constans.PUBLISH_MISSION)
+                .params(mPublishMap)
+                .build()
+                .connTimeOut(Constans.TIME_OUT)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        if (DEBUG) {
+                            Log.e(TAG, "publish task : " + response);
+                        }
+
+                        ResultEntity mEn = Utils.getResultEntity(response);
+
+                        if (1 == mEn.getStatus()) {
+                            showToast(getString(R.string.publish_commit));
+                            finish();
+                        } else {
+                           *//* String mError = Utils.getErrorString(mEn.getErrCode());
+                            showToast(mError);*//*
+                        }
+
+
+                    }
+                });*/
 
 
     }

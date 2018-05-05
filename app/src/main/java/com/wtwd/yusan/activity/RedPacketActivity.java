@@ -175,6 +175,10 @@ public class RedPacketActivity extends CommonToolBarActivity {
                     bundle.putString("payType","1");
                     bundle.putString("money",money);
                     intent.putExtras(bundle);
+                    if("0".equals(to)){
+                        publishMission();
+                        return ;
+                    }
                     setResult(200,intent);
                     finish();
                   //  publishMission();

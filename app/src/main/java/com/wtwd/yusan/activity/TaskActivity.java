@@ -69,7 +69,7 @@ public class TaskActivity extends BaseActivity {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("to","0");
-                readyGo(PublishTaskActivity.class);
+                readyGo(PublishTaskActivity.class,bundle);
             }
         });
 

@@ -283,7 +283,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                                 String mImg = mImgJson.optString("object");
 
-                                List<ImageInfo> mImgList = GsonUtils.GsonToList(mImg, ImageInfo.class);
+                                List<ImageInfo> mImgList = GsonUtils.jsonToList(mImg, ImageInfo.class);
 
                                 if (mImgList.size() > 0) {
                                     for (int i = 0; i < mImgList.size(); i++) {

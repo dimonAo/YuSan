@@ -226,7 +226,7 @@ public class TaskMeFragment extends BaseFragment {
         if ("0".equals(mStr)) {
             return;
         }
-        mAdapter.getData().addAll(GsonUtils.GsonToList(mStr, TaskEntity.class));
+        mAdapter.getData().addAll(GsonUtils.jsonToList(mStr, TaskEntity.class));
         mAdapter.notifyDataSetChanged();
     }
 

@@ -76,14 +76,14 @@ public class GsonUtils {
      * @param cls
      * @return
      */
-    public static <T> List<T> GsonToList(String gsonString, Class<T> cls) {
+  /*  public static <T> List<T> GsonToList(String gsonString, Class<T> cls) {
         List<T> list = null;
         if (gson != null) {
             list = gson.fromJson(gsonString, new TypeToken<List<T>>() {
             }.getType());
         }
         return list;
-    }
+    }*/
 
     /**
      * 转成list

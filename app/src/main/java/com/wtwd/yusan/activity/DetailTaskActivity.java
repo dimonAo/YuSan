@@ -123,20 +123,22 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         if (null == mTaskEntity) {
             return;
         }
-
+       // circle_img_task_publisher.set(R.mipmap.me_head_bg);
         Log.e(TAG, "mTaskEntity : ---> " + mTaskEntity.toString());
 
-        Glide.with(this)
-//                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
-                .load(Uri.parse(mTaskEntity.getHead_img()))
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        circle_img_task_publisher.setImageBitmap(resource);
-                    }
-                });
-
+//        Glide.with(this)
+////                .load(Uri.parse(mTaskEntity.getPublisher().getHead_img()))
+//                .load(mTaskEntity.getHead_img())
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        circle_img_task_publisher.setImageBitmap(resource);
+//                    }
+//                });
+//        Glide.with(this)
+//                .load(mTaskEntity.getHead_img())
+//                .into(circle_img_task_publisher);
         mMissionId = mTaskEntity.getMission_id() + "";
 
 //        text_task_publisher_nick.setText(mTaskEntity.getPublisher().getUser_name());

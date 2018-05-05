@@ -121,7 +121,7 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
             readyGo(LandPhoneActivity.class);
         } else if (R.id.img_choose_wechat_land == v.getId()) {
             //微信登录
-//            WXEntryActivity.loginWeixin(this, MyApplication.api);
+            WXEntryActivity.loginWeixin(this, MyApplication.api);
 
             Glide.with(this)
                     .load("https://img-blog.csdn.net/20170428175627934?watermark" +

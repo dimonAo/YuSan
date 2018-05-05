@@ -43,6 +43,7 @@ public class Constans {
     public static final String COMPLET_MISSION = REQUEST_URL + "/completeMission";
     public static final String PUBLISH_MISSION = REQUEST_URL + "/publishMission";
     public static final String CLOSE_MISSION = REQUEST_URL + "/closeMission";
+    public static final String GET_MISSION = REQUEST_URL + "/getMission";
 
     public static final String LOGIN_USER_EXIST = REQUEST_URL + "/userExist"; //登录判断用户是否存在/是否已注册
     public static final String REGISTER_USER = REQUEST_URL + "/registUser"; //注册，即第一次修改信息后请求服务器接口
@@ -62,9 +63,9 @@ public class Constans {
     public static final String GET_BALANCE = REQUEST_URL+"/getBalance";//获取月
 
     /******微信支付相关**********/
-    public static final String WX_APP_ID = "";
-    public static final String WX_API_KEY = "";
-    public static final String WX_MCH_ID = "";
+    public static final String WX_APP_ID = "wx592c35b4382852c7";
+    public static final String WX_API_KEY = "966ac0178cd1dc45a8b9e597794c5ff0";
+    public static final String WX_MCH_ID = "1503248441";
 
     public static final String WX_APP_SECRET = "";
 

@@ -446,7 +446,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e("uploadLocation",e.getMessage());
+                     //   Log.e("uploadLocation",e.getMessage());
                     }
 
                     @Override
@@ -543,7 +543,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG,e.getMessage());
+                     //   Log.e(TAG,e.getMessage());
                     }
 
                     @Override
