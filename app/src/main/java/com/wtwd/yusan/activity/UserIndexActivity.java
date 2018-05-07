@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -51,7 +52,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +78,22 @@ public class UserIndexActivity extends CommonToolBarActivity {
     long receiveUserId;
     ArrayList<ImageItem> images = new ArrayList<>();
     private EasyRefreshLayout refresh_img;
+    /**
+     * 用户名
+     */
+    private TextView tv_userindex_username;
+    /**
+     * 性别
+     */
+    private ImageView img_userindex_sex;
+    /**
+     * 性别
+     */
+    private TextView tv_userindex_age;
+    /**
+     * 身高
+     */
+    private TextView tv_userindex_height;
 //    private String[] imgUrl;
 //            = {"https://img-blog.csdn.net/20170428175617391?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
 //            "https://img-blog.csdn.net/20170428175632797?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
@@ -97,6 +116,10 @@ public class UserIndexActivity extends CommonToolBarActivity {
         recycler_pic.addItemDecoration(mDi);
         mMeAddPicAdapter = new MeAddPicAdapter(R.layout.item_add_img, null);
 
+        tv_userindex_age = findViewById(R.id.tv_userindex_age);
+        tv_userindex_username = findViewById(R.id.tv_userindex_username);
+        tv_userindex_height = findViewById(R.id.tv_userindex_height);
+        img_userindex_sex = findViewById(R.id.img_userindex_sex);
         /**
          * 如果进入的是别人的主页，最后不显示添加按钮
          */
@@ -192,6 +215,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                                 String mUserJson = mHomeInfoJson.optString("object");
                                 UserEntity mUser = GsonUtils.GsonToBean(mUserJson,UserEntity.class);
+                                Log.e(TAG,mUser.toString());
                                 Glide.with(UserIndexActivity.this)
                                     .load(Uri.parse(mUser.getHead_img()))
                                         .asBitmap()
@@ -203,16 +227,24 @@ public class UserIndexActivity extends CommonToolBarActivity {
                                         });
 //                                Glide.with(UserIndexActivity.this)
 //                                        .load(Uri.parse(mUser.getHead_img()))
-//                                        .into(relative_index_user_bg);
+//                                        .into(Uri.parse(mUser.));
+                                tv_userindex_username.setText("年龄:"+mUser.getNick_name());
+                                tv_userindex_age.setText("年龄:"+mUser.getBirth());
+                                tv_userindex_height.setText("身高:"+mUser.getHeight()+"cm");
+                                //SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                               // Date data = df.format(mUser.getBirth());
+
+                                //tv_userindex_age.setText("");
+                                if(1 == mUser.getSex()){
+                                    img_userindex_sex.setBackgroundResource(R.mipmap.task_m);
+                                }else{
+                                    img_userindex_sex.setBackgroundResource(R.mipmap.task_f);
+                                }
 
                             }else{
                                 int errorCode = mHomeInfoJson.optInt("errCode");
                                 showToast(Utils.getErrorString(UserIndexActivity.this,errorCode));
                             }
-
-
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -361,6 +393,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
     }
 
 
+
     /**
      * 上传单张图片到服务器
      *
@@ -384,6 +417,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e(TAG,response);
 
                     }
                 });

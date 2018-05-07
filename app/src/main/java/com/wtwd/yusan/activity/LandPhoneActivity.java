@@ -248,7 +248,7 @@ public class LandPhoneActivity extends CommonToolBarActivity implements View.OnC
 //            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
 
-            loginUserExist(getPhone());
+           loginUserExist(getPhone());
 
         }
     }

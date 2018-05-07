@@ -123,13 +123,13 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
             //微信登录
             WXEntryActivity.loginWeixin(this, MyApplication.api);
 
-            Glide.with(this)
-                    .load("https://img-blog.csdn.net/20170428175627934?watermark" +
-                            "/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T" +
-                            "/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center")
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(test);
+//            Glide.with(this)
+//                    .load("https://img-blog.csdn.net/20170428175627934?watermark" +
+//                            "/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T" +
+//                            "/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center")
+//                    .asBitmap()
+//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                    .into(test);
 
         }
 
