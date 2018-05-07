@@ -1,9 +1,11 @@
 package com.wtwd.yusan.adapter;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -46,9 +48,8 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
     @Override
     protected void convert(BaseViewHolder helper, TaskEntity item) {
 
-        helper.setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
-//                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
-                .setText(R.id.text_task_publisher_nick, item.getUser_name())
+        helper
+                .setText(R.id.text_task_publisher_nick, item.getNick_name())
                 .setText(R.id.text_task_content, item.getContent())
                 .setText(R.id.text_task_date, getDate(item.getStart_time()))
                 .setText(R.id.text_task_time, getTime(item.getStart_time()))
@@ -56,6 +57,9 @@ public class TaskMeAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> 
 //                .setBackgroundRes(R.id.img_task_type, R.mipmap.task_type_1)
                 .setText(R.id.text_task_cost, item.getMoney() + "");
 
+        Glide.with(mContext)
+                .load(Uri.parse(item.getHead_img()))
+                .into((ImageView) helper.getView(R.id.circle_img_task_publisher));
         /**
          * 任务类型
          */

@@ -136,6 +136,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
      */
     private void getUserBalance(){
         OkHttpUtils.get()
+                .tag(this)
                 .url(Constans.GET_BALANCE)
                 .addParams("userId", Pref.getInstance(getActivity()).getUserId()+"")
                 .build()
@@ -202,7 +203,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
 
             case R.id.img_tool_bar_right:
                 bundle.putBoolean("isFirst", false);
-                readyGo(ModifyUserActivity.class, bundle);
+                readyGoForResult(ModifyUserActivity.class,300, bundle);
                 break;
             case R.id.img_head_me:
                 bundle.putLong("userId", mPref.getUserId());
@@ -215,6 +216,9 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(300 == requestCode){
+            displayUserInfo();
+        }
     }
 
 

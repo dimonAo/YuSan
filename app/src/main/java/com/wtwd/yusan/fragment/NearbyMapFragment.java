@@ -38,6 +38,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.activity.NearbyListActivity;
 import com.wtwd.yusan.activity.TaskActivity;
+import com.wtwd.yusan.activity.UserIndexActivity;
 import com.wtwd.yusan.base.BaseFragment;
 import com.wtwd.yusan.entity.LastVersionEntity;
 import com.wtwd.yusan.entity.ResultEntity;
@@ -218,7 +219,10 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             public boolean onMarkerClick(Marker marker) {
                 if (marker.getObject().getClass().equals(LastVersionEntity.class)) {
                     LastVersionEntity lastVersionEntity = (LastVersionEntity) marker.getObject();
-                    Toast.makeText(getActivity(), "这是自定义marker，代号" + lastVersionEntity.getUser_id(), Toast.LENGTH_SHORT).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("userId",lastVersionEntity.getUser_id());
+                    readyGo(UserIndexActivity.class,bundle);
+                    //Toast.makeText(getActivity(), "这是自定义marker，代号" + lastVersionEntity.getUser_id(), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -433,6 +437,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     private void uploadLocation(String lat,String lng){
 
         OkHttpUtils.get()
+                .tag(this)
                 .url(Constans.UPLOAD_LOCATION)
                 .addParams("lat",lat)
                 .addParams("lng",lng)
@@ -441,7 +446,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e("uploadLocation",e.getMessage());
+                     //   Log.e("uploadLocation",e.getMessage());
                     }
 
                     @Override
@@ -538,7 +543,7 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG,e.getMessage());
+                     //   Log.e(TAG,e.getMessage());
                     }
 
                     @Override
@@ -731,5 +736,12 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
             }
         }
         mAMap.reloadMap();//刷新地图
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 }

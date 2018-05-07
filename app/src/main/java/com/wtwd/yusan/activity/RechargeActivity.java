@@ -19,10 +19,19 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.PrepayIdEntity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
+import com.wtwd.yusan.util.WXpayUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +150,7 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
 
     @Override
     public View getSnackView() {
-        return null;
+        return rcl_recharge;
     }
 
     @Override
@@ -150,6 +159,7 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
             case R.id.btn_recharg:
                 float rechageData = Float.parseFloat(ed_recharge.getText().toString());
                 Log.e(TAG, rechageData + "");
+                rechargMoney(rechageData);
               /*  int total_fee = Integer.parseInt((rechageData * 100)+"");
                 Log.e(TAG,total_fee+"");
                 if(rechageData <=0){
@@ -166,12 +176,15 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
      */
     private void rechargMoney(float rechargData) {
 
-        int total_fee = Integer.parseInt((rechargData * 100) + "");
-        OkHttpUtils.post()
+        float total_fee = Float.parseFloat((rechargData * 100) + "");
+        OkHttpUtils.get()
+                .addParams("userId", Pref.getInstance(this).getUserId()+"")
                 .addParams("body", getString(R.string.recharge_for_user))//商品描述
-                .addParams("total_fee", total_fee + "")
+                .addParams("money", total_fee + "")
                 .addParams("spbill_create_ip", Utils.getIPAddress(this))
                 .addParams("trade_type", "APP")
+                .addParams("payType",0+"")
+                .addParams("type",1+"")
                 .url(Constans.GET_WX_PERPERID)
                 .build()
                 .execute(new StringCallback() {
@@ -183,6 +196,24 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG, response.toString());
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                            int status = result.optInt("status");
+                            if(1 == status){
+                                String mPerpayIdJson= result.optString("object");
+                                Log.e(TAG, "mTaskJsonArray --> " + mPerpayIdJson);
+                                JSONObject prepay = new JSONObject(mPerpayIdJson);
+                                String prepayid = prepay.getString("prepayid");
+                                PrepayIdEntity m= GsonUtils.GsonToBean(mPerpayIdJson,PrepayIdEntity.class);
+                                Log.e(TAG,m.toString());
+                                WXpayUtils.Pay(prepayid);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 });
 

@@ -132,7 +132,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 		mGroupName = fragmentArgs.getString(EaseConstant.EXTRA_GROUP_NAME);
 		mGroupId = fragmentArgs.getString(EaseConstant.EXTRA_GROUP_ID);
 		mUserName = fragmentArgs.getString(EaseConstant.EXTRA_USER_NAME);
-
+//		Log.e(TAG,mGroupName);
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -214,7 +214,8 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 					if (TextUtils.isEmpty(mGroupName)) {
 						mGroupName = group.getGroupName();
 					}
-				titleBar.setTitle(group.getGroupName());
+					Log.e(TAG,mGroupName);
+				titleBar.setTitle(mGroupName);
 				// listen the event that user moved out group or group is dismissed
 				groupListener = new GroupListener();
 				EMClient.getInstance().groupManager().addGroupChangeListener(groupListener);

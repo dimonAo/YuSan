@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
@@ -32,6 +33,8 @@ import com.hyphenate.easeui.widget.presenter.EaseChatRowPresenter;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EasyUtils;
 import com.wtwd.yusan.R;
+import com.wtwd.yusan.activity.DetailTaskActivity;
+import com.wtwd.yusan.activity.PublishTaskActivity;
 import com.wtwd.yusan.ease.Constant;
 import com.wtwd.yusan.ease.IMHelper;
 import com.wtwd.yusan.ease.info.EmojiconExampleGroupData;
@@ -40,10 +43,20 @@ import com.wtwd.yusan.ease.net.ApiInterface;
 import com.wtwd.yusan.ease.net.callback.StringCallback;
 import com.wtwd.yusan.ease.util.JsonUtil;
 import com.wtwd.yusan.ease.util.MessageUtil;
+import com.wtwd.yusan.entity.TaskEntity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * Created by ChangLe on 2018/4/11.
@@ -59,6 +72,7 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
     private static final int REQUEST_CODE_GROUP_DETAIL = 13;
     private static final int REQUEST_CODE_CONTEXT_MENU = 14;
     private static final int REQUEST_CODE_SELECT_AT_USER = 15;
+    private static final int REQUEST_CODE_SEND_TASK = 16;
 
     private String userID;
     /**
@@ -222,6 +236,24 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
                         sendRedPacket(Constant.CONSTANT_USER_ID, "1", money, "3", to, toChatUsername);
                     }
                     break;
+                case REQUEST_CODE_SEND_TASK:
+                    if (data != null) {
+                        String money = data.getStringExtra("money");
+                        String content = data.getStringExtra("content");
+                        String type = data.getStringExtra("type");
+                        String address = data.getStringExtra("address");
+                        String startTime = data.getStringExtra("startTime");
+                        String anonymous = data.getStringExtra("anonymous");
+                        String payType = data.getStringExtra("payType");
+                        //判断是群聊还是私聊
+                        String to = (chatType == EaseConstant.CHATTYPE_SINGLE) ? "1" : "2";
+
+//                        Log.e("to",to);
+
+                        publishMission(Constant.CONSTANT_USER_ID, content, type,"3", money,address,startTime, to, toChatUsername,anonymous,"1");
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -286,16 +318,55 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
                         startActivity(new Intent(getActivity(), RedPacketDetailActivity.class)
                                 .putExtra("packet_id", packet_id));
                     }
-                } else if (MessageUtil.getMessageUtil().isMissionMsg(msg)) {
-                    String mission_id = MessageUtil.getMessageUtil().getMissionMsgId(msg);
-                    startActivity(new Intent(getActivity(), MissionReceiveActivity.class)
-                            .putExtra("mission_id", mission_id));
                 }
+            }else if (MessageUtil.getMessageUtil().isMissionMsg(msg)) {
+                String mission_id = MessageUtil.getMessageUtil().getMissionMsgId(msg);
+                getMission(mission_id);
+
             } else {
                 Toast.makeText(getActivity(), "本人不可打开", Toast.LENGTH_SHORT).show();
             }
         }
         return false;
+    }
+
+    private void getMission(String mission_id) {
+
+        OkHttpUtils.get()
+               .addParams("missionId",mission_id)
+                .url(Constans.GET_MISSION)
+                .build()
+                .execute(new com.zhy.http.okhttp.callback.StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "publish mission : " + response);
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+                        try {
+                            JSONObject mTaskJson = new JSONObject(response);
+
+                            int status = mTaskJson.optInt("status");
+                            //com.alibaba.fastjson.JSONObject taskResult = mTaskJson.get("object");
+                            String mTaskJsonArray = mTaskJson.optString("object");
+                            Log.e(TAG, "mTaskJsonArray --> " + mTaskJsonArray);
+                            List<TaskEntity> list= new ArrayList<>();
+                            list = GsonUtils.jsonToList(mTaskJsonArray,TaskEntity.class);
+                            Log.e(TAG, "enenenen :----> " + list.get(0).toString());
+                           // TaskEntity taskEntity = list.get(0);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("task_entity", list.get(0));
+                            startActivity(new Intent(getActivity(), DetailTaskActivity.class)
+                                    .putExtras(bundle));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
     }
 
     @Override
@@ -317,10 +388,22 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
             case ITEM_REDPACKET:
 //                Toast.makeText(getActivity(), "红包", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), SendRedPacketActivity.class);
+                Bundle bundle = new Bundle();
+                String to = (chatType == EaseConstant.CHATTYPE_SINGLE) ? "1" : "2";
+                bundle.putString("to",to);
+                bundle.putString("toid",toChatUsername);
+                intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_CODE_SEND_PACKET);
                 break;
             case ITEM_TASK:
 //            selectFileFromLocal();
+                Intent taskIntent = new Intent(getActivity(), PublishTaskActivity.class);
+                Bundle taskBundle = new Bundle();
+                String to2 = (chatType == EaseConstant.CHATTYPE_SINGLE) ? "1" : "2";
+                taskBundle.putString("to",to2);
+                taskBundle.putString("toid",toChatUsername);
+                taskIntent.putExtras(taskBundle);
+                startActivityForResult(taskIntent, REQUEST_CODE_SEND_TASK);
                 Toast.makeText(getActivity(), "任务", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -433,6 +516,65 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
             }
         });
     }
+    private void publishMission(String userId,String content,String type,String sex,String money,String address,String startTime,String to,String toId,String anonymous,String payType) {
 
+        //request service for publish mission
+//                bundle.putString("userId", userId + "");
+//                bundle.putString("content", getTaskDetailContent()); //任务描述
+//                bundle.putString("type", getTaskType()); //任务类型
+//                bundle.putString("sex", getSexType()); //接受者性别限制
+//                bundle.putString("money", getTaskMoney());//任务金额
+//                bundle.putString("address", getTaskAddress());//任务地址
+//                bundle.putString("startTime", getTaskStartTime());//任务开始时间 yyyy-MM-dd HH:mm格式
+//                bundle.putString("to", toId); //发送给谁，0所有人，指定人传用户userid
+//                bundle.putString("anonymous", getTaskAnonymous()); //是否匿名，1匿名 ； 0不匿名
+
+
+       // Bundle bundle = getMissionParameterIntent();
+
+        Map<String, String> mPublishMap = new HashMap<>();
+        mPublishMap.put("userId", userId);
+        mPublishMap.put("content", content);
+        mPublishMap.put("type",type);
+        mPublishMap.put("sex", sex);
+        mPublishMap.put("money", money);
+        mPublishMap.put("address", address);
+        mPublishMap.put("startTime", startTime);
+        mPublishMap.put("to",to);
+        mPublishMap.put("toId", toId);
+        mPublishMap.put("anonymous", anonymous);
+        mPublishMap.put("payType", payType);
+
+        Log.e(TAG, "publish map : " + mPublishMap.toString());
+        OkHttpUtils.get()
+                .url(Constans.PUBLISH_MISSION)
+                .params(mPublishMap)
+                .build()
+                .execute(new com.zhy.http.okhttp.callback.StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "publish mission : " + response);
+//                        ResultEntity mEn = Utils.getResultEntity(response);
+                        try {
+                            JSONObject mMissionJson = new JSONObject(response);
+                            int status = mMissionJson.optInt("status");
+                            if (Constans.REQUEST_SUCCESS == status) {
+                                //request success
+                               // finish();
+                            } else {
+                                //showToast("发布任务失败");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
 
 }

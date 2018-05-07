@@ -55,7 +55,8 @@
                 android:layout_width="@dimen/common_40"
                 android:layout_height="@dimen/common_40"
                 android:layout_marginLeft="@dimen/common_14"
-                android:layout_marginTop="@dimen/common_14" />
+                android:layout_marginTop="@dimen/common_14"
+                android:src="@mipmap/task_head"/>
 
             <LinearLayout
                 android:id="@+id/lin_1"

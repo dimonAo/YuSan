@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.amap.api.maps.model.LatLng;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wtwd.yusan.R;
@@ -124,6 +125,16 @@ public class NearbyListActivity extends CommonToolBarActivity {
         Log.e(TAG, mLatitude + "");
 
         initListener();
+
+        mNearbyListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                LastVersionEntity lastVersionEntity = (LastVersionEntity) adapter.getData().get(position);
+                Bundle bundle = new Bundle();
+                bundle.putLong("userId",lastVersionEntity.getUser_id());
+                readyGo(UserIndexActivity.class,bundle);
+            }
+        });
         getNearbyUser(mLoadCount * 20, 20);
     }
 

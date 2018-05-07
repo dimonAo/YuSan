@@ -10,6 +10,11 @@ import com.wtwd.yusan.ease.IMHelper;
 import com.wtwd.yusan.ease.util.swipe.ActivityLifeHelper;
 import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.util.Constans;
+import com.zhy.http.okhttp.OkHttpUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 /**
  * time:2018/4/23
@@ -41,7 +46,14 @@ public class MyApplication extends MobApplication {
         super.onCreate();
         applicationContext = this;
         //instance = this;
+       /* OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor(new LoggerInterceptor("TAG"))
+                .connectTimeout(3000L, TimeUnit.MILLISECONDS)
+                .readTimeout(3000L, TimeUnit.MILLISECONDS)
+                //其他配置
+                .build();
 
+        OkHttpUtils.initClient(okHttpClient);*/
         //init demo helper
         IMHelper.getInstance().init(applicationContext);
         registerActivityLifecycleCallbacks(ActivityLifeHelper.instance());

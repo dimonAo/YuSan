@@ -54,23 +54,58 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
         // enter the main activity if already logged in
-        if (IMHelper.getInstance().isLoggedIn()) {
+      /*  UserEntity userEntity = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(this).getUserId());
+        if(null == userEntity&&IMHelper.getInstance().isLoggedIn()){
+
+        }else if(IMHelper.getInstance().isLoggedIn()&& null != userEntity){
+
+        }*/
+
+
+      /*  if (IMHelper.getInstance().isLoggedIn()) {
+
             autoLogin = true;
-            startActivity(new Intent(this, MainActivity.class));
+            Log.e("LandChooseActivity", userEntity.getUser_id()+"");
+            Log.e("LandChooseActivity", userEntity.getUser_name());
+            Constant.CONSTANT_USER_ID = userEntity.getUser_id()+"";
+            Constant.CONSTANT_USER_NAME = userEntity.getUser_name();
+            //login(userEntity.getUser_name());
+            readyGo(MainActivity.class);
+            finish();
 
             return;
-        }
+        }*/
         img_choose_wechat_land = (ImageView) findViewById(R.id.img_choose_wechat_land);
         img_choose_phone_land = (ImageView) findViewById(R.id.img_choose_phone_land);
         test = (ImageView) findViewById(R.id.test);
         addListener();
         UserEntity userEntity = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(this).getUserId());
-        if(null == userEntity){
+        if(null == userEntity&&!IMHelper.getInstance().isLoggedIn()){
 
         }else{
+//            IMHelper.getInstance().logout(, new EMCallBack() {
+//                @Override
+//                public void onSuccess() {
+//
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+//
+//                }
+//
+//                @Override
+//                public void onProgress(int i, String s) {
+//
+//                }
+//            });
+            Log.e("LandChooseActivity", userEntity.getUser_id()+"");
+            Log.e("LandChooseActivity", userEntity.getUser_name());
             Constant.CONSTANT_USER_ID = userEntity.getUser_id()+"";
             Constant.CONSTANT_USER_NAME = userEntity.getUser_name();
-                    login(userEntity.getUser_name());
+                  //  login(userEntity.getUser_name());
+            readyGo(MainActivity.class);
+            finish();
         }
 
     }
@@ -86,15 +121,15 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
             readyGo(LandPhoneActivity.class);
         } else if (R.id.img_choose_wechat_land == v.getId()) {
             //微信登录
-//            WXEntryActivity.loginWeixin(this, MyApplication.api);
+            WXEntryActivity.loginWeixin(this, MyApplication.api);
 
-            Glide.with(this)
-                    .load("https://img-blog.csdn.net/20170428175627934?watermark" +
-                            "/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T" +
-                            "/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center")
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(test);
+//            Glide.with(this)
+//                    .load("https://img-blog.csdn.net/20170428175627934?watermark" +
+//                            "/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T" +
+//                            "/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center")
+//                    .asBitmap()
+//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                    .into(test);
 
         }
 
@@ -171,9 +206,9 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
                 IMHelper.getInstance().getUserProfileManager().asyncGetCurrentUserInfo();
 
                 Intent intent = new Intent(LandChooseActivity.this, MainActivity.class);
-                startActivity(intent);
+                readyGoForNewTask(MainActivity.class);
 
-                finish();
+               // finish();
             }
 
             @Override

@@ -32,13 +32,15 @@ import okhttp3.Call;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
-//    private IWXAPI api;
+    private IWXAPI mIWXAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("WXEntryActivity", "onCreate");
-        handleIntent(getIntent());
+//        handleIntent(getIntent());
+        mIWXAPI = WXAPIFactory.createWXAPI(this, Constans.WX_APP_ID);
+        mIWXAPI.handleIntent(getIntent(), this);
     }
 
     /**
@@ -77,7 +79,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private void handleIntent(Intent intent) {
         setIntent(intent);
-        MyApplication.api.handleIntent(intent, this);
+       mIWXAPI.handleIntent(intent, this);
     }
 
     // 微信发送请求到第三方应用时，会回调到该方法
@@ -95,16 +97,18 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         // TODO Auto-generated method stub
         if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
             // 用户同意
-            Log.e("WXEntryActivity", "onResp" + resp.errCode);
-            Log.e("WXEntryActivity", "onResp" + resp.errStr);
-            Log.e("WXEntryActivity", "onResp" + resp.openId);
+            Log.e("WXEntryActivity", "onResp errCode" + resp .errCode);
+            Log.e("WXEntryActivity", "onResp errStr" + resp.errStr);
+            Log.e("WXEntryActivity", "onResp openId" + resp.openId);
 
             String code = ((SendAuth.Resp) resp).code;
 
             // 从手机本地获取存储的授权口令信息，判断是否存在access_token，不存在请求获取，存在就判断是否过期
             String accessToken = Pref.getInstance(this).getLoginAccessToken();
             String openid = "";
+            Log.e("tag none",accessToken);
             if (!"none".equals(accessToken)) {
+
                 // 有access_token，判断是否过期有效
                 isExpireAccessToken(accessToken, openid);
             } else {
