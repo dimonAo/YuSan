@@ -40,6 +40,8 @@ public class TaskEntity implements Parcelable {
     ////////////////////////////////////////////////////////////////
     private long publish_id;                 //用户ID
 
+    private long accept_id;                 //接受者id
+
     private long user_id;
 
     private String userIdStr;
@@ -66,9 +68,6 @@ public class TaskEntity implements Parcelable {
 
 //    private UserEntity user;
 
-    public TaskEntity() {
-
-    }
 
     protected TaskEntity(Parcel in) {
         mission_id = in.readLong();
@@ -84,6 +83,7 @@ public class TaskEntity implements Parcelable {
         finish_time = in.readString();
         anonymous = in.readInt();
         publish_id = in.readLong();
+        accept_id = in.readLong();
         user_id = in.readLong();
         userIdStr = in.readString();
         head_img = in.readString();
@@ -111,6 +111,7 @@ public class TaskEntity implements Parcelable {
         dest.writeString(finish_time);
         dest.writeInt(anonymous);
         dest.writeLong(publish_id);
+        dest.writeLong(accept_id);
         dest.writeLong(user_id);
         dest.writeString(userIdStr);
         dest.writeString(head_img);
@@ -244,6 +245,14 @@ public class TaskEntity implements Parcelable {
         this.publish_id = publish_id;
     }
 
+    public long getAccept_id() {
+        return accept_id;
+    }
+
+    public void setAccept_id(long accept_id) {
+        this.accept_id = accept_id;
+    }
+
     public long getUser_id() {
         return user_id;
     }
@@ -340,6 +349,7 @@ public class TaskEntity implements Parcelable {
                 ", finish_time='" + finish_time + '\'' +
                 ", anonymous=" + anonymous +
                 ", publish_id=" + publish_id +
+                ", accept_id=" + accept_id +
                 ", user_id=" + user_id +
                 ", userIdStr='" + userIdStr + '\'' +
                 ", head_img='" + head_img + '\'' +

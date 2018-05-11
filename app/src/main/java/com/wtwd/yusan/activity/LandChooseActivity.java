@@ -1,20 +1,12 @@
 package com.wtwd.yusan.activity;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
@@ -24,13 +16,20 @@ import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.ease.Constant;
 import com.wtwd.yusan.ease.IMHelper;
 import com.wtwd.yusan.ease.db.DemoDBManager;
-import com.wtwd.yusan.ease.ui.*;
 import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.WxUserEntity;
 import com.wtwd.yusan.entity.operation.DaoUtils;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.wxapi.WXEntryActivity;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.net.URL;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.Call;
 
 public class LandChooseActivity extends CommonToolBarActivity implements View.OnClickListener {
 
@@ -83,22 +82,6 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
         if(null == userEntity&&!IMHelper.getInstance().isLoggedIn()){
 
         }else{
-//            IMHelper.getInstance().logout(, new EMCallBack() {
-//                @Override
-//                public void onSuccess() {
-//
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-//
-//                }
-//
-//                @Override
-//                public void onProgress(int i, String s) {
-//
-//                }
-//            });
             Log.e("LandChooseActivity", userEntity.getUser_id()+"");
             Log.e("LandChooseActivity", userEntity.getUser_name());
             Constant.CONSTANT_USER_ID = userEntity.getUser_id()+"";
@@ -108,6 +91,21 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
             finish();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG,"onResume");
+        Bundle bundle = getIntent().getExtras();
+        if(null != bundle){
+
+            // TODO: 2018/5/9 请求服务器是否是第一次登录
+            WxUserEntity wxUserEntity = bundle.getParcelable("user");
+            Log.e(TAG,wxUserEntity.toString());
+            loginUserExist(wxUserEntity.getOpenid());
+
+        }
     }
 
     private void addListener() {
@@ -132,6 +130,29 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
 //                    .into(test);
 
         }
+
+    }
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+       Log.e(TAG,"LandChoose----------------------onActivityResult");
+        if(Constans.LOGIN_WECHAT == resultCode){
+            String wxResult = Pref.getInstance(this).getWxEntity();
+            if(null != wxResult && !"".equals(wxResult)){
+               Bundle bundle = new Bundle();
+                //readyGo();
+//               WxUserEntity wxUserEntity = GsonUtils.GsonToBean(wxResult, WxUserEntity.class);
+//                loginUserExist(wxUserEntity.getOpenid());
+            }else{
+                showToast("微信登录失败");
+            }
+        }
+
+
 
     }
 
@@ -231,5 +252,70 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
                 });
             }
         });
+    }
+
+    private void loginUserExist(final String openId) {
+        Log.e(TAG,"login exist");
+        OkHttpUtils.post()
+                .url(Constans.LOGIN_USER_EXIST)
+                .addParams("openId", openId)
+                .addParams("type", "2")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG,"error"+id);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "land phont : " + response);
+                        try {
+                            JSONObject mLoginResponse = new JSONObject(response);
+
+                            int mStatus = mLoginResponse.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == mStatus) {
+                                String mObject = mLoginResponse.optString("object");
+
+                                JSONObject mObjectJson = new JSONObject(mObject);
+
+                                boolean mIsFirst = mObjectJson.optBoolean("isFirst");
+                                if (mIsFirst) {
+                                    //第一次登录，需要跳转到ModifyUserActivity界面
+                                    //phone 手机号码
+                                    //isFirst 是否第一次登录
+                                    //isPhone 是否是手机号码
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("account", openId);
+                                    bundle.putBoolean("isFirst", true);
+                                    bundle.putBoolean("isPhone", false);
+                                    readyGo(ModifyUserActivity.class, bundle);
+                                    showToast(getString(R.string.land_phone_verify_code_success));
+                                    finish();
+                                } else {
+                                    //直接登录到主界面，需要解析UserEntity对象，存在本地
+                                    UserEntity mUserEntity = GsonUtils.GsonToBean(mObjectJson.optString("user"), UserEntity.class);
+                                    Log.e(TAG, "mUserEntity : " + mUserEntity.toString());
+                                    mPref.setUserId(mUserEntity.getUser_id());
+                                    //User插入数据库
+                                    UserEntity mOldEn = DaoUtils.getUserManager().queryUserForUserId(mUserEntity.getUser_id());
+
+                                    if ((null != mOldEn) && ((mUserEntity.getUser_id()).equals(mOldEn.getUser_id()))) {
+                                        DaoUtils.getUserManager().updateObject(mUserEntity);
+                                    } else {
+                                        DaoUtils.getUserManager().insertObject(mUserEntity);
+                                    }
+                                    login(mUserEntity.getUser_name());
+                                }
+                                mPref.setIsPhone(true);
+                            } else {
+                                showToast(getErrorString(mStatus));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 }

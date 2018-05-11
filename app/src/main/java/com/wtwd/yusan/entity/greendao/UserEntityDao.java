@@ -37,6 +37,7 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
         public final static Property Country = new Property(10, String.class, "country", false, "COUNTRY");
         public final static Property Create_time = new Property(11, String.class, "create_time", false, "CREATE_TIME");
         public final static Property Invisible = new Property(12, int.class, "invisible", false, "INVISIBLE");
+        public final static Property Open_id = new Property(13, String.class, "open_id", false, "OPEN_ID");
     }
 
 
@@ -64,7 +65,8 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
                 "\"NICK_NAME\" TEXT," + // 9: nick_name
                 "\"COUNTRY\" TEXT," + // 10: country
                 "\"CREATE_TIME\" TEXT," + // 11: create_time
-                "\"INVISIBLE\" INTEGER NOT NULL );"); // 12: invisible
+                "\"INVISIBLE\" INTEGER NOT NULL ," + // 12: invisible
+                "\"OPEN_ID\" TEXT);"); // 13: open_id
     }
 
     /** Drops the underlying database table. */
@@ -133,6 +135,11 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
             stmt.bindString(12, create_time);
         }
         stmt.bindLong(13, entity.getInvisible());
+ 
+        String open_id = entity.getOpen_id();
+        if (open_id != null) {
+            stmt.bindString(14, open_id);
+        }
     }
 
     @Override
@@ -195,6 +202,11 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
             stmt.bindString(12, create_time);
         }
         stmt.bindLong(13, entity.getInvisible());
+ 
+        String open_id = entity.getOpen_id();
+        if (open_id != null) {
+            stmt.bindString(14, open_id);
+        }
     }
 
     @Override
@@ -217,7 +229,8 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // nick_name
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // country
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // create_time
-            cursor.getInt(offset + 12) // invisible
+            cursor.getInt(offset + 12), // invisible
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // open_id
         );
         return entity;
     }
@@ -237,6 +250,7 @@ public class UserEntityDao extends AbstractDao<UserEntity, Long> {
         entity.setCountry(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setCreate_time(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setInvisible(cursor.getInt(offset + 12));
+        entity.setOpen_id(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
      }
     
     @Override

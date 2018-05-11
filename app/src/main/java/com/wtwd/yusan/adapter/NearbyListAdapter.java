@@ -34,8 +34,7 @@ public class NearbyListAdapter extends BaseQuickAdapter<LastVersionEntity,BaseVi
 
     @Override
     protected void convert(final BaseViewHolder helper, LastVersionEntity item) {
-        helper
-                .setText(R.id.tv_nearbylist_publisher_nick, item.getNick_name())
+        helper .setText(R.id.tv_nearbylist_publisher_nick, item.getNick_name())
                 .setText(R.id.tv_nearbylist_distance,(int) item.getDistance()+"");
 
         if ("2".equals(item.getSex()+"")){

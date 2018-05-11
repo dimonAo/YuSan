@@ -118,7 +118,6 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             Glide.with(this)
                     .load(Uri.parse(mEn.getHead_img()))
                     .asBitmap()
-
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -126,6 +125,19 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                             img_me_head_bg.setBitmap(resource);
                         }
                     });
+//           Glide.with(this)
+//                   .load(Uri.parse(mEn.getHead_img()))
+//                   .into(img_head_me);
+//            Glide.with(this)
+//                    .load(Uri.parse(mEn.getHead_img()))
+//                    .asBitmap()
+//                    .into(new SimpleTarget<Bitmap>(){
+//
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            img_me_head_bg.setBitmap(resource);
+//                        }
+//                    });
 
 
         }

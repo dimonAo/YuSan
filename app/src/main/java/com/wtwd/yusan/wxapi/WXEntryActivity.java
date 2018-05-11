@@ -15,7 +15,12 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.wtwd.yusan.MyApplication;
+import com.wtwd.yusan.activity.LandChooseActivity;
+import com.wtwd.yusan.activity.ModifyUserActivity;
+import com.wtwd.yusan.ease.Constant;
 import com.wtwd.yusan.entity.AccessTokenEntity;
+import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.WxUserEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
 import com.wtwd.yusan.util.Pref;
@@ -32,15 +37,15 @@ import okhttp3.Call;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
-    private IWXAPI mIWXAPI;
+    //private IWXAPI mIWXAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("WXEntryActivity", "onCreate");
-//        handleIntent(getIntent());
-        mIWXAPI = WXAPIFactory.createWXAPI(this, Constans.WX_APP_ID);
-        mIWXAPI.handleIntent(getIntent(), this);
+       // mIWXAPI = WXAPIFactory.createWXAPI(this, Constans.WX_APP_ID);
+        MyApplication.api.handleIntent(getIntent(), this);
+
     }
 
     /**
@@ -79,7 +84,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private void handleIntent(Intent intent) {
         setIntent(intent);
-       mIWXAPI.handleIntent(intent, this);
+       MyApplication.api.handleIntent(intent, this);
     }
 
     // 微信发送请求到第三方应用时，会回调到该方法
@@ -133,18 +138,20 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         String url = "https://api.weixin.qq.com/sns/auth?" +
                 "access_token=" + accessToken +
                 "&openid=" + openid;
-
+        Log.e("isExpireAccessToken",url);
         OkHttpUtils.get()
                 .url(url)
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        Log.e("isExpireAccessToken","error"+id);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e("isExpireAccessToken",response);
+
                         if (validateSuccess(response)) {
                             // accessToken没有过期，获取用户信息
                             getUserInfo(accessToken, openid);
@@ -183,6 +190,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     @Override
                     public void onResponse(String response, int id) {
                         // 判断是否获取成功，成功则去获取用户信息，否则提示失败
+                        Log.e("refreshAccessToken",response);
                         processGetAccessTokenResult(response);
                     }
                 });
@@ -229,7 +237,17 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        Log.e("getUserInfo",response);
+                        Pref.getInstance(getApplicationContext()).setWxEntity(response);
+                        WxUserEntity userEntity = GsonUtils.GsonToBean(response,WxUserEntity.class);
+                        Intent intent = new Intent(WXEntryActivity.this, LandChooseActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("user",userEntity);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+//                        setResult(Constans.LOGIN_WECHAT);
+                        Log.e("user",userEntity.toString());
+                        finish();
                     }
                 });
 //        httpRequest(url, new ApiCallback<String>() {
@@ -261,6 +279,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 "&secret=" + Constans.WX_APP_SECRET +
                 "&code=" + code +
                 "&grant_type=authorization_code";
+        Log.e("getAccessToken",url);
         // 网络请求获取access_token
         OkHttpUtils.get()
                 .url(url)
@@ -274,6 +293,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     @Override
                     public void onResponse(String response, int id) {
                         // 判断是否获取成功，成功则去获取用户信息，否则提示失败
+                        Log.e("getAccessToken",response);
                         processGetAccessTokenResult(response);
 
 //                        AccessTokenEntity mEn = GsonUtils.GsonToBean(response, AccessTokenEntity.class);
@@ -338,5 +358,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             this.errmsg = errmsg;
         }
     }
+
+
 
 }
