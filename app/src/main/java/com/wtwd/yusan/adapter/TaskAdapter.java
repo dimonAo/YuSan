@@ -38,7 +38,7 @@ public class TaskAdapter extends BaseQuickAdapter<TaskEntity, BaseViewHolder> {
         helper
 //                .setBackgroundRes(R.id.circle_img_task_publisher, R.mipmap.task_head)
 //                .setText(R.id.text_task_publisher_nick, item.getPublisher().getUser_name())
-                .setText(R.id.text_task_publisher_nick, item.getUser_name())
+                .setText(R.id.text_task_publisher_nick, item.getNick_name())
                 .setText(R.id.text_task_content, item.getContent())
 //                .setText(R.id.text_task_time, item.getTaskTime())
                 .setText(R.id.text_task_date, calendar.get(Calendar.MONTH + 1)

@@ -23,11 +23,13 @@ public class Constans {
      * 请求http地址
      */
 //    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
-//    public static final String REQUEST_URL = "http://192.168.13.235:8080/open";
-    public static final String REQUEST_URL = "http://192.168.199.178:8080/open";
+    public static final String REQUEST_URL = "http://119.23.61.10:8068/cheekat/open";
+//    public static final String REQUEST_URL = "http://192.168.13.177:8080/cheekat-app-controller/open";
+//    public static final String REQUEST_URL = "http://192.168.13.177:8080/opzen";
+//    public static final String REQUEST_URL = "http://192.168.199.179:8080/open";
 //    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat/open";
 //    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
-
+    public static final int LOGIN_WECHAT = 0x11;//登录微信
     /**
      * 请求http端口
      */
@@ -68,7 +70,7 @@ public class Constans {
     public static final String WX_API_KEY = "emIs5XG6HlnDt6JvF7zET1PKs3NyAg03";
     public static final String WX_MCH_ID = "1503248441";
 
-    public static final String WX_APP_SECRET = "";
+    public static final String WX_APP_SECRET = "966ac0178cd1dc45a8b9e597794c5ff0";
 
     public static final String GET_WX_PERPERID = REQUEST_URL + "/recharge";//传值后台获取preperId
 

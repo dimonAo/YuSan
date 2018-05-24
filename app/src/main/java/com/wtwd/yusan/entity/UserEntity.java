@@ -53,10 +53,8 @@ public class UserEntity implements Parcelable {
     @Property(nameInDb = "INVISIBLE")
     private int invisible;           //是否隐身
 
-    public UserEntity() {
-
-    }
-
+    @Property(nameInDb = "OPEN_ID")
+    private String open_id;           //是否隐身
 
     protected UserEntity(Parcel in) {
         if (in.readByte() == 0) {
@@ -80,13 +78,14 @@ public class UserEntity implements Parcelable {
         country = in.readString();
         create_time = in.readString();
         invisible = in.readInt();
+        open_id = in.readString();
     }
 
-
-    @Generated(hash = 1581628794)
+    @Generated(hash = 402094971)
     public UserEntity(Long id, Long user_id, String userIdStr, String head_img,
-                      String birth, String user_name, String password, int sex, String height,
-                      String nick_name, String country, String create_time, int invisible) {
+            String birth, String user_name, String password, int sex, String height,
+            String nick_name, String country, String create_time, int invisible,
+            String open_id) {
         this.id = id;
         this.user_id = user_id;
         this.userIdStr = userIdStr;
@@ -100,6 +99,44 @@ public class UserEntity implements Parcelable {
         this.country = country;
         this.create_time = create_time;
         this.invisible = invisible;
+        this.open_id = open_id;
+    }
+
+    @Generated(hash = 1433178141)
+    public UserEntity() {
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(id);
+        }
+        if (user_id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(user_id);
+        }
+        dest.writeString(userIdStr);
+        dest.writeString(head_img);
+        dest.writeString(birth);
+        dest.writeString(user_name);
+        dest.writeString(password);
+        dest.writeInt(sex);
+        dest.writeString(height);
+        dest.writeString(nick_name);
+        dest.writeString(country);
+        dest.writeString(create_time);
+        dest.writeInt(invisible);
+        dest.writeString(open_id);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<UserEntity> CREATOR = new Creator<UserEntity>() {
@@ -113,22 +150,6 @@ public class UserEntity implements Parcelable {
             return new UserEntity[size];
         }
     };
-
-    public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String height) {
-        this.height = height;
-    }
-
-    public String getNick_name() {
-        return nick_name;
-    }
-
-    public void setNick_name(String nick_name) {
-        this.nick_name = nick_name;
-    }
 
     public Long getId() {
         return id;
@@ -194,6 +215,22 @@ public class UserEntity implements Parcelable {
         this.sex = sex;
     }
 
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
+
     public String getCountry() {
         return country;
     }
@@ -218,37 +255,12 @@ public class UserEntity implements Parcelable {
         this.invisible = invisible;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getOpen_id() {
+        return open_id;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if (id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(id);
-        }
-        if (user_id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(user_id);
-        }
-        dest.writeString(userIdStr);
-        dest.writeString(head_img);
-        dest.writeString(birth);
-        dest.writeString(user_name);
-        dest.writeString(password);
-        dest.writeInt(sex);
-        dest.writeString(height);
-        dest.writeString(nick_name);
-        dest.writeString(country);
-        dest.writeString(create_time);
-        dest.writeInt(invisible);
+    public void setOpen_id(String open_id) {
+        this.open_id = open_id;
     }
 
     @Override
@@ -267,6 +279,7 @@ public class UserEntity implements Parcelable {
                 ", country='" + country + '\'' +
                 ", create_time='" + create_time + '\'' +
                 ", invisible=" + invisible +
+                ", open_id='" + open_id + '\'' +
                 '}';
     }
 }

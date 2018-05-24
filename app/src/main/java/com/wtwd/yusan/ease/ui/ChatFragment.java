@@ -46,6 +46,7 @@ import com.wtwd.yusan.ease.util.MessageUtil;
 import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONException;
@@ -357,6 +358,11 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
                             list = GsonUtils.jsonToList(mTaskJsonArray,TaskEntity.class);
                             Log.e(TAG, "enenenen :----> " + list.get(0).toString());
                            // TaskEntity taskEntity = list.get(0);
+                            TaskEntity taskEntity = list.get(0);
+                            if(0 != taskEntity.getStatus() && Pref.getInstance(getActivity()).getUserId() != taskEntity.getPublish_id() && Pref.getInstance(getActivity()).getUserId() != taskEntity.getAccept_id()){
+                                Toast.makeText(getActivity(),"任务被领取",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("task_entity", list.get(0));
                             startActivity(new Intent(getActivity(), DetailTaskActivity.class)

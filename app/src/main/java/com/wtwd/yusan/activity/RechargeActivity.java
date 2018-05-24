@@ -57,11 +57,13 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
     CheckBox ck_wechat_recharge;
     List<SelectBean> mNumList = new ArrayList<>();
 
-    private String[] numData = {"5元", "20", "50", "100"};
+    private String[] numData = {"5元", "20元", "50元", "100元"};
 
     RechargeNumAdapter mRechargeNumAdapter;
     private int selectionStart;
     private int selectionEnd;
+
+    private int selectedNumItem = 5;
 
 
     @Override
@@ -98,6 +100,7 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
                     mNumList.get(i).setSelect(false);
                 }
                 Log.e("dd", position + "");
+                selectedNumItem = 5+5*position;
                 mNumList.get(position).setSelect(true);
                 mRechargeNumAdapter.notifyDataSetChanged();
             }
@@ -157,9 +160,19 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_recharg:
-                float rechageData = Float.parseFloat(ed_recharge.getText().toString());
-                Log.e(TAG, rechageData + "");
-                rechargMoney(rechageData);
+                float rechageData = 0l;
+                String rechageMoney = ed_recharge.getText().toString();
+                if(null == rechageMoney||"".equals(rechageMoney)|| 0 == Float.parseFloat(rechageMoney)){
+                    rechageData = Float.parseFloat(selectedNumItem+"");
+                    rechargMoney(rechageData);
+                }else{
+                    Log.e(TAG,rechageMoney);
+                   /* float rechageData = Float.parseFloat(ed_recharge.getText().toString());
+                    Log.e(TAG, rechageData + "");*/
+                   rechageData = Float.parseFloat(rechageMoney);
+                    rechargMoney(rechageData);
+                }
+
               /*  int total_fee = Integer.parseInt((rechageData * 100)+"");
                 Log.e(TAG,total_fee+"");
                 if(rechageData <=0){
@@ -176,11 +189,12 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
      */
     private void rechargMoney(float rechargData) {
 
-        float total_fee = Float.parseFloat((rechargData * 100) + "");
+//        double total_fee = Double.parseDouble((rechargData * 100) + "");
+//        Log.e(TAG,((int)total_fee)+"");
         OkHttpUtils.get()
                 .addParams("userId", Pref.getInstance(this).getUserId()+"")
                 .addParams("body", getString(R.string.recharge_for_user))//商品描述
-                .addParams("money", total_fee + "")
+                .addParams("money", rechargData+"")
                 .addParams("spbill_create_ip", Utils.getIPAddress(this))
                 .addParams("trade_type", "APP")
                 .addParams("payType",0+"")

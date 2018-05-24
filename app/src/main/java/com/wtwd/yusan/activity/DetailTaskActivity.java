@@ -142,7 +142,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         mMissionId = mTaskEntity.getMission_id() + "";
 
 //        text_task_publisher_nick.setText(mTaskEntity.getPublisher().getUser_name());
-        text_task_publisher_nick.setText(mTaskEntity.getUser_name());
+        text_task_publisher_nick.setText(mTaskEntity.getNick_name());
 //        if (1 == mTaskEntity.getPublisher().getSex()) {
         if (1 == mTaskEntity.getUser_sex()) {
             task_publisher_sex.setImageResource(R.mipmap.task_m);
@@ -166,7 +166,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         calendar.setTimeInMillis((mTaskEntity.getStart_time()));
 
 
-        text_task_date.setText(calendar.get(Calendar.MONTH + 1)
+        text_task_date.setText(calendar.get(Calendar.MONTH )
                 + getString(R.string.task_month_string)
                 + calendar.get(Calendar.DAY_OF_MONTH)
                 + getString(R.string.task_day_string));
@@ -227,7 +227,7 @@ public class DetailTaskActivity extends CommonToolBarActivity {
         }
 //        long publishUserId = mTaskEntity.getPublisher().getUser_id();
 
-        long publishUserId = mTaskEntity.getUser_id();
+        long publishUserId = mTaskEntity.getPublish_id();
 
         long userId = mPref.getUserId();
 

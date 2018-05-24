@@ -39,6 +39,7 @@ import com.wtwd.yusan.ease.Constant;
 import com.wtwd.yusan.ease.IMHelper;
 import com.wtwd.yusan.ease.db.DemoDBManager;
 import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.WxUserEntity;
 import com.wtwd.yusan.entity.operation.DaoManager;
 import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.util.Constans;
@@ -158,12 +159,44 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         if (isFirst) {
             account = bundle.getString("account");
             isPhone = bundle.getBoolean("isPhone");
+            if(!isPhone){
+             displayWxUserInfo();
+            }
         }
+            displayUserInfo();
 
-        displayUserInfo();
+
+
     }
 
+    private void displayWxUserInfo() {
+        WxUserEntity wxUserEntity = GsonUtils.GsonToBean(Pref.getInstance(this).getWxEntity(),WxUserEntity.class);
+        if(null != wxUserEntity){
+            Glide.with(this)
+                    .load(Uri.parse(wxUserEntity.getHeadimgurl()))
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            circle_img_head.setImageBitmap(resource);
+                        }
+                    });
+            Log.e(TAG, "mEn : " + wxUserEntity.toString());
+            text_user_nick.setText(wxUserEntity.getNickname());
+            if(wxUserEntity.getSex() == 1){
+                tv_modifyuser_sex.setText("男");
+            }else{
+                tv_modifyuser_sex.setText("女");
+            }
+
+            //tv_modifyuser_height.setText(mEn.getHeight());
+        }
+    }
+
+
     private void displayUserInfo() {
+
+
         UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
        // Log.e(TAG, "mEn : " + mEn.toString());
 
@@ -177,13 +210,14 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
                             circle_img_head.setImageBitmap(resource);
                         }
                     });
-
+            Log.e(TAG, "mEn : " + mEn.toString());
             text_user_nick.setText(mEn.getNick_name());
             tv_modifyuser_birthday.setText(mEn.getBirth());
             tv_modifyuser_sex.setText(mEn.getSex() + "");
             tv_modifyuser_height.setText(mEn.getHeight());
 
         }
+
 
 
     }

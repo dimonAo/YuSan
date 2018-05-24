@@ -347,7 +347,8 @@ public class NearbyMapFragment extends BaseFragment implements AMapLocationListe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+//        mMapView.
+        //mMapView.onDestroy();
         /*if (null != mAMapLocationClient) {
             mAMapLocationClient.onDestroy();
         }else{

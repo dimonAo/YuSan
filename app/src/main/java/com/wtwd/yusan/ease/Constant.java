@@ -39,4 +39,5 @@ public class Constant extends EaseConstant{
     public static final String WTWD_MISSION_TXT = "WtwdMissionTxt";
     public static final String WTWD_REDPACKET_TXT = "WtwdRedPacketTxt";
 
+
 }
