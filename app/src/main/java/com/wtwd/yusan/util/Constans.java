@@ -22,7 +22,9 @@ public class Constans {
     /**
      * 请求http地址
      */
-    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
+//    public static final String REQUEST_URL = "http://121.196.232.11:9883/Award/open";
+    public static final String REQUEST_URL = "http://119.23.61.10:8068/cheekat/open";
+//    public static final String REQUEST_URL = "http://192.168.13.177:8080/cheekat-app-controller/open";
 //    public static final String REQUEST_URL = "http://192.168.13.177:8080/opzen";
 //    public static final String REQUEST_URL = "http://192.168.199.179:8080/open";
 //    public static final String REQUEST_URL = "http://192.168.13.203:8080/CheeKat/open";
