@@ -1,5 +1,6 @@
 package com.wtwd.yusan.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,7 +36,10 @@ public class LandChooseActivity extends CommonToolBarActivity implements View.On
 
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
-
+//        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+//            finish();
+//            return;
+//        }
         img_choose_wechat_land = (ImageView) findViewById(R.id.img_choose_wechat_land);
         img_choose_phone_land = (ImageView) findViewById(R.id.img_choose_phone_land);
         test = (ImageView) findViewById(R.id.test);

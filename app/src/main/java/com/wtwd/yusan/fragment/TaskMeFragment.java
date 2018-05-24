@@ -217,8 +217,6 @@ public class TaskMeFragment extends BaseFragment {
                         }
                     }
                 });
-
-//        return mList;
     }
 
     private void getData() {
@@ -271,8 +269,6 @@ public class TaskMeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        getData();
-//
 
     }
 }
