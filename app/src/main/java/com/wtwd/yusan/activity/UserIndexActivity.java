@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,11 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPoolAdapter;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -31,6 +36,7 @@ import com.wtwd.yusan.adapter.MeAddPicAdapter;
 import com.wtwd.yusan.base.CommonToolBarActivity;
 import com.wtwd.yusan.entity.ResultEntity;
 import com.wtwd.yusan.entity.TaskEntity;
+import com.wtwd.yusan.entity.UserEntity;
 import com.wtwd.yusan.util.Constans;
 import com.wtwd.yusan.util.GlideImageLoader;
 import com.wtwd.yusan.util.GsonUtils;
@@ -46,7 +52,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,9 +74,26 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
     private RecyclerView recycler_pic;
     private MeAddPicAdapter mMeAddPicAdapter;
+    private RelativeLayout relative_index_user_bg;
     long receiveUserId;
     ArrayList<ImageItem> images = new ArrayList<>();
     private EasyRefreshLayout refresh_img;
+    /**
+     * 用户名
+     */
+    private TextView tv_userindex_username;
+    /**
+     * 性别
+     */
+    private ImageView img_userindex_sex;
+    /**
+     * 性别
+     */
+    private TextView tv_userindex_age;
+    /**
+     * 身高
+     */
+    private TextView tv_userindex_height;
 //    private String[] imgUrl;
 //            = {"https://img-blog.csdn.net/20170428175617391?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
 //            "https://img-blog.csdn.net/20170428175632797?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveWVjaGFvYQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center",
@@ -83,6 +108,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
     }
 
     private void initView() {
+        relative_index_user_bg = (RelativeLayout)findViewById(R.id.relative_index_user_bg);
         refresh_img = (EasyRefreshLayout) findViewById(R.id.refresh_img);
         recycler_pic = (RecyclerView) findViewById(R.id.recycler_pic);
         recycler_pic.setLayoutManager(new GridLayoutManager(this, GRID_COUNT));
@@ -90,6 +116,10 @@ public class UserIndexActivity extends CommonToolBarActivity {
         recycler_pic.addItemDecoration(mDi);
         mMeAddPicAdapter = new MeAddPicAdapter(R.layout.item_add_img, null);
 
+        tv_userindex_age = findViewById(R.id.tv_userindex_age);
+        tv_userindex_username = findViewById(R.id.tv_userindex_username);
+        tv_userindex_height = findViewById(R.id.tv_userindex_height);
+        img_userindex_sex = findViewById(R.id.img_userindex_sex);
         /**
          * 如果进入的是别人的主页，最后不显示添加按钮
          */
@@ -176,6 +206,49 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        try {
+                            JSONObject mHomeInfoJson = new JSONObject(response);
+
+                            int status = mHomeInfoJson.optInt("status");
+
+                            if (Constans.REQUEST_SUCCESS == status) {
+
+                                String mUserJson = mHomeInfoJson.optString("object");
+                                UserEntity mUser = GsonUtils.GsonToBean(mUserJson,UserEntity.class);
+                                Log.e(TAG,mUser.toString());
+                                Glide.with(UserIndexActivity.this)
+                                    .load(Uri.parse(mUser.getHead_img()))
+                                        .asBitmap()
+                                        .into(new SimpleTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                                relative_index_user_bg.setBackground(new BitmapDrawable(resource));
+                                            }
+                                        });
+//                                Glide.with(UserIndexActivity.this)
+//                                        .load(Uri.parse(mUser.getHead_img()))
+//                                        .into(Uri.parse(mUser.));
+                                tv_userindex_username.setText("年龄:"+mUser.getNick_name());
+                                tv_userindex_age.setText("年龄:"+mUser.getBirth());
+                                tv_userindex_height.setText("身高:"+mUser.getHeight()+"cm");
+                                //SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                               // Date data = df.format(mUser.getBirth());
+
+                                //tv_userindex_age.setText("");
+                                if(1 == mUser.getSex()){
+                                    img_userindex_sex.setBackgroundResource(R.mipmap.task_m);
+                                }else{
+                                    img_userindex_sex.setBackgroundResource(R.mipmap.task_f);
+                                }
+
+                            }else{
+                                int errorCode = mHomeInfoJson.optInt("errCode");
+                                showToast(Utils.getErrorString(UserIndexActivity.this,errorCode));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
 
                     }
                 });
@@ -242,7 +315,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                                 String mImg = mImgJson.optString("object");
 
-                                List<ImageInfo> mImgList = GsonUtils.GsonToList(mImg, ImageInfo.class);
+                                List<ImageInfo> mImgList = GsonUtils.jsonToList(mImg, ImageInfo.class);
 
                                 if (mImgList.size() > 0) {
                                     for (int i = 0; i < mImgList.size(); i++) {
@@ -255,7 +328,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
                                 mMeAddPicAdapter.getData().addAll(mLists);
                                 mMeAddPicAdapter.notifyDataSetChanged();
                                 refresh_img.loadMoreComplete();
-                                refresh_img.closeLoadView();
+//                                refresh_img.closeLoadView();
 
                                 if (mImgList.size() < 20) {
                                     refresh_img.setLoadMoreModel(LoadModel.NONE);
@@ -320,6 +393,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
     }
 
 
+
     /**
      * 上传单张图片到服务器
      *
@@ -343,6 +417,7 @@ public class UserIndexActivity extends CommonToolBarActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.e(TAG,response);
 
                     }
                 });

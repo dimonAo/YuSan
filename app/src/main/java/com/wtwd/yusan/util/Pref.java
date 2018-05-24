@@ -79,7 +79,7 @@ public class Pref {
      */
     public long getUserId() {
 //        return getSharedPreferencesCommon().getLong("user_id", 1);
-        return getSharedPreferencesCommon().getLong("user_id", 1L);
+        return getSharedPreferencesCommon().getLong("user_id", 0L);
     }
 
 
@@ -166,4 +166,40 @@ public class Pref {
         return getSharedPreferencesCommon().getBoolean("phone",false);
     }
 
+    /**
+     * 存储open_id
+     *
+     * @param openId
+     */
+    public void setOpenId(long openId) {
+        getSharedPreferencesCommon().edit().putLong("open_id", openId).apply();
+    }
+
+    /**
+     * 获取open_id
+     *
+     * @return 存储的open_id
+     */
+    public long getOpenId() {
+        return getSharedPreferencesCommon().getLong("open_id", 0L);
+    }
+
+    /**
+     * 存储wxEntity
+     *
+     * @param wxEntity
+     */
+    public void setWxEntity(String wxEntity) {
+        getSharedPreferencesCommon().edit().putString("wx", wxEntity).apply();
+    }
+
+    /**
+     * 获取wxEntity
+     *
+     * @return 存储的wxEntity
+     */
+    public String getWxEntity() {
+//        return getSharedPreferencesCommon().getLong("user_id", 1);
+        return getSharedPreferencesCommon().getString("wx", "");
+    }
 }

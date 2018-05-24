@@ -18,7 +18,30 @@ public class LastVersionEntity {
 
     private Long user_id;          //用户id
 
-    private UserEntity user;    //用户
+    private long publish_id;                 //用户ID
+
+    private String userIdStr;
+
+    private String head_img;            //头像
+
+    private String birth;               //生日
+
+    private String nick_name;
+
+    private String user_name;          //用户名
+
+    private String password;          //密码
+
+    private int sex;                 //性别
+
+    private String country;
+
+//    private String create_time;
+
+    private int invisible;           //是否隐身
+
+    private float distance;
+
 
     public Long getLoc_id() {
         return loc_id;
@@ -68,11 +91,114 @@ public class LastVersionEntity {
         this.user_id = user_id;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public long getPublish_id() {
+        return publish_id;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setPublish_id(long publish_id) {
+        this.publish_id = publish_id;
+    }
+
+    public String getUserIdStr() {
+        return userIdStr;
+    }
+
+    public void setUserIdStr(String userIdStr) {
+        this.userIdStr = userIdStr;
+    }
+
+    public String getHead_img() {
+        return head_img;
+    }
+
+    public void setHead_img(String head_img) {
+        this.head_img = head_img;
+    }
+
+    public String getBirth() {
+        return birth;
+    }
+
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public int getInvisible() {
+        return invisible;
+    }
+
+    public void setInvisible(int invisible) {
+        this.invisible = invisible;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    @Override
+    public String toString() {
+        return "LastVersionEntity{" +
+                "loc_id=" + loc_id +
+                ", locIdStr='" + locIdStr + '\'' +
+                ", lat=" + lat +
+                ", lng=" + lng +
+                ", last_time='" + last_time + '\'' +
+                ", user_id=" + user_id +
+                ", publish_id=" + publish_id +
+                ", userIdStr='" + userIdStr + '\'' +
+                ", head_img='" + head_img + '\'' +
+                ", birth='" + birth + '\'' +
+                ", nick_name='" + nick_name + '\'' +
+                ", user_name='" + user_name + '\'' +
+                ", password='" + password + '\'' +
+                ", sex=" + sex +
+                ", country='" + country + '\'' +
+                ", invisible=" + invisible +
+                ", distance=" + distance +
+                '}';
     }
 }

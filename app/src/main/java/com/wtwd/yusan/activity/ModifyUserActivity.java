@@ -18,19 +18,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.util.Util;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.wtwd.yusan.MyApplication;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.ease.Constant;
+import com.wtwd.yusan.ease.IMHelper;
+import com.wtwd.yusan.ease.db.DemoDBManager;
 import com.wtwd.yusan.entity.UserEntity;
+import com.wtwd.yusan.entity.WxUserEntity;
 import com.wtwd.yusan.entity.operation.DaoManager;
 import com.wtwd.yusan.entity.operation.DaoUtils;
 import com.wtwd.yusan.util.Constans;
@@ -150,33 +159,65 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
         if (isFirst) {
             account = bundle.getString("account");
             isPhone = bundle.getBoolean("isPhone");
+            if(!isPhone){
+             displayWxUserInfo();
+            }
         }
+            displayUserInfo();
 
-        displayUserInfo();
+
+
     }
 
-    private void displayUserInfo() {
-        UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
-        Log.e(TAG, "mEn : " + mEn.toString());
-
-        if (null != mEn) {
+    private void displayWxUserInfo() {
+        WxUserEntity wxUserEntity = GsonUtils.GsonToBean(Pref.getInstance(this).getWxEntity(),WxUserEntity.class);
+        if(null != wxUserEntity){
             Glide.with(this)
-                    .load(Uri.parse(mEn.getHead_img()))
+                    .load(Uri.parse(wxUserEntity.getHeadimgurl()))
                     .asBitmap()
-
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             circle_img_head.setImageBitmap(resource);
                         }
                     });
+            Log.e(TAG, "mEn : " + wxUserEntity.toString());
+            text_user_nick.setText(wxUserEntity.getNickname());
+            if(wxUserEntity.getSex() == 1){
+                tv_modifyuser_sex.setText("男");
+            }else{
+                tv_modifyuser_sex.setText("女");
+            }
 
+            //tv_modifyuser_height.setText(mEn.getHeight());
+        }
+    }
+
+
+    private void displayUserInfo() {
+
+
+        UserEntity mEn = DaoUtils.getUserManager().queryUserForUserId(mPref.getUserId());
+       // Log.e(TAG, "mEn : " + mEn.toString());
+
+        if (null != mEn) {
+            Glide.with(this)
+                    .load(Uri.parse(mEn.getHead_img()))
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            circle_img_head.setImageBitmap(resource);
+                        }
+                    });
+            Log.e(TAG, "mEn : " + mEn.toString());
             text_user_nick.setText(mEn.getNick_name());
             tv_modifyuser_birthday.setText(mEn.getBirth());
             tv_modifyuser_sex.setText(mEn.getSex() + "");
             tv_modifyuser_height.setText(mEn.getHeight());
 
         }
+
 
 
     }
@@ -299,9 +340,18 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 //
 //                                } else {
                                     //修改用户信息
+
+                                    String mObjectStr = mUserJson.optString("object");
+                                    UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
+                                    Log.e(TAG,mUserEn.toString());
+                                    //mPref.(mUserEn.getHead_img());
+                                    UserEntity user = DaoUtils.getUserManager().queryUserForUserId(mUserEn.getUser_id());
+                                    user.setHead_img(mUserEn.getHead_img());
+                                    DaoUtils.getUserManager().updateObject(user);
+                                /*
                                     UserEntity mUser = DaoUtils.getUserManager().queryUserForUserId(Pref.getInstance(ModifyUserActivity.this).getUserId());
 
-                                    DaoUtils.getUserManager().updateObject(mUser);
+                                    DaoUtils.getUserManager().updateObject(mUser);*/
 
                                     finish();
 //                                }
@@ -378,11 +428,14 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
 //                                    String mUser = mObjectJson.optString("user");
                                     UserEntity mUserEn = GsonUtils.GsonToBean(mObjectStr, UserEntity.class);
 //                                    Pref.getInstance(ModifyUserActivity.this).setUserId(mUserEn.getUser_id());
+                                    Constant.CONSTANT_USER_ID = mUserEn.getUser_id()+"";
+                                    Constant.CONSTANT_USER_NAME = mUserEn.getUser_name()+"";
 
                                     mPref.setUserId(mUserEn.getUser_id());
                                     DaoUtils.getUserManager().insertObject(mUserEn);
+                                    //向环信注册
+                                    login(mUserEn.getUser_name());
 
-                                    readyGoForNewTask(MainActivity.class);
 
 
                                 }
@@ -583,5 +636,76 @@ public class ModifyUserActivity extends CommonToolBarActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
         OkHttpUtils.getInstance().cancelTag(this);
+    }
+
+    /**
+     * login
+     *
+     * @param
+     */
+    public void login(String username) {
+        if (!EaseCommonUtils.isNetWorkConnected(this)) {
+            Toast.makeText(this, R.string.network_isnot_available, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // After logout，the DemoDB may still be accessed due to async callback, so the DemoDB will be re-opened again.
+        // close it before login to make sure DemoDB not overlap
+        DemoDBManager.getInstance().closeDB();
+
+        // reset current user name before login
+        IMHelper.getInstance().setCurrentUserName(username);
+
+        final long start = System.currentTimeMillis();
+        // call login method
+        Log.d(TAG, "EMClient.getInstance().login");
+        EMClient.getInstance().login(username, "123456", new EMCallBack() {
+
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "login: onSuccess");
+
+                // ** manually load all local groups and conversation
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+
+                // update current user's display name for APNs
+                boolean updatenick = EMClient.getInstance().pushManager().updatePushNickname(
+                        MyApplication.currentUserNick.trim());
+                if (!updatenick) {
+                    Log.e("LoginActivity", "update current user nick fail");
+                }
+
+              /*  if (!LoginActivity.this.isFinishing() && pd.isShowing()) {
+                    pd.dismiss();
+                }*/
+                // get user's info (this should be get from App's server or 3rd party service)
+                IMHelper.getInstance().getUserProfileManager().asyncGetCurrentUserInfo();
+                readyGoForNewTask(MainActivity.class);
+               /* Intent intent = new Intent(ModifyUserActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                finish();*/
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+                Log.d(TAG, "login: onProgress");
+            }
+
+            @Override
+            public void onError(final int code, final String message) {
+                Log.d(TAG, "login: onError: " + code);
+              /*  if (!progressShow) {
+                    return;
+                }*/
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        //pd.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.Login_failed) + message,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 }

@@ -6,6 +6,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/relative_index_user_bg"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -38,6 +39,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tv_userindex_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -46,6 +48,7 @@
                     android:textSize="@dimen/text_16" />
 
                 <ImageView
+                    android:id="@+id/img_userindex_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -106,6 +109,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_userindex_age"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/common_22"
@@ -138,6 +142,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_userindex_height"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/common_22"

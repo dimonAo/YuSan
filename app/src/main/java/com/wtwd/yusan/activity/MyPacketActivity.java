@@ -2,12 +2,24 @@ package com.wtwd.yusan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.Pref;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+
+import okhttp3.Call;
 
 /**
  * time:2018/4/18
@@ -22,6 +34,8 @@ public class MyPacketActivity extends CommonToolBarActivity implements  View.OnC
 
     TextView tv_mypacket_detail;
 
+    TextView tv_mypacket_yue;
+
     @Override
     public void onCreateCommonView(Bundle saveInstanceState) {
             initView();
@@ -32,7 +46,9 @@ public class MyPacketActivity extends CommonToolBarActivity implements  View.OnC
         lin_mypacket_recharge = findViewById(R.id.lin_mypacket_recharge);
         lin_mypacket_withdrawals = findViewById(R.id.lin_mypacket_withdrawals);
         tv_mypacket_detail = findViewById(R.id.tv_mypacket_detail);
+        tv_mypacket_yue = findViewById(R.id.tv_mypacket_yue);
         addListener();
+        getUserBalance();
     }
 
     /**
@@ -73,5 +89,45 @@ public class MyPacketActivity extends CommonToolBarActivity implements  View.OnC
                readyGo(PacketDetailActivity.class);
                 break;
         }
+    }
+
+    /**
+     * 获取余额
+     */
+    private void getUserBalance(){
+        OkHttpUtils.get()
+                .url(Constans.GET_BALANCE)
+                .addParams("userId", Pref.getInstance(this).getUserId()+"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG,response.toString());
+                        DecimalFormat df   = new DecimalFormat("######0.00");
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(response);
+                            int status = jsonObject.getInt("status");
+                            if(1 == status ){
+                                JSONObject result = jsonObject.getJSONObject("object");
+                                Double balance = Double.parseDouble(result.getString("balance"));
+                                String dfBalance = df.format(balance);
+                                tv_mypacket_yue.setText(dfBalance);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        // tv_yue.setText();
+
+                    }
+                });
+
+
     }
 }

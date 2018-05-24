@@ -67,7 +67,9 @@ public class TaskActivity extends BaseActivity {
         text_publish_task.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readyGo(PublishTaskActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("to","0");
+                readyGo(PublishTaskActivity.class,bundle);
             }
         });
 

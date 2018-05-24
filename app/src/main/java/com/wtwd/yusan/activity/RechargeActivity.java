@@ -19,10 +19,19 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wtwd.yusan.R;
 import com.wtwd.yusan.base.CommonToolBarActivity;
+import com.wtwd.yusan.entity.PrepayIdEntity;
+import com.wtwd.yusan.entity.ResultEntity;
+import com.wtwd.yusan.entity.TaskEntity;
 import com.wtwd.yusan.util.Constans;
+import com.wtwd.yusan.util.GsonUtils;
+import com.wtwd.yusan.util.Pref;
 import com.wtwd.yusan.util.Utils;
+import com.wtwd.yusan.util.WXpayUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +57,13 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
     CheckBox ck_wechat_recharge;
     List<SelectBean> mNumList = new ArrayList<>();
 
-    private String[] numData = {"5元", "20", "50", "100"};
+    private String[] numData = {"5元", "20元", "50元", "100元"};
 
     RechargeNumAdapter mRechargeNumAdapter;
     private int selectionStart;
     private int selectionEnd;
+
+    private int selectedNumItem = 5;
 
 
     @Override
@@ -89,6 +100,7 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
                     mNumList.get(i).setSelect(false);
                 }
                 Log.e("dd", position + "");
+                selectedNumItem = 5+5*position;
                 mNumList.get(position).setSelect(true);
                 mRechargeNumAdapter.notifyDataSetChanged();
             }
@@ -141,15 +153,26 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
 
     @Override
     public View getSnackView() {
-        return null;
+        return rcl_recharge;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_recharg:
-                float rechageData = Float.parseFloat(ed_recharge.getText().toString());
-                Log.e(TAG, rechageData + "");
+                float rechageData = 0l;
+                String rechageMoney = ed_recharge.getText().toString();
+                if(null == rechageMoney||"".equals(rechageMoney)|| 0 == Float.parseFloat(rechageMoney)){
+                    rechageData = Float.parseFloat(selectedNumItem+"");
+                    rechargMoney(rechageData);
+                }else{
+                    Log.e(TAG,rechageMoney);
+                   /* float rechageData = Float.parseFloat(ed_recharge.getText().toString());
+                    Log.e(TAG, rechageData + "");*/
+                   rechageData = Float.parseFloat(rechageMoney);
+                    rechargMoney(rechageData);
+                }
+
               /*  int total_fee = Integer.parseInt((rechageData * 100)+"");
                 Log.e(TAG,total_fee+"");
                 if(rechageData <=0){
@@ -166,12 +189,16 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
      */
     private void rechargMoney(float rechargData) {
 
-        int total_fee = Integer.parseInt((rechargData * 100) + "");
-        OkHttpUtils.post()
+//        double total_fee = Double.parseDouble((rechargData * 100) + "");
+//        Log.e(TAG,((int)total_fee)+"");
+        OkHttpUtils.get()
+                .addParams("userId", Pref.getInstance(this).getUserId()+"")
                 .addParams("body", getString(R.string.recharge_for_user))//商品描述
-                .addParams("total_fee", total_fee + "")
+                .addParams("money", rechargData+"")
                 .addParams("spbill_create_ip", Utils.getIPAddress(this))
                 .addParams("trade_type", "APP")
+                .addParams("payType",0+"")
+                .addParams("type",1+"")
                 .url(Constans.GET_WX_PERPERID)
                 .build()
                 .execute(new StringCallback() {
@@ -183,6 +210,24 @@ public class RechargeActivity extends CommonToolBarActivity implements View.OnCl
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG, response.toString());
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                            int status = result.optInt("status");
+                            if(1 == status){
+                                String mPerpayIdJson= result.optString("object");
+                                Log.e(TAG, "mTaskJsonArray --> " + mPerpayIdJson);
+                                JSONObject prepay = new JSONObject(mPerpayIdJson);
+                                String prepayid = prepay.getString("prepayid");
+                                PrepayIdEntity m= GsonUtils.GsonToBean(mPerpayIdJson,PrepayIdEntity.class);
+                                Log.e(TAG,m.toString());
+                                WXpayUtils.Pay(prepayid);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 });
 

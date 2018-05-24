@@ -40,6 +40,10 @@ public class TaskEntity implements Parcelable {
     ////////////////////////////////////////////////////////////////
     private long publish_id;                 //用户ID
 
+    private long accept_id;                 //接受者id
+
+    private long user_id;
+
     private String userIdStr;
 
     private String head_img;            //头像
@@ -52,6 +56,8 @@ public class TaskEntity implements Parcelable {
 
     private int user_sex;                 //性别
 
+    private String nick_name;
+
     private String country;
 
 //    private String create_time;
@@ -61,10 +67,6 @@ public class TaskEntity implements Parcelable {
 ////////////////////////////////////////////////////////////////////////
 
 //    private UserEntity user;
-
-    public TaskEntity() {
-
-    }
 
 
     protected TaskEntity(Parcel in) {
@@ -81,14 +83,50 @@ public class TaskEntity implements Parcelable {
         finish_time = in.readString();
         anonymous = in.readInt();
         publish_id = in.readLong();
+        accept_id = in.readLong();
+        user_id = in.readLong();
         userIdStr = in.readString();
         head_img = in.readString();
         birth = in.readString();
         user_name = in.readString();
         password = in.readString();
         user_sex = in.readInt();
+        nick_name = in.readString();
         country = in.readString();
         invisible = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mission_id);
+        dest.writeString(content);
+        dest.writeInt(type);
+        dest.writeInt(sex);
+        dest.writeString(address);
+        dest.writeDouble(money);
+        dest.writeString(create_time);
+        dest.writeLong(start_time);
+        dest.writeInt(status);
+        dest.writeString(accept_time);
+        dest.writeString(finish_time);
+        dest.writeInt(anonymous);
+        dest.writeLong(publish_id);
+        dest.writeLong(accept_id);
+        dest.writeLong(user_id);
+        dest.writeString(userIdStr);
+        dest.writeString(head_img);
+        dest.writeString(birth);
+        dest.writeString(user_name);
+        dest.writeString(password);
+        dest.writeInt(user_sex);
+        dest.writeString(nick_name);
+        dest.writeString(country);
+        dest.writeInt(invisible);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<TaskEntity> CREATOR = new Creator<TaskEntity>() {
@@ -151,14 +189,6 @@ public class TaskEntity implements Parcelable {
         this.money = money;
     }
 
-//    public UserEntity getPublisher() {
-//        return publisher;
-//    }
-//
-//    public void setPublisher(UserEntity publisher) {
-//        this.publisher = publisher;
-//    }
-
     public String getCreate_time() {
         return create_time;
     }
@@ -174,14 +204,6 @@ public class TaskEntity implements Parcelable {
     public void setStart_time(long start_time) {
         this.start_time = start_time;
     }
-
-//    public UserEntity getAccepter() {
-//        return accepter;
-//    }
-//
-//    public void setAccepter(UserEntity accepter) {
-//        this.accepter = accepter;
-//    }
 
     public int getStatus() {
         return status;
@@ -215,12 +237,28 @@ public class TaskEntity implements Parcelable {
         this.anonymous = anonymous;
     }
 
-    public long getUser_id() {
+    public long getPublish_id() {
         return publish_id;
     }
 
+    public void setPublish_id(long publish_id) {
+        this.publish_id = publish_id;
+    }
+
+    public long getAccept_id() {
+        return accept_id;
+    }
+
+    public void setAccept_id(long accept_id) {
+        this.accept_id = accept_id;
+    }
+
+    public long getUser_id() {
+        return user_id;
+    }
+
     public void setUser_id(long user_id) {
-        this.publish_id = user_id;
+        this.user_id = user_id;
     }
 
     public String getUserIdStr() {
@@ -271,6 +309,14 @@ public class TaskEntity implements Parcelable {
         this.user_sex = user_sex;
     }
 
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
+
     public String getCountry() {
         return country;
     }
@@ -285,37 +331,6 @@ public class TaskEntity implements Parcelable {
 
     public void setInvisible(int invisible) {
         this.invisible = invisible;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mission_id);
-        dest.writeString(content);
-        dest.writeInt(type);
-        dest.writeInt(sex);
-        dest.writeString(address);
-        dest.writeDouble(money);
-        dest.writeString(create_time);
-        dest.writeLong(start_time);
-        dest.writeInt(status);
-        dest.writeString(accept_time);
-        dest.writeString(finish_time);
-        dest.writeInt(anonymous);
-        dest.writeLong(publish_id);
-        dest.writeString(userIdStr);
-        dest.writeString(head_img);
-        dest.writeString(birth);
-        dest.writeString(user_name);
-        dest.writeString(password);
-        dest.writeInt(user_sex);
-        dest.writeString(country);
-        dest.writeInt(invisible);
     }
 
     @Override
@@ -334,12 +349,15 @@ public class TaskEntity implements Parcelable {
                 ", finish_time='" + finish_time + '\'' +
                 ", anonymous=" + anonymous +
                 ", publish_id=" + publish_id +
+                ", accept_id=" + accept_id +
+                ", user_id=" + user_id +
                 ", userIdStr='" + userIdStr + '\'' +
                 ", head_img='" + head_img + '\'' +
                 ", birth='" + birth + '\'' +
                 ", user_name='" + user_name + '\'' +
                 ", password='" + password + '\'' +
                 ", user_sex=" + user_sex +
+                ", nick_name='" + nick_name + '\'' +
                 ", country='" + country + '\'' +
                 ", invisible=" + invisible +
                 '}';
